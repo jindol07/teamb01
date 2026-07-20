@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.CommunityDao">
+
+	<select id="listCommunity" resultType="cvo" parameterType="map">
+		SELECT
+			boardid
+  			,boardtype
+			,usrno
+			,usrnm
+			,title
+			,cont
+			,hit
+			,rdate
+			,delyn
+			,rating
+  			,row_num
+		FROM
+			( SELECT
+	    		boardid
+				,boardtype
+				,usrno
+				,usrnm
+				,title
+				,cont
+				,hit
+				,rdate
+				,delyn
+				,rating
+				,ROW_NUMBER() OVER(ORDER BY boardid desc) AS row_num
+			   FROM COMMUNITY
+			   <where>
+			   	1=1
+			   	AND boardtype = #{boardtype}
+    			AND delyn = 'N'
+				<if test="searchType != null and searchValue != null">
+					<choose>
+						<when test="searchType == 1">
+							AND title like '%'|| #{searchValue} ||'%'
+						</when>
+						<when test="searchType == 2">
+							AND usrnm like '%'|| #{searchValue} ||'%'
+						</when>
+						<when test="searchType == 3">
+							AND cont like '%'|| #{searchValue} ||'%'
+						</when>
+					</choose>
+				</if>
+				</where>
+			) community_numrow_view 
+		  WHERE row_num BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<select id="totCnt" resultType="int" parameterType="map">
+		select count(*) cnt from COMMUNITY
+		<where>
+			boardtype = 'N'
+			AND delyn = 'N'
+			<if test="searchType != null and searchValue != null">
+				<choose>
+					<when test="searchType == 1">
+						AND title like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 2">
+						AND usrnm like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 3">
+						AND cont like '%'|| #{searchValue} ||'%'
+					</when>
+				</choose>
+			</if>
+		</where>
+	</select>
+	
+	<select id="detailCommunity" parameterType="int" resultType="cvo">
+		select
+			boardid
+			,boardtype
+			,usrno
+			,usrnm
+			,title
+			,cont
+			,hit
+			,rdate
+			,delyn
+			,rating
+		from COMMUNITY
+		where boardid = #{num}
+	</select>
+	
+	<insert id="addCommunity" parameterType="cvo">
+		insert into COMMUNITY values(community_seq.nextVal, #{boardtype},
+		#{usrno}, #{title}, #{cont}, 0, sysdate, 'N', #{rating, jdbcType=VARCHAR}, #{usrnm})
+	</insert>
+	
+	<update id="upCommunity" parameterType="int">
+	
+	</update>
+	
+</mapper>

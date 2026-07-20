@@ -1,0 +1,13 @@
+package kr.co.teamb.dfsms;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DfsmsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DfsmsApplication.class, args);
+	}
+
+}

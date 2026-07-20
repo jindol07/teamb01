@@ -1,0 +1,61 @@
+.activeStyle {
+    background-color: rgba(25, 135, 84, 0.28);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.35);
+}
+
+.inactiveStyle {
+    color: #212529;
+}
+
+/* 버튼 통일 */
+.button {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-left: 10px;
+    background-color: rgba(25, 135, 84, 0.18);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.35);
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* .button,
+.button:link,
+.button:visited {
+    text-decoration: none;
+    color: white;
+} */
+
+.button:hover {
+    background-color: #76b876;
+    color: white;
+}
+
+/* 폼 제출 */
+.submitBtn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4e6b4e;
+    background: rgba(176, 224, 176, 0.45);
+    border: 1px solid #9dd29d;
+    border-radius: 12px;
+    transition: all .25s ease;
+}
+
+/* 버튼 Hover */
+.submitBtn:hover {
+    background: rgba(152, 214, 152, 0.7);
+    border-color: #84c484;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* 버튼 클릭 */
+.submitBtn:active {
+    transform: scale(0.98);
+}

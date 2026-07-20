@@ -1,0 +1,107 @@
+/* 페이지 */
+.surveyContainer {
+    max-width: 700px;
+    margin: 60px auto;
+}
+
+/* 카드 */
+.surveyCard {
+    background: rgba(244, 252, 244, 0.95);
+    border: 1px solid #dcefdc;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(95, 145, 95, 0.08);
+}
+
+/* 제목 */
+.title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4e6b4e;
+    margin-bottom: 10px;
+}
+
+/* 문항 수 */
+.info {
+    text-align: center;
+    color: #6f8a6f;
+    margin-bottom: 30px;
+}
+
+.contt {
+    text-align: center;
+    color: #254225;
+    margin-bottom: 30px;
+}
+
+/* 질문 카드 */
+.questionItem {
+    /* display: flex; */
+    align-items: center;
+    gap: 18px;      /* 라디오 버튼과 텍스트 사이 간격 */
+    padding: 15px 18px;
+    margin-bottom: 15px;
+    border: 1px solid #d6ead6;
+    border-radius: 12px;
+    background: rgba(255,255,255,.7);
+}
+
+/* 마우스를 올렸을 때 */
+.questionItem:hover {
+    background: rgba(225, 245, 225, 0.8);
+    border-color: #a8d5a2;
+}
+
+/* 선택되었을 때 */
+.questionItem:has(input:checked) {
+    background: rgba(209, 239, 209, 0.9);
+    border-color: #8cc98c;
+}
+
+/* 라벨 */
+.questionLabel {
+    margin-left: 30px;
+    cursor: pointer;
+    color: #4e5d4e;
+    font-size: 1rem;
+}
+
+/* 라디오 버튼 */
+.questionItem input[type="radio"] {
+    transform: scale(1.15);
+    accent-color: #88c98d;
+    cursor: pointer;
+    margin-right: 12px;
+}
+
+/* 제출 버튼 */
+.submitBtn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4e6b4e;
+    background: rgba(176, 224, 176, 0.45);
+    border: 1px solid #9dd29d;
+    border-radius: 12px;
+    transition: all .25s ease;
+}
+
+/* 버튼 Hover */
+.submitBtn:hover {
+    background: rgba(152, 214, 152, 0.7);
+    border-color: #84c484;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+/* 버튼 클릭 */
+.submitBtn:active {
+    transform: scale(0.98);
+}
+
+.radio {
+    accent-color: #88c98d;
+    transform: scale(1.2);
+    margin: 0;      /* Bootstrap 영향 제거 */
+}

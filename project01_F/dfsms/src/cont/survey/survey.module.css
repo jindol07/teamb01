@@ -1,0 +1,106 @@
+/* 설문조사 작성 폼 컨테이너 */
+.container {
+  width: 500px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  font-family: 'Pretendard', -apple-system, sans-serif;
+}
+
+/* 테이블 레이아웃 구조 */
+.surveyTable {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+/* 제목 행 스타일 */
+.formTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  text-align: center;
+  padding: 16px 0;
+  border-bottom: 2px solid #333333;
+}
+
+/* 헤더 및 데이터 셀 공통 */
+.surveyTable th, 
+.surveyTable td {
+  padding: 14px 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+/* 항목 이름 열 (왼쪽) */
+.surveyTable th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  width: 30%;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* 입력 폼 열 (오른쪽) */
+.surveyTable td {
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* 입력 필드 공통 스타일 */
+.inputField {
+  width: 100%;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inputField:focus {
+  border-color: #4dabf7;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.2);
+}
+
+/* 하단 버튼 영역 */
+.tableAction {
+  text-align: center;
+  padding-top: 15px;
+  border-top: 1px solid #dee2e6;
+}
+
+/* 버튼 공통 스타일 */
+.btn {
+  margin: 0 6px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* 등록 버튼 (Primary) */
+.btnSubmit {
+  background-color: #228be6;
+  color: #ffffff;
+}
+
+.btnSubmit:hover {
+  background-color: #1c7ed6;
+}
+
+/* 목록 버튼 (Secondary) */
+.btnList {
+  background-color: #e9ecef;
+  color: #495057;
+}
+
+.btnList:hover {
+  background-color: #dee2e6;
+}

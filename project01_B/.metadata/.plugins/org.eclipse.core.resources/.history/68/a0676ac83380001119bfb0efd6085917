@@ -1,0 +1,21 @@
+package kr.co.teamb.dfsms.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.co.teamb.dfsms.vo.CommunityVO;
+
+@Mapper
+public interface CommunityDao {
+	
+	void addCommunity(CommunityVO vo);
+	
+	List<CommunityVO> listCommunity();
+
+	CommunityVO detailCommunity(int num);
+	
+	void upCommunity(int num);
+	
+	void delCommunity(int num);
+}

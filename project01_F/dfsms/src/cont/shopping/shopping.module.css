@@ -1,0 +1,84 @@
+.img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  border: 2px solid black;
+}
+.img:hover {
+  transform: scale(1.05);
+}
+.input {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 40px auto;
+  
+  /* 1. 돋보기 아이콘을 검색창 왼쪽 내부에 배경으로 삽입 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 20px center; /* 왼쪽에서 20px 떨어진 정중앙에 배치 */
+  background-size: 20px;            /* 아이콘 크기 */
+  
+  /* 2. 패딩 설정: 왼쪽(padding-left)은 돋보기가 있으므로 글자가 겹치지 않게 넉넉히(50px) 줍니다 */
+  padding: 14px 20px 14px 50px;
+  font-size: 16px;
+  color: #333;
+  background-color: #fff;
+  border: 2px solid #e2e8f0;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+
+  /* 3. 기본 입력 글자는 중앙으로 정렬 (돋보기 옆에서 시작) */
+  text-align: center;
+}
+/* 4. [핵심] 안내 문구(Placeholder)만 중앙 정렬하기 */
+.input::placeholder {
+  text-align: center;
+  color: #94a3b8;
+  font-weight: 500;
+  text-align: center; /* 안내 문구를 정중앙으로 보냅니다 */
+  /* 돋보기가 왼쪽에 있어서 발생하는 미세한 치우침을 보정하기 위해 약간의 마진 조절 */
+  padding-right: 30px; 
+}
+/* Hover 및 Focus 스타일 유지 */
+.input:hover {
+  border-color: #cbd5e1;
+}
+.input:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 10px 15px -3px rgba(40, 167, 69, 0.1);
+  transform: translateY(-2px);
+}
+.img-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #2c3e50;
+  font-weight: 800;
+  /* 1. [핵심] 위쪽 공백을 완전히 없애거나 아주 최소한만 남깁니다 */
+  margin-top: 0px; 
+  /* 2. 대신 제목과 검색창 사이의 간격은 아래쪽 마진(margin-bottom)으로 유지합니다 */
+  margin-bottom: 25px;   
+  /* 3. 만약 0px로 해도 더 위로 올리고 싶다면 음수 마진을 사용할 수도 있습니다 (필요시 조절) */
+  /* margin-top: -15px; */
+}
+/* 상품 하나하나를 감싸는 박스 스타일 */
+.productItem {
+  display: flex;
+  flex-direction: column; /* 요소를 세로로 배치 */
+  align-items: center;    /* 가로 가운데 정렬 */
+  margin-bottom: 20px;
+}
+.productPrice {
+  margin-top: 8px;
+  text-align: center;
+}

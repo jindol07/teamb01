@@ -1,0 +1,77 @@
+.signupContainer {
+    max-width: 650px;
+    margin: 50px auto;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fafafa;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.inputRow {
+    display: flex;
+    gap: 8px;
+}
+
+input,
+select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+}
+
+.checkButton {
+    padding: 8px;
+    background-color: aquamarine;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+.checkButton:hover {
+    background-color: aqua;
+}
+
+.gender,
+.hobby {
+    display: flex;
+    gap: 10px;
+}
+
+.submitButton {
+    padding: 12px;
+    background-color: dodgerblue;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.signupContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.submitButton:hover {
+    background-color: deepskyblue;
+}
+
+.error {
+    color: red;
+    font-size: 13px;
+    margin: 0;
+}

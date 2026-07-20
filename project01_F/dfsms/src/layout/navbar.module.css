@@ -1,0 +1,192 @@
+/*
+.navbar {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    background-color: aliceblue;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+/* 링크 되었을 때 사용 
+.link {
+    /* 링크에 적용 
+    color:black;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.link:hover {
+    color: orange;
+}
+/* 활성화 되었을 때 사용 
+.active{
+    color:dodgerblue;
+    font-weight: bold;
+}
+
+/* DropDown.tsx에 적용 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+  min-width: 150px;
+}
+
+.dropdownContent a {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: black;
+  text-decoration: none;
+}
+
+.dropdownContent a:hover {
+  background-color: #ececec;
+  color: orange;
+}
+
+.arrow {
+  margin-left: 5px;
+  font-size: 12px;
+}  
+  */
+.navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e9ecef;
+  padding: 10px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 28px;
+}
+
+/* 기본 링크 */
+.link {
+  color: #495057;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+
+  padding: 6px 12px;
+  border-radius: 8px;
+
+  transition: all 0.2s ease;
+}
+
+/* hover */
+.link:hover {
+  color: #198754;
+  background-color: #f8f9fa;
+}
+
+/* 활성화 */
+.active {
+  color: #198754;
+  font-weight: 700;
+  border-bottom: 2px solid #198754;
+}
+
+/* dropdown wrapper */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* dropdown 버튼 역할 */
+.dropdownTrigger {
+  color: #495057;
+  font-size: 15px;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  padding: 6px 12px;
+  border-radius: 8px;
+
+  transition: all 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdownTrigger:hover {
+  background-color: #f8f9fa;
+  color: #198754;
+}
+
+.arrow {
+  font-size: 11px;
+  color: #adb5bd;
+}
+
+/* dropdown box */
+.dropdownContent {
+  position: absolute;
+  top: 120%;
+  left: 0;
+
+  min-width: 200px;
+
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+
+  overflow: hidden;
+  z-index: 1000;
+
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+.dropdownContent a {
+  display: block;
+
+  padding: 12px 14px;
+
+  font-size: 14px;
+  color: #495057;
+  text-decoration: none;
+
+  transition: all 0.2s ease;
+}
+
+.dropdownContent a:hover {
+  background-color: #f8f9fa;
+  color: #198754;
+  padding-left: 18px;
+}
+
+/* animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

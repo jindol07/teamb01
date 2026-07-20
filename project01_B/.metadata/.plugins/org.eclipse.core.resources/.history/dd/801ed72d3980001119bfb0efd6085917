@@ -1,0 +1,8 @@
+package kr.co.teamb.dfsms.cmn;
+
+import org.springframework.stereotype.Component;
+
+@Component
+public class PagingService {
+
+}

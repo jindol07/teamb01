@@ -1,0 +1,60 @@
+.boardTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.boardTable th,
+.boardTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+/* 구매여부 체크 */
+.boardTable th:nth-child(1),
+.boardTable td:nth-child(1) {
+    width: 11%;
+    text-align: center;
+}
+
+/* 상품 정보 */
+.boardTable th:nth-child(2),
+.boardTable td:nth-child(2) {
+    width: 80%;
+}
+
+/* 합계 금액 */
+.boardTable th:nth-child(3),
+.boardTable td:nth-child(3) {
+    width: 9%;
+    text-align: center;
+}
+
+.boardTable thead {
+    background-color: rgb(213, 228, 245);
+}
+
+/* 버튼 통일 스타일 */
+.button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: rgb(160, 6, 119);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+    border: none;
+    line-height: normal;
+    cursor: pointer;
+}
+
+.button,
+.button:link,
+.button:visited {
+    text-decoration: none;
+    color: white;
+}
+
+.button:hover {
+    background-color: deepskyblue;
+}

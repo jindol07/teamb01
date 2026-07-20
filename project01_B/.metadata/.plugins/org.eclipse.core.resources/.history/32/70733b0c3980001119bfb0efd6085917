@@ -1,0 +1,5 @@
+package kr.co.teamb.dfsms.vo;
+
+public class PageVO {
+
+}

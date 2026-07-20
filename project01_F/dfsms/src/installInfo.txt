@@ -1,0 +1,24 @@
+//라우팅을 위한 모듈 - 리액트에서 해당 경로를 라우팅을 해주기 위한 모듈 
+yarn add react-router-dom
+yarn add --dev @types/react-router-dom
+
+//react-pageflip - 다이어리에서 사용할 외부 모듈
+yarn add react-pageflip
+
+//react-slick - Home에 배너에 사용할 외부 모듈
+//https://react-slick.neostack.com/docs/example
+yarn add react-slick
+yarn add slick-carousel
+yarn add --dev @types/react-slick
+
+//ajax통신 by axios
+yarn add axios
+
+//리액트 아이콘 - 0625
+yarn add react-icons --save
+
+//리액트 부트스트랩 - 0707
+npm install bootstrap react-bootstrap
+
+//process.env를 사용하기 위해 설치한 것
+yarn add --dev @types/node@16
