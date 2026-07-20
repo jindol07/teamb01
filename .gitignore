@@ -29,6 +29,7 @@ project01_B/dfsms/out/
 
 # 로그 파일
 project01_B/*.log
+project01_B/dfsms/*.log
 
 # =========================================================================
 # 3. 프론트엔드 (project01_F) - React + TypeScript 설정
@@ -37,6 +38,9 @@ project01_B/*.log
 project01_F/node_modules/
 project01_F/build/
 project01_F/dist/
+project01_F/dfsms/node_modules/
+project01_F/dfsms/build/
+project01_F/dfsms/dist/
 
 # 로컬 환경변수 설정 파일 (보안 데이터)
 project01_F/.env
@@ -44,9 +48,18 @@ project01_F/.env.local
 project01_F/.env.development.local
 project01_F/.env.test.local
 project01_F/.env.production.local
+project01_F/dfsms/.env
+project01_F/dfsms/.env.local
+project01_F/dfsms/.env.development.local
+project01_F/dfsms/.env.test.local
+project01_F/dfsms/.env.production.local
 
 # npm 로그 파일
 project01_F/*.log
 project01_F/npm-debug.log*
 project01_F/yarn-debug.log*
 project01_F/yarn-error.log*
+project01_F/dfsms/*.log
+project01_F/dfsms/npm-debug.log*
+project01_F/dfsms/yarn-debug.log*
+project01_F/dfsms/yarn-error.log*
