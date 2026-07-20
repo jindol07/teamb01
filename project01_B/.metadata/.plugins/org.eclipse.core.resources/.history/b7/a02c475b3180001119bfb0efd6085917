@@ -1,5 +1,0 @@
-spring.application.name=dfsms
-spring.main.web-application-type=servlet
-server.port=80
-server.servlet.context-path=/dfsms
-
