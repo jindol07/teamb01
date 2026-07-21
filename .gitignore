@@ -26,6 +26,7 @@ project01_B/build/
 project01_B/dfsms/build/
 project01_B/out/
 project01_B/dfsms/out/
+project01_B/dfsms/src/main/java/kr/co/teamb/dfsms/DfsmsApplication.java
 
 # 로그 파일
 project01_B/*.log
