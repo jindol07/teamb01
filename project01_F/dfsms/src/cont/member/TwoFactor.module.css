@@ -1,0 +1,33 @@
+.captchaGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.captchaButton {
+    width: 80px;
+    height: 80px;
+    font-size: 40px;
+    background-color: white;
+    border: 2px solid #bdbdbd;
+    border-radius: 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.normal {
+    border-color: #bdbdbd;
+}
+
+.selected {
+    border-color: #2563eb;
+    background-color: #dbeafe;
+    box-shadow: 0 0 0 2px #2563eb;
+}
+
+.confirmButton {
+    margin-top: 20px;
+}
