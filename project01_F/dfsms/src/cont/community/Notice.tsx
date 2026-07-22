@@ -12,14 +12,14 @@ const Notice: React.FC = () => {
   const nav = useNavigate();
   //interface 역할??
   const col = [
-    { name: "No", key: "boardid", width: 20 },
+    { name: "No", key: "boardid", width: 10 },
     {
-      name: "제목", key: "title", width: 400,
-      render: function (e: any) { return <td><Link style={{ textDecoration: 'none', color: "#000000" }} to={`/community/notice/${e.boardid}`}>{e.title}</Link></td> }
+      name: "제목", key: "title", width: 45,
+      render: function (e: any) { return <Link style={{ textDecoration: 'none', color: "#000000" }} to={`/community/notice/${e.boardid}`}>{e.title}</Link> }
     },
-    { name: "작성자", key: "usrnm", width: 30 },
-    { name: "조회수", key: "hit", width: 1000 },
-    { name: "작성일", key: "rdate", width: 40 },
+    { name: "작성자", key: "usrnm", width: 15 },
+    { name: "조회수", key: "hit", width: 10 },
+    { name: "작성일", key: "rdate", width: 20 },
   ];
 
   //http://192.168.0.39/dfsms/community/list?cPage=1&searchType=1&searchValue=무조건
