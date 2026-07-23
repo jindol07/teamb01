@@ -84,7 +84,7 @@ const ItemList: React.FC = () => {
                 justifyContent: 'flex-end',
             }}>
                 <Link
-                    to={`/admin/itemdetail`}
+                    to={`/admin/itemForm`}
                     className={btnStyle.button}
                 >
                     상품 등록

@@ -13,7 +13,7 @@ import AdminLayout from "../cont/admin/AdminLayout";
 import StockList from "../cont/admin/StockList";
 import StockDetail from '../cont/admin/StockDetail'
 import ItemList from '../cont/admin/ItemList'
-import ItemDetail from '../cont/admin/ItemDetail'
+//import ItemDetail from '../cont/admin/ItemDetail'
 import Payment from '../cont/cart/Payment'
 import OrderStatus from '../cont/cart/OrderStatus'
 import Cart from '../cont/cart/Cart'
@@ -26,6 +26,7 @@ import Notice from '../cont/community/Notice'
 import NoticeForm from '../cont/community/NoticeForm'
 import NoticeDetail from '../cont/community/NoticeDetail'
 import SurveyList from '../cont/survey/SurveyList'
+import ItemForm from '../cont/admin/ItemForm'
 
 const AppRouter: React.FC = () => {
   const routeList = [
@@ -66,7 +67,7 @@ const AppRouter: React.FC = () => {
         <Route path="stocklist" element={<StockList />} />
         <Route path="stockdetail/:no" element={<StockDetail />} />
         <Route path="itemlist" element={<ItemList />} />
-        <Route path="itemdetail" element={<ItemDetail />} />
+        <Route path="itemForm" element={<ItemForm />} />
         <Route path="surveyList" element={<SurveyList />} />
         <Route path="surveyAdd" element={<SurveyAddForm />} />
         <Route path="surveyClient" element={<SurveyClient />} />
