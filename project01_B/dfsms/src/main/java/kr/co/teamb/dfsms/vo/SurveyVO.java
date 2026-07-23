@@ -7,8 +7,8 @@ import org.apache.ibatis.type.Alias;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @Alias("SurveyVO")
 public class SurveyVO {
 	private int surveyid;
@@ -16,8 +16,7 @@ public class SurveyVO {
 	private int code;
 	private String rdate;
 	private String sub;
-	
-	// 1 대 N 관계
 
+	// 1 대 N 관계
 	private List<SurveyContVO> conList;
 }

@@ -28,5 +28,4 @@ public class ProductsVO {
 //	private List<HistoryVO> historyList;
 //	private List<OrderVO> orderList;
 //	private List<CartVO> cartList;
-//	해당 vo가 없어 오류 생겨서 주석처리함, 주석 해제하고 사용하시면 됩니다
 }

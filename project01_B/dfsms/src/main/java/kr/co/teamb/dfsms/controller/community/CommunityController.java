@@ -1,4 +1,4 @@
-package kr.co.teamb.dfsms.controller;
+package kr.co.teamb.dfsms.controller.community;
 
 import org.springframework.web.bind.annotation.RestController;
 

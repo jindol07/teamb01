@@ -33,5 +33,4 @@ private List<CommunityVO> communityList;
 //private List<OderVO> oderList;
 //private List<HistoryVO> historyList;
 //private List<CartVO> cartList;
-
 }
