@@ -12,6 +12,7 @@ interface sighform {
     email: string;
     addr: string;
     gender: string;
+    birth: number;
 }
 
 const SignupTest: React.FC = () => {
@@ -20,8 +21,9 @@ const SignupTest: React.FC = () => {
     const [pwd, setPwd] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
-    const [gender, setGender] = useState<string>("남자"); // 성별 초기값은 "남자"로 설정
+    const [gender, setGender] = useState<string>("M"); // 성별 초기값은 "M"으로 설정
     const [addr, setAddr] = useState<string>("");
+    const [birth, setBirth] = useState<string>("");
     const [addrOpen, setAddrOpen] = useState<boolean>(false);
     // 날짜 선택 사항 제거 => 가입 시 해당 정보 기반으로 저장될 예정
 
@@ -79,7 +81,7 @@ const SignupTest: React.FC = () => {
         }
 
         // 필수 항목들이 모두 입력되었는지 조건문으로 검사
-        if (id && pwd && name && email && gender) {
+        if (id && pwd && name && email && gender && birth) {
 
             // 상태에 저장된 값들을 모아서 newmember 회원 정보 객체로 생성
             const newmember: sighform = {
@@ -88,11 +90,14 @@ const SignupTest: React.FC = () => {
                 usrnm: name,
                 email: email,
                 addr: addr,
-                gender: gender
+                gender: gender,
+                birth: Number(birth)
             }
 
             try {
-                axios.post(
+                console.log("회원가입 전송 데이터:", newmember);
+
+                await axios.post(
                     "http://192.168.0.250/dfsms/member/signup",
                     newmember
                 );
@@ -110,8 +115,9 @@ const SignupTest: React.FC = () => {
                 setPwd("");
                 setName("");
                 setEmail("");
-                setGender("남자");
-                setAddr("주소");
+                setGender("M");
+                setAddr("");
+                setBirth("");
                 setIdCheck(false);
                 setIdCheckMsg("");
             } catch (error) {
@@ -127,6 +133,7 @@ const SignupTest: React.FC = () => {
             }
         }
     }
+
     // 화면에 보여질 HTML 구조
     return (
         <div className={style.signupContainer}>
@@ -135,7 +142,7 @@ const SignupTest: React.FC = () => {
             {/* 폼이 제출되면 addmember 함수가 실행되도록 연결 */}
             <form className={style.form} onSubmit={addmember}>
 
-                <label>아이디 </label>
+                <label>아이디</label>
 
                 <div className={style.inputRow}>
                     {/* onChange를 사용하여 value(id)값에 사용자가 입력한 데이터를 useState setId함수를 사용하여 저장 */}
@@ -148,6 +155,7 @@ const SignupTest: React.FC = () => {
                         onChange={idChange}
                         value={id}
                     />
+
                     <button type="button" onClick={idDuplicateCheck}>
                         중복 확인
                     </button>
@@ -155,6 +163,7 @@ const SignupTest: React.FC = () => {
 
                 {/* 아이디 중복 확인 결과 메시지 출력 */}
                 {idCheckMsg && <p>{idCheckMsg}</p>}
+
 
                 <label>비밀번호</label>
 
@@ -169,6 +178,7 @@ const SignupTest: React.FC = () => {
                     onChange={e => setPwd(e.target.value)}
                 />
 
+
                 <label>이름</label>
 
                 <input
@@ -180,6 +190,20 @@ const SignupTest: React.FC = () => {
                     value={name}
                     onChange={e => setName(e.target.value)}
                 />
+
+
+                <label>생년월일</label>
+
+                <input
+                    type="text"
+                    name="birth"
+                    id="birth"
+                    placeholder='YYYYMMDD'
+                    className={style.input}
+                    value={birth}
+                    onChange={e => setBirth(e.target.value)}
+                />
+
 
                 <label>이메일</label>
 
@@ -193,33 +217,38 @@ const SignupTest: React.FC = () => {
                     onChange={e => setEmail(e.target.value)}
                 />
 
+
                 <label>성별</label>
 
                 <div className={style.gender}>
+
                     <label>
                         <input
                             type="radio"
                             name="gender"
                             id="gender1"
-                            value="남자"
-                            checked={gender === "남자"}
+                            value="M"
+                            checked={gender === "M"}
                             onChange={e => setGender(e.target.value)}
                         />
                         남자
                     </label>
+
 
                     <label>
                         <input
                             type="radio"
                             name="gender"
                             id="gender2"
-                            value="여자"
-                            checked={gender === "여자"}
+                            value="F"
+                            checked={gender === "F"}
                             onChange={e => setGender(e.target.value)}
                         />
                         여자
                     </label>
+
                 </div>
+
 
                 <label>주소</label>
 
@@ -235,6 +264,7 @@ const SignupTest: React.FC = () => {
                         readOnly
                         onClick={() => setAddrOpen(!addrOpen)}
                     />
+
 
                     {addrOpen && (
                         <div className={style.addrList}>
@@ -269,4 +299,5 @@ const SignupTest: React.FC = () => {
         </div>
     )
 }
+
 export default SignupTest

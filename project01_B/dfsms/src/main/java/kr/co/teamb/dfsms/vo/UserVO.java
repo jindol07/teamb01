@@ -19,7 +19,7 @@ private String usrnm;
 private char role;
 private char delyn;
 private int birth;
-private String gender;
+private char gender;
 private String addr;
 private String rdate;
 private String email;

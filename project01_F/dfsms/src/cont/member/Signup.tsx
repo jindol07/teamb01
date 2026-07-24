@@ -110,11 +110,11 @@ const Signup: React.FC = () => {
 
                 <label>성별</label>
                 <div className={style.gender}>
-                    <label><input type="radio" name="gender" id="gender1" value="남자" checked={gender === "남자"}
-                        onChange={e => setGender(e.target.value)} />남자</label>
+                    <label><input type="radio" name="gender" id="gender1" value="M" checked={gender === "M"}
+                                  onChange={e => setGender(e.target.value)}/>남자</label>
 
-                    <label><input type="radio" name="gender" id="gender2" value="여자" checked={gender === "여자"}
-                        onChange={e => setGender(e.target.value)}
+                    <label><input type="radio" name="gender" id="gender2" value="F" checked={gender === "F"}
+                                  onChange={e => setGender(e.target.value)}
                     />여자</label>
                 </div>
 

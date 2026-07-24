@@ -72,11 +72,11 @@ const TwoFactorTest: React.FC = () => {
 
         if (targetCount === 0) {
             setCaptchaQuestion(
-                `${targetName}가 없습니다. 선택하지 말고 확인 버튼을 눌러주세요.`
+                `${targetName} 이미지가 없습니다.확인 버튼을 눌러주세요.`
             );
         } else {
             setCaptchaQuestion(
-                `다음 이미지 중 ${targetName}가 있는 이미지를 모두 선택하세요.`
+                `${targetName}가 있는 이미지를 모두 선택하세요.`
             );
         }
 
