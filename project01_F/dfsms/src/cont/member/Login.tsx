@@ -1,62 +1,103 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import style from "./login.module.css";
-import btnStyle from '../components/btn.module.css'
+import btnStyle from "../components/btn.module.css";
 
 const Login: React.FC = () => {
+
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
 
-    const [msg, setMsg] = useState<any>('');
+    // Toast Message
+    const [showToast, setShowToast] = useState(false);
 
-    //가입된 회원정보를 localStorage에서 가져옴
-    useEffect(() => {
-        setMsg(localStorage.getItem("memberList"));
-    }, [])
+    // 로그인 이벤트 발생 시 유효성 로직
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post(
+                "http://192.168.0.250/dfsms/member/login",
+                {
+                    usrid: userId,
+                    pwd: password
+                }
+            );
 
-    //로그인 이벤트 발생히 유효성 로직
-    const handleLogin = () => {
-        const jsObj = JSON.parse(msg);
+            // 로그인 성공한 회원 정보
+            const loginUser = response.data;
 
-        let userNm = null;
+            // 2차 인증 페이지 이동을 위한 정보 저장
+            sessionStorage.setItem(
+                "loginInfo",
+                JSON.stringify({
+                    loginNm: loginUser.usrnm,
+                    role: loginUser.role
+                })
+            );
 
-        for (let i = 0; i < jsObj.length; i++) {
-            if (jsObj[i].id === userId && jsObj[i].pwd === password) {
-                userNm = jsObj[i].name;
-                break;
-            }
-        }
+            // 2차 인증 표시
+            setShowToast(true);
 
-        if (userNm) {
-            alert("로그인이 완료되었습니다.");
-            //0706 s
-            const userInfo = {
-                loginNm: userNm,
-                role: userNm === "admin" ? "ADMIN" : "USER"
-            };
-            //0706 e
-            sessionStorage.setItem("loginInfo", JSON.stringify(userInfo));
-            navigate("/");  // 로그인 성공 시 Home 이동
-        } else {
-            alert("회원 정보가 올바르지 않습니다. id 및 pw를 다시 확인해 주세요!");
+            // 2초 뒤 2차 인증 창으로 이동
+            setTimeout(() => {
+                navigate("/twofactor");
+            }, 2000);
+        } catch (error) {
+
+            // 로그인 정보 아이디/비밀번호 중 하나 이상이 틀린 경우
+            alert("회원 정보가 올바르지 않습니다.\n아이디 및 비밀번호를 다시 확인해 주세요.");
         }
     };
+
+    // 로그인 창 아래 "회원가입" 글자 클릭 시 이벤트 발생
+    const goJoin = () => {navigate("/Signup");};
 
     return (
         <div className={style.login}>
             <h2 className={style.h2}>로그인</h2>
+
             <div>
                 <label>아이디</label>
-                <input type="text" className={style.input} placeholder="아이디를 입력해주세요." value={userId} onChange={(e) => setUserId(e.target.value)} />
+                <input type="text" className={style.input}
+                    placeholder="아이디를 입력해주세요." value={userId}
+                    onChange={(e) => setUserId(e.target.value)}/>
             </div>
+
             <div>
                 <label>비밀번호</label>
-                <input type="password" className={style.input} placeholder="비밀번호를 입력해주세요." value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input type="password" className={style.input}
+                    placeholder="비밀번호를 입력해주세요." value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
             </div>
-            <button type="submit" className={btnStyle.submitBtn} onClick={handleLogin}>로그인</button>
+
+            <button style={{marginBottom: "15px"}} type="button"
+                className={btnStyle.submitBtn} onClick={handleLogin}>
+                로그인
+            </button>
+
+            <p style={{fontSize: "14px", textAlign: "center"}}>
+                DFSMS가 처음이신가요?{" "}
+                <span
+                    onClick={goJoin}
+                    className={style.joinText}
+                    style={{cursor: "pointer", color: "blue"}}>
+                     회원가입
+                </span>
+            </p>
+            {
+                showToast && (
+                    <div className={style.toast}>
+                        I'm not a robot. For real.
+                        <br />
+                        I mean it. I'm not a robot.
+                    </div>
+                )
+            }
         </div>
     );
 };
+
 export default Login;

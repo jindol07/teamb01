@@ -11,56 +11,63 @@ import kr.co.teamb.dfsms.vo.UserVO;
 @Service
 public class SignupService {
 
-	@Autowired
-	private MailService mailService;
+    @Autowired
+    private MailService mailService;
 
-	// 인증번호 임시 저장
-	private String verifyCode;
+    // 인증번호 임시 저장
+    private String verifyCode;
 
-	// 회원가입 처리
-	@Autowired
-	private SignupMapper signupMapper;
-	
-	public void signup(UserVO vo) {
-		signupMapper.insertUser(vo);
-	}
+    // 회원가입 처리
+    @Autowired
+    private SignupMapper signupMapper;
 
-	// 이메일 인증번호 전송
-	public void sendEmailCode(String email) {
+    public void signup(UserVO vo) {
+        signupMapper.insertUser(vo);
+    }
 
-		// 6자리 인증번호 생성
-		Random random = new Random();
-		verifyCode = String.valueOf(100000 + random.nextInt(900000));
+    // 아이디 중복 확인
+    public boolean checkId(String usrid) {
+        int count = signupMapper.checkId(usrid);
 
-		System.out.println("생성된 인증번호 : " + verifyCode);
-		System.out.println("전송 이메일 : " + email);
+        System.out.println("중복 확인 아이디 : " + usrid);
+        System.out.println("DB 조회 결과 : " + count);
 
-		// 메일 전송
-		mailService.sendMail(email, "회원가입 인증번호", "인증번호 : " + verifyCode);
-	}
+        return count > 0;
+    }
 
-	// 이메일 인증번호 확인
-	public boolean verifyCode(String email, String code) {
+    // 이메일 인증번호 전송
+    public void sendEmailCode(String email) {
+        // 6자리 인증번호 생성
+        Random random = new Random();
+        verifyCode = String.valueOf(100000 + random.nextInt(900000));
 
-		System.out.println("저장된 인증번호 : " + verifyCode);
-		System.out.println("입력한 인증번호 : " + code);
-		System.out.println("인증 이메일 : " + email);
+        System.out.println("생성된 인증번호 : " + verifyCode);
+        System.out.println("전송 이메일 : " + email);
 
-		if (verifyCode == null) {
-			System.out.println("저장된 인증번호 없음");
-			return false;
-		}
+        // 메일 전송
+        mailService.sendMail(email, "회원가입 인증번호", "인증번호 : " + verifyCode);
+    }
 
-		if (verifyCode.equals(code)) {
-			System.out.println("인증 성공");
+    // 이메일 인증번호 확인
+    public boolean verifyCode(String email, String code) {
+        System.out.println("저장된 인증번호 : " + verifyCode);
+        System.out.println("입력한 인증번호 : " + code);
+        System.out.println("인증 이메일 : " + email);
 
-			// 한번 사용한 인증번호 제거
-			verifyCode = null;
+        if (verifyCode == null) {
+            System.out.println("저장된 인증번호 없음");
+            return false;
+        }
 
-			return true;
-		}
+        if (verifyCode.equals(code)) {
+            System.out.println("인증 성공");
 
-		System.out.println("인증번호 불일치");
-		return false;
-	}
+            // 한번 사용한 인증번호 제거
+            verifyCode = null;
+            return true;
+        }
+
+        System.out.println("인증번호 불일치");
+        return false;
+    }
 }

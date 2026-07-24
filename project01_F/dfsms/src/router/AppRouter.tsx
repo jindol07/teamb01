@@ -2,14 +2,11 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Home from '../cont/Home'
 import GalleryList from '../cont/gallery/GalleryList'
-// import Signup from '../cont/member/Signup'
-import SignupTest from '../cont/member/SignupTest' 
-// import SignupRslt from '../cont/member/SignupRslt'
-import SignupRsltTest from '../cont/member/SignupRsltTest'
-import EmailVerifyTest from '../cont/member/EmailVerifyTest'
-// import Login from '../cont/member/Login'
-import LoginTest from '../cont/member/LoginTest'
-import TwoFactorTT from '../cont/member/TwoFactorTT'
+import Signup from '../cont/member/Signup'
+import SignupRslt from '../cont/member/SignupRslt'
+import EmailVerify from '../cont/member/EmailVerify'
+import Login from '../cont/member/Login'
+import TwoFactor from '../cont/member/TwoFactor'
 import Qna from '../cont/community/Qna'
 import Layout from '../layout/Layout'
 import ReviewList from '../cont/community/ReviewList'
@@ -45,62 +42,59 @@ import NoticeDetail from '../cont/community/NoticeDetail'
 const AppRouter: React.FC = () => {
   const routeList = [
     { path: '/', element: <Home /> }
-    // , { path: '/gallery', element: <GalleryList /> }
+    , { path: '/gallery', element: <GalleryList /> }
     // 회원가입
-    // , { path: '/signup', element: <Signup /> }
-    , { path: '/signupTest', element: <SignupTest /> }
+    , { path: '/signup', element: <Signup /> }
     // 회원가입 결과
-    // , { path: '/signupRslt', element: <SignupRslt /> }
-    , { path: '/signupRsltTest', element: <SignupRsltTest /> }
+    , { path: '/signupRslt', element: <SignupRslt /> }
     // 이메일 인증
-    , { path: '/emailVerifyTest', element: <EmailVerifyTest /> }
+    , { path: '/emailVerify', element: <EmailVerify /> }
     // 로그인
     // , { path: '/login', element: <Login /> }
-    , { path: '/loginTest', element: <LoginTest /> }
+    , { path: '/login', element: <Login /> }
     // 2차 인증
-    , { path: '/twofactorTT', element: <TwoFactorTT /> }
+    , { path: '/twofactor', element: <TwoFactor /> }
     //커뮤니티
-    // , { path: '/community/review', element: <ReviewList /> }
-    // , { path: '/community/qna', element: <Qna /> }
+    , { path: '/community/review', element: <ReviewList /> }
+    , { path: '/community/qna', element: <Qna /> }
     //장바구니+(마이페이지)
-    // ,{path:'/cart', element:<Cart/>}
-    // ,{path:'/Payment', element:<Payment/>}
-    // ,{path:'/OrderStatus', element:<OrderStatus/>}
+    ,{path:'/cart', element:<Cart/>}
+    ,{path:'/Payment', element:<Payment/>}
+    ,{path:'/OrderStatus', element:<OrderStatus/>}
     //쇼핑(물건)
-    // ,{path:'/shoppingList', element:<ShoppingList/>}
-    // ,{path:'/shopping/:id', element:<ShoppingDetail/>}
+    ,{path:'/shoppingList', element:<ShoppingList/>}
+    ,{path:'/shopping/:id', element:<ShoppingDetail/>}
     //설문조사
-    // , { path: '/community/surveyClient', element: <SurveyClient/> }
-    // , { path: '/community/surveyclientResult/:num', element: <SurveyClientResult/> }
+    , { path: '/community/surveyClient', element: <SurveyClient/> }
+    , { path: '/community/surveyclientResult/:num', element: <SurveyClientResult/> }
     //게시판
-    // ,{path:'/community/notice', element:<Notice/>}
-    // ,{path:'/community/notice/write', element:<NoticeForm/>}
-    // ,{path:'/community/notice/:num', element:<NoticeDetail/>}
+    ,{path:'/community/notice', element:<Notice/>}
+    ,{path:'/community/notice/write', element:<NoticeForm/>}
+    ,{path:'/community/notice/:num', element:<NoticeDetail/>}
   ]
 
   return (
-    <Routes>
-      {
-        routeList.map((route, idx) => (
-          <Route
-            key={idx}
-            {...route}
-          />
-        ))
-      }
+      <Routes>
+        {
+          routeList.map((route, idx) => (
+              <Route
+                  key={idx}
+                  {...route}
+              />
+          ))
+        }
 
-      {/* 관리자 페이지 */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="stocklist" element={<StockList />} />
-        <Route path="stockdetail/:no" element={<StockDetail />} />
-        <Route path="itemlist" element={<ItemList />} />
-        {/* <Route path="itemdetail" element={<ItemDetail />} /> */}
-        <Route path="surveyList" element={<SurveyList />} />
-        <Route path="surveyAdd" element={<SurveyAddForm />} />
-        <Route path="surveyClient" element={<SurveyClient />} />
-      </Route>
-    </Routes>
+        {/* 관리자 페이지 */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route path="stocklist" element={<StockList />} />
+          <Route path="stockdetail/:no" element={<StockDetail />} />
+          <Route path="itemlist" element={<ItemList />} />
+          {/* <Route path="itemdetail" element={<ItemDetail />} /> */}
+          <Route path="surveyList" element={<SurveyList />} />
+          <Route path="surveyAdd" element={<SurveyAddForm />} />
+          <Route path="surveyClient" element={<SurveyClient />} />
+        </Route>
+      </Routes>
   )
 }
-
 export default AppRouter

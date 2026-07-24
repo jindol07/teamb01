@@ -4,7 +4,7 @@ import btnStyle from "../components/btn.module.css";
 import style from "./login.module.css";
 import twoStyle from "./TwoFactor.module.css"
 
-const TwoFactorTest: React.FC = () => {
+const TwoFactor: React.FC = () => {
 
     const navigate = useNavigate();
 
@@ -181,4 +181,4 @@ const TwoFactorTest: React.FC = () => {
 
 };
 
-export default TwoFactorTest;
+export default TwoFactor;
