@@ -18,7 +18,7 @@ public class HistoryVO {
 	private int updprice;
 	private String bfrtitle;
 	private String updtitle;
-	private String bfcont;
+	private String bfrcont;
 	private String updtcont;
 	private int bfrqty;
 	private int updtqty;

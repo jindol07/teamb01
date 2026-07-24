@@ -9,7 +9,7 @@
 			,CATEGORYID
 			,PNM
 			,PRICE
-			,IMGNM
+			,imgnm
 			,row_num
 		FROM 
 		(

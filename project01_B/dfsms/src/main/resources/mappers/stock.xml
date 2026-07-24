@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.StockDao">
+
+	<update id="stockUpdate" parameterType="oivo">
+		update products set qty = qty - #{qty} where productid = #{productid}
+	</update>
+
+	<insert id="addHistory">
+		INSERT INTO P_HISTORY (
+		  	historyid
+		  	,productid
+		  	,usrno
+		  	,bfrpnm
+		  	,updnm
+		  	,bfrprice
+		  	,updprice
+		  	,bfrtitle
+		  	,updtitle
+		  	,bfrcont
+		  	,updtcont
+		  	,bfrqty
+		  	,updtqty
+		  	,rdate
+		) VALUES (
+			p_history_seq.NEXTVAL
+			,#{oivo.productid}
+			,#{ovo.usrno}
+			,#{oivo.pnm}
+			,#{oivo.pnm}
+			,#{oivo.price}
+			,#{oivo.price}
+			,#{oivo.title}
+			,#{oivo.title}
+			,#{oivo.cont}
+			,#{oivo.cont}
+			,#{oivo.pqty}
+			,#{oivo.pqty} - #{oivo.qty}
+			,sysdate
+		)
+	</insert>
+
+</mapper>
