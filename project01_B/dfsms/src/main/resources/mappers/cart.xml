@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.CartDao">
+
+	<insert id="addCart" parameterType="map">
+		INSERT INTO P_CART VALUES (#{usrno}, #{productid}, #{qty}, sysdate)
+	</insert>
+
+	<select id="cartPValid" parameterType="map" resultType="int">
+		SELECT COUNT(productid)
+		FROM P_CART 
+		WHERE USRNO = #{usrno} 
+		 and productid = #{productid}
+	</select>
+
+	<select id="cartSValid" parameterType="map" resultType="map">
+		SELECT
+		  qty - #{qty} as qty
+		FROM PRODUCTS 
+		WHERE productid = #{productid}
+	</select>
+
+	<select id="cartList" parameterType="map" resultType="map">
+		SELECT
+		c.productid
+		,p.categoryid
+		,p.pnm
+		,p.title
+		,DBMS_LOB.SUBSTR(p.cont, 200, 1) as cont
+		,p.qty as pqty
+		,c.qty
+		,p.price
+		,p.price * c.qty subtot
+		,u.usrnm
+		FROM P_CART c
+		JOIN products p
+		ON c.productid = p.productid
+		JOIN USERS u
+		ON u.usrno = c.usrno
+		WHERE u.usrno = #{usrno}
+	</select>
+
+	<delete id="delCart" parameterType="map">
+		delete from P_CART where usrno = #{usrno}
+	</delete>
+
+</mapper>

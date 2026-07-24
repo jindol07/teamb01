@@ -115,7 +115,6 @@ public class ProductsController {
 
 		// 이력 등록(작업중)
 
-
 		// service에 등록
 
 		try {

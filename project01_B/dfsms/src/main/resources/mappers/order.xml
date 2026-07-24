@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.OrderDao">
+
+	<insert id="addOrder" parameterType="ovo">
+		INSERT INTO P_ORDER VALUES(p_order_seq.NEXTVAL, #{usrno}, 'N', SYSDATE, #{totprice})
+	</insert>
+
+	<insert id="addOrderItems" parameterType="java.util.List">
+		<!-- 현재 시퀀스 값 가져오기 -->
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			SELECT p_order_seq.currVal FROM dual
+		</selectKey>
+		<foreach collection="list" item="oitem" separator=" " open="insert all" close="select * from dual">
+			INTO P_ORDER_ITEMS (orderid, productid, qty, price)
+			VALUES(#{id}, #{oitem.productid}, #{oitem.qty}, #{oitem.price})
+		</foreach>
+	</insert>
+	
+	<delete id="delCartAftrOder" parameterType="ovo">
+		delete from P_CART where usrno =  #{usrno}
+	</delete>
+
+</mapper>
