@@ -41,7 +41,8 @@ public class LoginController {
                         .body("아이디 또는 비밀번호가 올바르지 않습니다.");
             }
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500)
                     .body("로그인 실패");
