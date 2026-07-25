@@ -129,3 +129,8 @@
   margin-top: 100px;
   color: #999;
 }
+.productDetail {
+    margin-top:30px;
+    padding:20px;
+    border-top:1px solid #ddd;
+}

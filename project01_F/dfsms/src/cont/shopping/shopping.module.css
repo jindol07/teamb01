@@ -1,84 +1,138 @@
-.img {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
-  border: 2px solid black;
+/* 컨테이너 전체 기본 레이아웃 및 폰트 설정 */
+:root {
+  --primary-color: #4caf50;
+  --text-color: #333333;
+  --sub-text-color: #666666;
+  --bg-hover: #f9f9f9;
+  --border-color: #e0e0e0;
 }
-.img:hover {
-  transform: scale(1.05);
-}
-.input {
-  display: block;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto 40px auto;
-  
-  /* 1. 돋보기 아이콘을 검색창 왼쪽 내부에 배경으로 삽입 */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: 20px center; /* 왼쪽에서 20px 떨어진 정중앙에 배치 */
-  background-size: 20px;            /* 아이콘 크기 */
-  
-  /* 2. 패딩 설정: 왼쪽(padding-left)은 돋보기가 있으므로 글자가 겹치지 않게 넉넉히(50px) 줍니다 */
-  padding: 14px 20px 14px 50px;
-  font-size: 16px;
-  color: #333;
-  background-color: #fff;
-  border: 2px solid #e2e8f0;
-  border-radius: 30px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 
-  /* 3. 기본 입력 글자는 중앙으로 정렬 (돋보기 옆에서 시작) */
-  text-align: center;
-}
-/* 4. [핵심] 안내 문구(Placeholder)만 중앙 정렬하기 */
-.input::placeholder {
-  text-align: center;
-  color: #94a3b8;
-  font-weight: 500;
-  text-align: center; /* 안내 문구를 정중앙으로 보냅니다 */
-  /* 돋보기가 왼쪽에 있어서 발생하는 미세한 치우침을 보정하기 위해 약간의 마진 조절 */
-  padding-right: 30px; 
-}
-/* Hover 및 Focus 스타일 유지 */
-.input:hover {
-  border-color: #cbd5e1;
-}
-.input:focus {
-  outline: none;
-  border-color: #28a745;
-  box-shadow: 0 10px 15px -3px rgba(40, 167, 69, 0.1);
-  transform: translateY(-2px);
-}
-.img-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
+/* 메인 타이틀 (h2) */
 .h2 {
   text-align: center;
-  font-size: 2.5rem;
-  color: #2c3e50;
-  font-weight: 800;
-  /* 1. [핵심] 위쪽 공백을 완전히 없애거나 아주 최소한만 남깁니다 */
-  margin-top: 0px; 
-  /* 2. 대신 제목과 검색창 사이의 간격은 아래쪽 마진(margin-bottom)으로 유지합니다 */
-  margin-bottom: 25px;   
-  /* 3. 만약 0px로 해도 더 위로 올리고 싶다면 음수 마진을 사용할 수도 있습니다 (필요시 조절) */
-  /* margin-top: -15px; */
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-top: 40px;
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
 }
-/* 상품 하나하나를 감싸는 박스 스타일 */
-.productItem {
+
+/* 💡 검색바 전체 컨테이너 (중앙 정렬 & 너비 확장) */
+.searchContainer {
   display: flex;
-  flex-direction: column; /* 요소를 세로로 배치 */
-  align-items: center;    /* 가로 가운데 정렬 */
-  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px; /* 요소 사이 간격 */
+  max-width: 600px; /* 더 넓게 하고 싶다면 700px 또는 800px로 조절 */
+  margin: 0 auto 30px;
+  padding: 0 20px;
 }
+
+/* 1. select: 텍스트에 맞게 줄임 */
+.searchContainer select {
+  flex: none; /* 너비 자동 확장 방지 */
+  width: auto;
+  height: 46px;
+  padding: 0 8px 0 12px;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  outline: none;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* 2. input: 남은 가로 공간을 최대로 채움 */
+.searchContainer input[type="text"] {
+  flex: 1; /* 가로 공간 늘리기 */
+  height: 46px;
+  padding: 0 16px;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Focus 효과 */
+.searchContainer select:focus,
+.searchContainer input[type="text"]:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+}
+
+/* 상품 리스트 그리드 레이아웃 (img-container) */
+.img-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 28px;
+  max-width: 1200px;
+  margin: 20px auto 60px;
+  padding: 0 20px;
+}
+
+/* 개별 상품 카드 아이템 */
+.img-container > div {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.img-container > div:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 상품 이미지 (img) */
+.img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover; /* 이미지 비율 유지하며 채우기 */
+  border-bottom: 1px solid #f5f5f5;
+  transition: opacity 0.2s ease;
+}
+
+.img:hover {
+  opacity: 0.95;
+}
+
+/* 상품 텍스트 정보 영역 (productPrice) */
 .productPrice {
-  margin-top: 8px;
+  padding: 16px;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-color);
   text-align: center;
+}
+
+.productPrice span {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 1.15rem;
+  color: #111111;
+}
+
+/* 반응형 모바일 대응 */
+@media (max-width: 600px) {
+  .searchContainer {
+    padding: 0 16px;
+  }
+
+  .img-container {
+    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 2열로 정렬 */
+    gap: 16px;
+    padding: 0 12px;
+  }
+
+  .img {
+    height: 150px;
+  }
 }
