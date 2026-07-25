@@ -63,26 +63,19 @@ const Signup: React.FC = () => {
                 else if (sido === "경기") {
                     sido = "경기도";
                     sigungu = sigungu.split(" ")[0];
-                }
-                else if (sido === "부산") {
+                } else if (sido === "부산") {
                     sido = "부산시";
-                }
-                else if (sido === "대구") {
+                } else if (sido === "대구") {
                     sido = "대구시";
-                }
-                else if (sido === "인천") {
+                } else if (sido === "인천") {
                     sido = "인천시";
-                }
-                else if (sido === "광주") {
+                } else if (sido === "광주") {
                     sido = "광주시";
-                }
-                else if (sido === "대전") {
+                } else if (sido === "대전") {
                     sido = "대전시";
-                }
-                else if (sido === "울산") {
+                } else if (sido === "울산") {
                     sido = "울산시";
-                }
-                else if (sido === "세종") {
+                } else if (sido === "세종") {
                     sido = "세종시";
                 }
 
@@ -116,7 +109,6 @@ const Signup: React.FC = () => {
     // 아이디 중복 확인 버튼을 눌렀을 때 작동하는 함수
     const idDuplicateCheck = async () => {
 
-        // 아이디가 입력되지 않았을 경우
         if (!id) {
             setIdCheckMsg("아이디를 입력해주세요.");
             setIdCheck(false);
@@ -134,7 +126,10 @@ const Signup: React.FC = () => {
                 }
             );
 
-            if (response.data === true) {
+            console.log("아이디 중복 확인 결과:", response.data);
+
+            // DB COUNT(*) 결과는 숫자(0 또는 1 이상)
+            if (Number(response.data) > 0) {
                 setIdCheckMsg("이미 사용 중인 아이디입니다.");
                 setIdCheck(false);
             } else {
@@ -155,6 +150,7 @@ const Signup: React.FC = () => {
             setIdCheck(false);
         }
     }
+
 
     // 가입하기 버튼을 눌렀을 때 작동하는 함수
     const addmember = async (e: React.FormEvent<HTMLFormElement>) => {

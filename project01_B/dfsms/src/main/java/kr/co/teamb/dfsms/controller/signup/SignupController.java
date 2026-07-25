@@ -18,10 +18,11 @@ public class SignupController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody UserVO vo) {
         try {
+            System.out.println("회원가입 요청 아이디 : " + vo.getUsrid());
             System.out.println("회원가입 요청 이메일 : " + vo.getEmail());
 
-            // 회원 저장
             signupService.signup(vo);
+
 
             // 인증번호 생성 및 이메일 전송
             signupService.sendEmailCode(vo.getEmail());
