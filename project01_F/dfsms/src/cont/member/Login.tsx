@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post(
-                "http://192.168.0.250/dfsms/member/login",
+                "http://localhost/dfsms/member/login",
                 {
                     usrid: userId,
                     pwd: password

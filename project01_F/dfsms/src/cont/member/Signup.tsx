@@ -126,7 +126,7 @@ const Signup: React.FC = () => {
         try {
 
             const response = await axios.get(
-                "http://192.168.0.250/dfsms/member/checkId",
+                "http://localhost/dfsms/member/checkId",
                 {
                     params: {
                         usrid: id
@@ -187,7 +187,7 @@ const Signup: React.FC = () => {
                 console.log("회원가입 전송 데이터:", newmember);
 
                 await axios.post(
-                    "http://192.168.0.250/dfsms/member/signup",
+                    "http://localhost/dfsms/member/signup",
                     newmember
                 );
 
