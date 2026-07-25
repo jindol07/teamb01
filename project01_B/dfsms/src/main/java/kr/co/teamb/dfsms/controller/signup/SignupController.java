@@ -23,7 +23,6 @@ public class SignupController {
 
             signupService.signup(vo);
 
-
             // 인증번호 생성 및 이메일 전송
             signupService.sendEmailCode(vo.getEmail());
             return ResponseEntity.ok("회원가입 완료");

@@ -7,4 +7,5 @@ import kr.co.teamb.dfsms.vo.UserVO;
 public interface SignupMapper {
     int insertUser(UserVO vo);
     int checkId(String usrid);
+    int checkEmail(String email);
 }
