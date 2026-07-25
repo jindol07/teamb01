@@ -1,11 +1,33 @@
 import React, { useState } from 'react'
 import style from './cart.module.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from "axios";
 import btnStyle from '../components/btn.module.css'
-
 import { Button, InputGroup, FormControl } from 'react-bootstrap';
 
+interface cartSValid {
+    usrno: number;
+    productid: number;
+    qty: string;
+}
+
+//const await res axio {
+//}
+
+/*
+if (res.data.code == "LACK_OF_QTY")
+alert(res.data.message)
+*/
+
+
 const Cart: React.FC = () => {
+
+    // 데이터 받아올 경로 : http://192.168.0.23/dfsms/api/cart/list
+    const backendUrl = process.env.REACT_APP_BACK_END_URL;
+    // `${backendUrl}/products/list`
+    // ㄴ 서버에서 받아온 JSON 데이터를 JSOjbect 배열로 저장할 useState
+    const [productsList, setProductsList] = useState<cartSValid[]>([]);
+
     const saved = sessionStorage.getItem("loginInfo");
     const loginInfo = saved ? JSON.parse(saved) : null;
     const loginNm = loginInfo?.loginNm;
@@ -46,12 +68,12 @@ const Cart: React.FC = () => {
                     <tr>
                         <td>
                             <label>
-                                <input type="checkbox" />
+                                <input type="checkbox" checked />
                             </label>
                         </td>
                         <td>
                             <div></div>
-                            <img src="./images/watermellon.jpg" style={{ width: '60px', height: '60px', marginLeft: '401px', marginRight: '100px' }} /><button style={{ marginLeft: '279px' }} className="btn btn-danger btn-sm">
+                            <img src="./images/watermellon.jpg" style={{ marginLeft: '26px', width: '60px', height: '60px' }} /><button style={{ float: 'right' }} className="btn btn-danger btn-sm">
                                 X
                             </button>
                             <p>꿀수박 1500 브릭스</p>
@@ -90,12 +112,12 @@ const Cart: React.FC = () => {
                     <tr>
                         <td>
                             <label>
-                                <input type="checkbox" />
+                                <input type="checkbox" checked />
                             </label>
                         </td>
                         <td>
 
-                            <img src="./images/fish.jpg" style={{ width: '60px', height: '60px', marginLeft: '401px', marginRight: '100px' }} /><button style={{ marginLeft: '279px' }} className="btn btn-danger btn-sm">
+                            <img src="./images/fish.jpg" style={{ marginLeft: '26px', width: '60px', height: '60px' }} /><button style={{ float: 'right' }} className="btn btn-danger btn-sm">
                                 X
                             </button>
                             <p>생물고등어 3마리들입</p>

@@ -26,7 +26,7 @@ const EmailVerify: React.FC = () => {
             console.log("code:", code);
 
             await axios.post(
-                "http://192.168.0.250/dfsms/member/emailVerify",
+                "http://localhost/dfsms/member/emailVerify",
                 {
                     email: email,
                     code: code
