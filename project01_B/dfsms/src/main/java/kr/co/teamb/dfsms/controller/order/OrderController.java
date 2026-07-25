@@ -15,6 +15,7 @@ import kr.co.teamb.dfsms.service.CartService;
 import kr.co.teamb.dfsms.service.OrderService;
 import kr.co.teamb.dfsms.vo.OrderItemsVO;
 import kr.co.teamb.dfsms.vo.OrderVO;
+import kr.co.teamb.dfsms.vo.ValidVO;
 
 import org.springframework.http.ResponseEntity;
 
@@ -29,19 +30,27 @@ public class OrderController {
 	//@GetMapping("/add")
 	//public ResponseEntity<Boolean> addOrder() {
 	@PostMapping("/add")
-	public ResponseEntity<Boolean> addOrder(OrderVO ovo) {
+	public ResponseEntity<ValidVO> addOrder(OrderVO ovo) {
 		Map<String, String> map = new HashMap<>();
 		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 예정
 		map.put("usrno", String.valueOf(ovo.getUsrno()));
 		
 		List<OrderItemsVO> oivoList = new ArrayList<>();
 		int totPrice = 0;
+		int leftQty = 0;
 		
 		for(Map<String, Object> item : cartService.cartList(map)) {
 			OrderItemsVO oivo = new OrderItemsVO();
+			Map<String, String> tMap = new HashMap<>();
 			oivo.setPrice(((Number) item.get("PRICE")).intValue());
 			oivo.setProductid(((Number) item.get("PRODUCTID")).intValue());
 			oivo.setQty(((Number) item.get("QTY")).intValue());
+			//주문시 재고량 검증 추가 s 0725
+			tMap.put("productid", String.valueOf(oivo.getProductid()));
+			tMap.put("qty", String.valueOf(oivo.getQty()));
+			leftQty = Integer.parseInt(cartService.cartSValid(tMap).get("QTY").toString());
+			if (leftQty < 0) return ResponseEntity.ok(new ValidVO("LACK_OF_QTY", "해당 상품 재고량이 부족합니다.\n수량을 다시 선택해 주세요."));
+			//주문시 재고량 검증 추가 e
 			oivo.setPqty(((Number) item.get("PQTY")).intValue());
 			oivo.setPnm(item.get("PNM").toString());
 			oivo.setTitle(item.get("TITLE").toString());
@@ -62,6 +71,6 @@ public class OrderController {
 			System.out.println("Rollback...");
 			e.printStackTrace();
 		}
-		return ResponseEntity.ok(true);
+		return ResponseEntity.ok(new ValidVO("SUCCESS", "상품 구매가 완료되었습니다."));
 	}
 }
