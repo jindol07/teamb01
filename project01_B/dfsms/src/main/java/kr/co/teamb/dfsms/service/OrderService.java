@@ -24,7 +24,7 @@ public class OrderService {
 		orderDao.addOrderItems(oivo);
 		stockService.stockUpdate(oivo);
 		orderDao.delCartAftrOder(ovo);
-		stockService.addHistory(ovo, oivo);
+		stockService.addOHistory(ovo, oivo);
 	}
 
 }

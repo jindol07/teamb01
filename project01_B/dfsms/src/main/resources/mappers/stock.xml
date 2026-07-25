@@ -7,9 +7,10 @@
 		update products set qty = qty - #{qty} where productid = #{productid}
 	</update>
 
-	<insert id="addHistory">
+	<insert id="addOHistory">
 		INSERT INTO P_HISTORY (
 		  	historyid
+		  	,categoryid
 		  	,productid
 		  	,usrno
 		  	,bfrpnm
@@ -22,21 +23,62 @@
 		  	,updtcont
 		  	,bfrqty
 		  	,updtqty
+		  	,gbn
 		  	,rdate
 		) VALUES (
 			p_history_seq.NEXTVAL
+			,#{oivo.categoryid}
 			,#{oivo.productid}
 			,#{ovo.usrno}
 			,#{oivo.pnm}
-			,#{oivo.pnm}
+			,null
 			,#{oivo.price}
-			,#{oivo.price}
+			,null
 			,#{oivo.title}
-			,#{oivo.title}
+			,null
 			,#{oivo.cont}
-			,#{oivo.cont}
+			,null
 			,#{oivo.pqty}
 			,#{oivo.pqty} - #{oivo.qty}
+			,'o'
+			,sysdate
+		)
+	</insert>
+	
+	<insert id="addPHistory" parameterType="ProductsVO">
+		INSERT INTO P_HISTORY (
+		  	historyid
+		  	,categoryid
+		  	,productid
+		  	,usrno
+		  	,bfrpnm
+		  	,updnm
+		  	,bfrprice
+		  	,updprice
+		  	,bfrtitle
+		  	,updtitle
+		  	,bfrcont
+		  	,updtcont
+		  	,bfrqty
+		  	,updtqty
+		  	,gbn
+		  	,rdate
+		) VALUES (
+			p_history_seq.NEXTVAL
+			,#{categoryid}
+			,products_seq.currVal
+			,#{usrno}
+			,#{pnm}
+			,null
+			,#{price}
+			,null
+			,#{title}
+			,null
+			,#{cont}
+			,null
+			,#{qty}
+			,null
+			,'p'
 			,sysdate
 		)
 	</insert>

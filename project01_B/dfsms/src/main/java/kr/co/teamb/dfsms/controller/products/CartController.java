@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("/api/cart")
 public class CartController {
 	@Autowired
 	private CartService cartService;
@@ -47,14 +47,14 @@ public class CartController {
 	}
 	
 	@GetMapping("/list")
-	public Map<String, Object> cartList() {
-		Map<String, String> map = new HashMap<>();
+	public Map<String, Object> cartList(@RequestParam Map<String, String> pMap) {
+		//Map<String, String> map = new HashMap<>();
 		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 예정
-		map.put("usrno", "2");
+		//pMap.put("usrno", "3");
 		
 		Map<String, Object> res = new HashMap<>();
 		
-		List<Map<String, Object>> cartList = cartService.cartList(map);
+		List<Map<String, Object>> cartList = cartService.cartList(pMap);
 		
 		res.put("data", cartList);
 		

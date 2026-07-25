@@ -19,7 +19,7 @@ import kr.co.teamb.dfsms.vo.OrderVO;
 import org.springframework.http.ResponseEntity;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/order")
 public class OrderController {
 	@Autowired
 	private OrderService orderService;
@@ -46,6 +46,7 @@ public class OrderController {
 			oivo.setPnm(item.get("PNM").toString());
 			oivo.setTitle(item.get("TITLE").toString());
 			oivo.setCont(item.get("CONT").toString());
+			oivo.setCategoryid(((Number) item.get("CATEGORYID")).intValue());
 			totPrice += ((Number) item.get("SUBTOT")).intValue();
 			oivoList.add(oivo);
 		}

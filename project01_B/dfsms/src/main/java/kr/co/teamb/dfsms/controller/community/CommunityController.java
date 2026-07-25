@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 
 
 @RestController
-@RequestMapping("/community")
+@RequestMapping("/api/community")
 public class CommunityController {
 	
 	@Autowired

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.MyPageDao">
+	
+	<select id="orderHistory" parameterType="map" resultType="map">
+		SELECT
+	  		o.ORDERID
+			,oi.productid
+			,p.categoryid
+			,p.pnm
+			,p.title
+			,DBMS_LOB.SUBSTR(p.cont, 200, 1) as cont
+			,oi.qty
+			,oi.price
+			,oi.price * oi.qty subtot
+			,o.TOTPRICE
+			,o.USRNO
+			,u.usrnm
+			,o.RDATE
+		FROM p_order o
+			JOIN p_order_items oi
+				ON o.orderid = oi.orderid
+			JOIN products p
+				ON p.productid = oi.productid
+			JOIN USERS u
+				ON u.USRNO = o.USRNO
+		WHERE u.usrno = #{usrno}
+	</select>
+	
+</mapper>

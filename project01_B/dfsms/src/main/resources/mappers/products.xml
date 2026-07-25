@@ -1,132 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.co.teamb.dfsms.dao.ProductsDao">
-
-	<!-- List<ProductsVO> selectProductList(); -->
-	<select id="selectProductList" resultType="ProductsVO" parameterType="map"> 
-		select 
-			PRODUCTID
-			,CATEGORYID
-			,PNM
-			,PRICE
-			,imgnm
-			,row_num
-		FROM 
-		(
-			SELECT
-				a.PRODUCTID
-				,a.CATEGORYID
-				,a.PNM
-				,a.PRICE
-				,b.IMGNM
-				,ROW_NUMBER() OVER(ORDER BY a.PRODUCTID desc) AS row_num
-			FROM PRODUCTS a 
-				JOIN p_Gallery b 
-					ON a.PRODUCTID = b.PRODUCTID
-			<where> 
-				a.delyn = 'N'
-				<if test="searchType != null and searchValue != null">
-					<choose>
-						<when test="searchType == 1">
-							and a.CATEGORYID = 1
-							AND a.PNM like '%'|| #{searchValue} ||'%'
-						</when>
-						<when test="searchType == 2">
-							and a.CATEGORYID = 2
-							AND a.PNM like '%'|| #{searchValue} ||'%'
-						</when>
-						<when test="searchType == 3">
-							and a.CATEGORYID = 3
-							AND a.PNM like '%'|| #{searchValue} ||'%'
-						</when>
-						<when test="searchType == 4">
-							and a.CATEGORYID = 4
-							AND a.PNM like '%'|| #{searchValue} ||'%'
-						</when>
-						<when test="searchType == 5">
-							and a.CATEGORYID = 5
-							AND a.PNM like '%'|| #{searchValue} ||'%'
-						</when>
-					</choose>
-				</if>
-			</where>
-		) products_numrow_view
-		WHERE row_num BETWEEN #{begin} AND #{end}
-	</select>
-	
-	<!-- int totalCount(Map<String, String> map); -->
-	<select id="totalCount" resultType="int" parameterType="map">
-		select count(*) cnt from PRODUCTS
-		<where>
-			delyn = 'N'
-			<if test="searchType != null and searchValue != null">
-				<choose>
-					<when test="searchType == 1">
-						AND a.CATEGORYID = 1
-						AND a.PNM like '%'|| #{searchValue} ||'%'
-					</when>
-					<when test="searchType == 2">
-						AND a.CATEGORYID = 2
-						AND a.PNM like '%'|| #{searchValue} ||'%'
-					</when>
-					<when test="searchType == 3">
-						AND a.CATEGORYID = 3
-						AND a.PNM like '%'|| #{searchValue} ||'%'
-					</when>
-					<when test="searchType == 4">
-						AND a.CATEGORYID = 4
-						AND a.PNM like '%'|| #{searchValue} ||'%'
-					</when>
-					<when test="searchType == 5">
-						AND a.CATEGORYID = 5
-						AND a.PNM like '%'|| #{searchValue} ||'%'
-					</when>
-				</choose>
-			</if>
-		</where>
-	</select>
-
-	<!-- ProductsVO selectProductDetail(int productid); -->
-	<select id="selectProductDetail" resultType="ProductsVO" parameterType="int">
-		SELECT 
-			a.PRODUCTID
-			,a.CATEGORYID
-			,a.PNM
-			,a.PRICE
-			,b.IMGNM
-		FROM PRODUCTS a
-			JOIN p_Gallery b
-				ON a.PRODUCTID = b.PRODUCTID
-		WHERE a.PRODUCTID = #{productid}
-	</select>
-
-	<insert id="addProduct" parameterType="ProductsVO">
-		insert into products values(products_seq.NEXTVAL, #{categoryid}, #{pnm},
-		#{price}, #{qty}
-		,#{title}, #{cont}, 0, 'N', sysdate)
-	</insert>
-
-	<insert id="addImg" parameterType="java.util.List">
-		<!-- 현재 시퀀스 값 가져오기 -->
-		<selectKey keyProperty="id" resultType="int" order="BEFORE">
-			SELECT products_seq.currVal FROM dual
-		</selectKey>
-		<foreach collection="list" item="image" separator=" " open="insert all"
-			close="select * from dual">
-			INTO p_gallery (productid, imgnm)
-			VALUES(#{id}, #{image.imgnm})
-		</foreach>
-	</insert>
-	
-	<update id="productUpdate" parameterType="ProductsVO">
-		update products set
-		categoryid =#{categoryid},pnm = #{pnm},price = #{price},qty
-		=#{qty},title =#{title},cont =#{cont}
-		where productid = #{productid}
-	</update>
-
-	<update id="productsDel" parameterType="int">
-		update products set delyn='Y' where productid = #{num}
-	</update>
-
+<!--  1. 상품 리스트 조회 (카테고리명 변환 + 갤러리 이미지 JOIN + 페이징)  -->
+<select id="selectProductList" resultType="map" parameterType="map">
+SELECT PRODUCTID, CATEGORYID, CATEGORYNAME, PNM, PRICE, QTY,
+<!--  💡 [필수 추가] QTY를 바깥 SELECT 목록에 추가  -->
+IMGNM, row_num FROM ( SELECT a.PRODUCTID, a.CATEGORYID, CASE TO_CHAR(a.CATEGORYID) WHEN '1' THEN '과일류' WHEN '2' THEN '채소류' WHEN '3' THEN '육류' WHEN '4' THEN '어류' WHEN '5' THEN '밀키트' ELSE '기타' END AS CATEGORYNAME, a.PNM, a.PRICE, a.QTY,
+<!--  💡 [필수 추가] PRODUCTS 테이블의 QTY 컬럼을 가져옴  -->
+NVL(b.IMGNM, '') AS IMGNM, ROW_NUMBER() OVER(ORDER BY a.PRODUCTID DESC) AS row_num FROM PRODUCTS a LEFT JOIN ( SELECT PRODUCTID, IMGNM FROM ( SELECT PRODUCTID, IMGNM, ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY IMGNM ASC) as rn FROM p_Gallery ) WHERE rn = 1 ) b ON a.PRODUCTID = b.PRODUCTID
+<where>
+a.delyn = 'N'
+<if test="searchValue != null and searchValue != '' and searchValue != 'all'"> AND a.CATEGORYID = #{searchValue} </if>
+<if test="searchType != null and searchType != ''"> AND a.PNM LIKE '%' || #{searchType} || '%' </if>
+</where>
+) products_numrow_view WHERE row_num BETWEEN #{begin} AND #{end}
+</select>
+<!--  2. 전체 상품 개수 조회 (페이징용)  -->
+<select id="totalCount" resultType="int" parameterType="map">
+SELECT count(*) cnt FROM PRODUCTS a
+<where>
+a.delyn = 'N'
+<if test="searchValue != null and searchValue != '' and searchValue != 'all'"> AND a.CATEGORYID = #{searchValue} </if>
+<if test="searchType != null and searchType != ''"> AND a.PNM LIKE '%' || #{searchType} || '%' </if>
+</where>
+</select>
+<!--  3. 상품 상세 조회  -->
+<select id="selectProductDetail" resultType="ProductsVO" parameterType="int"> SELECT a.PRODUCTID, a.CATEGORYID, a.PNM, a.PRICE, b.IMGNM FROM PRODUCTS a LEFT JOIN ( SELECT PRODUCTID, IMGNM FROM ( SELECT PRODUCTID, IMGNM, ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY PRODUCTID ASC) as rn FROM p_Gallery ) WHERE rn = 1 ) b ON a.PRODUCTID = b.PRODUCTID WHERE a.PRODUCTID = #{productid} </select>
+<!--  4. 상품 추가  -->
+<insert id="addProduct" parameterType="ProductsVO"> INSERT INTO products VALUES ( products_seq.NEXTVAL, #{categoryid}, #{pnm}, #{price}, #{qty}, #{title}, #{cont}, 0, 'N', sysdate ) </insert>
+<!--  5. 갤러리 이미지 다중 추가  -->
+<insert id="addImg" parameterType="java.util.List">
+<selectKey keyProperty="id" resultType="int" order="BEFORE"> SELECT products_seq.currVal FROM dual </selectKey>
+<foreach collection="list" item="image" separator=" " open="insert all" close="select * from dual"> INTO p_gallery (productid, imgnm) VALUES(#{id}, #{image.imgnm}) </foreach>
+</insert>
+<!--  6. 상품 정보 수정  -->
+<update id="productUpdate" parameterType="ProductsVO"> UPDATE products SET categoryid = #{categoryid}, pnm = #{pnm}, price = #{price}, qty = #{qty}, title = #{title}, cont = #{cont} WHERE productid = #{productid} </update>
+<!--  7. 상품 삭제 (삭제 여부 Y 변경)  -->
+<update id="productsDel" parameterType="int"> UPDATE products SET delyn = 'Y' WHERE productid = #{num} </update>
 </mapper>

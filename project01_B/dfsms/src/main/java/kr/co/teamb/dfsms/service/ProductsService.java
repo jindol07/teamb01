@@ -13,18 +13,17 @@ import kr.co.teamb.dfsms.vo.ProductsVO;
 
 @Service
 public class ProductsService {
-
 	@Autowired
 	private ProductsDao productsDao;
+	@Autowired
+	private StockService stockService;
 
 //	1. 전체 상품 리스트
-
-	public List<ProductsVO> selectProductList(Map<String, String> map) {
-		return productsDao.selectProductList(map);
+	public List<Map<String, Object>> selectProductList(Map<String, String> map) {
+	    return productsDao.selectProductList(map);
 	}
 
 //	2. 상품 상세 조회
-
 	public ProductsVO selectProductDetail(int productid) {
 		return productsDao.selectProductDetail(productid);
 	}
@@ -37,14 +36,7 @@ public class ProductsService {
 	public void transcationProcess(ProductsVO pvo, List<GalleryVO> gvoList) {
 		productsDao.addProduct(pvo);
 		productsDao.addImg(gvoList);
-	}
-	
-	public void Productupdate(ProductsVO vo) {
-		productsDao.productUpdate(vo);
-	}
-	
-	public void delProducts(int num) {
-		productsDao.productsDel(num);
+		stockService.addPHistory(pvo);
 	}
 
 }

@@ -22,6 +22,7 @@ public class HistoryVO {
 	private String updtcont;
 	private int bfrqty;
 	private int updtqty;
+	private String gbn;
 	private String rdate;
 	
 }

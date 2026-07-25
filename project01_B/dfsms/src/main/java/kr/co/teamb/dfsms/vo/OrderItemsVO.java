@@ -11,6 +11,7 @@ import lombok.Setter;
 public class OrderItemsVO {
 	private int orderid;
 	private int productid;
+	private int categoryid;
 	private int qty;
 	private int price;
 	//0724 추가
