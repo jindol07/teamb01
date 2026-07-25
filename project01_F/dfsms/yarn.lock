@@ -8012,10 +8012,10 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.1.0.tgz"
   integrity sha512-SN/U6Ytxf1QGkw/9ve5Y+NxBbZM6Ht95tuXNMKs8EJyFa/Vy/+Co3stop3KBHARfn/giv+Lj1uUnTfOJ3moFEQ==
 
-react-icons@^5.6.0:
-  version "5.6.0"
-  resolved "https://registry.npmjs.org/react-icons/-/react-icons-5.6.0.tgz"
-  integrity sha512-RH93p5ki6LfOiIt0UtDyNg/cee+HLVR6cHHtW3wALfo+eOHTp8RnU2kRkI6E+H19zMIs03DyxUG/GfZMOGvmiA==
+react-icons@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.npmjs.org/react-icons/-/react-icons-5.7.0.tgz"
+  integrity sha512-LBLy340Rzqy6+/yVhZKT3B/QpP1BZaesGqasf09HPOBzRarcDIFH0WwXlXQfE7q7ipxK4MSiC5DIBWURCny6fw==
 
 react-is@^16.13.1:
   version "16.13.1"
@@ -8054,17 +8054,17 @@ react-refresh@^0.11.0, "react-refresh@>=0.10.0 <1.0.0":
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.11.0.tgz"
   integrity sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==
 
-react-router-dom@^7.18.0:
-  version "7.18.0"
-  resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-7.18.0.tgz"
-  integrity sha512-Fi0yY6kgtKae/Th2xibdWK0KSdYZ4B53Gyf6wRtomOKWgpNm7H7+DyfDhncdz9FKbpS+1jmDhg3F4WoGJ+yFOA==
+react-router-dom@^7.18.1:
+  version "7.18.1"
+  resolved "https://registry.npmjs.org/react-router-dom/-/react-router-dom-7.18.1.tgz"
+  integrity sha512-KaZh+X/6UtEp28x51AUYZDMg9NGoz2ja3dNHa+ta/tk40vCzKhQ/RypCWBMLbmDr6//E24Vv5uPsrqXFozdkAg==
   dependencies:
-    react-router "7.18.0"
+    react-router "7.18.1"
 
-react-router@7.18.0:
-  version "7.18.0"
-  resolved "https://registry.npmjs.org/react-router/-/react-router-7.18.0.tgz"
-  integrity sha512-pTTGt8J+ji1NOmYnjzT+bAJy/1zD+Jp4ziO6cL7T3ZLvXKtusO7BpFqlRXitqpcPVqllsIXFHRMt+2/k3Xn6HQ==
+react-router@7.18.1:
+  version "7.18.1"
+  resolved "https://registry.npmjs.org/react-router/-/react-router-7.18.1.tgz"
+  integrity sha512-GDLgg3i3uM0aeJO3Fm+TCS+sDQ7gu12T6x0qdTEzcwqEfleci7JwugVNIF3U//0FWKnJT7ptG+20B2jfDqnZAg==
   dependencies:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
