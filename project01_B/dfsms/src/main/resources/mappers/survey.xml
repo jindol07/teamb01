@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.teamb.dfsms.dao.SurveyDao">
+	<insert id="saveSurvey" parameterType="surveyvo">
+		insert into survey values (survey_seq.nextVal, #{code, jdbcType=INTEGER}, SYSDATE, #{sub})
+	</insert>
+	<insert id="saveSurveyContentList" parameterType="java.util.List">
+		insert all 
+		<foreach collection="list" item="item">
+			INTO surveycontent (subcode, surveycnt, surveytitle, surveytype) VALUES
+			(survey_seq.CURRVAL, #{item.surveycnt}, #{item.surveytitle}, #{item.surveytype})
+		</foreach>
+		select * from dual
+	</insert>
+	<select id="maxSurveyNum" resultType="Long">
+		select max(num) from survey
+	</select> 
+	<resultMap id="surveyWithContentMap" type="surveyvo"> <!-- property: vo member, column: alias  -->
+		<id property="surveyid" column="surveyNum" />
+		<result property="sub" column="surveySub" />
+		<result property="code" column="surveyCode" />
+		<result property="rdate" column="surveyData" />
+		<collection property="contList" javaType="ArrayList" ofType="kr.co.teamb.dfsms.vo.SurveyContVO">
+			<result property="surveytype" column="surveytype" />
+			<result property="surveyid" column="subCode" />
+			<result property="surveytitle" column="surveytitle" />
+			<result property="surveycnt" column="surveycnt" />
+		</collection>
+	</resultMap>
+	<select id="findBySNUM" parameterType="Long" resultMap="surveyWithContentMap">
+		SELECT s.num AS surveyNum, s.sub AS surveySub, s.code AS surveyCode, s.sdate AS surveyData, sc.surveytype AS surveytype,
+		sc.subcode AS subCode, sc.surveytitle AS surveytitle, sc.surveycnt AS surveycnt
+		FROM SURVEY s, surveycontent sc WHERE s.num = sc.subcode AND s.num = #{num}
+	</select>
+	<update id="incrementSurveyCount">
+		update surveycontent set surveycnt = surveycnt + 1 where subcode=#{subcode} and surveytype=#{surveytype}
+	</update>
+</mapper>

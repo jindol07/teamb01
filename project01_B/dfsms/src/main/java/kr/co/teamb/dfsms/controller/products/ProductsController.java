@@ -25,7 +25,7 @@ import kr.co.teamb.dfsms.vo.PageVO;
 import kr.co.teamb.dfsms.vo.ProductsVO;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/api/products")
 public class ProductsController {
 	@Autowired
 	private ProductsService productService;

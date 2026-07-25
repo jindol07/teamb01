@@ -9,14 +9,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Alias("SurveyVO")
+@Alias("surveyvo")
 public class SurveyVO {
 	private int surveyid;
 	private int usrno;
 	private int code;
 	private String rdate;
 	private String sub;
-
-	// 1 대 N 관계
-	private List<SurveyContVO> conList;
+	// 1 �� N 愿�怨�
+	private List<SurveyContVO> contList;
 }
