@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,4 +57,23 @@ public class MypageController {
 		
 		return res;
 	}
+	
+	@PostMapping("/usrinfo")
+	public UserVO getUsrinfo(UserVO vo, HttpSession ss) {
+		UserVO vot = (UserVO) ss.getAttribute("loginUser");
+		vo.setUsrno(vot.getUsrno());
+		if(vo != null) {
+			int resCnt = mypageService.updateUserInfo(vo);
+			if(resCnt > 0) System.out.println("업데이트 성공");
+		}
+		return null;
+	}
+	
+	@GetMapping("/selinfo")
+	public UserVO getMethodName(HttpSession ss) {
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		return mypageService.selectUsrInfo(vo);
+	}
+	
+	
 }
