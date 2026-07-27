@@ -55,11 +55,11 @@ const NoticeForm: React.FC = () => {
             // }
             if(state){
                 data.append('boardid', formData.boardid.toString());
-                url = `${backendUrl}/community/update` //수정
+                url = `${backendUrl}/api/community/update` //수정
                 await axios.post(url, data)
                 nav(`/community/notice/${notice.boardid}`); //상세
             }else{
-                url = `${backendUrl}/community/add` //등록
+                url = `${backendUrl}/api/community/add` //등록
                 await axios.post(url, data)
                 nav("/community/notice"); //리스트
             }

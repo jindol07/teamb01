@@ -13,7 +13,7 @@ import kr.co.teamb.dfsms.service.LoginService;
 import kr.co.teamb.dfsms.vo.UserVO;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class LoginController {
 
     @Autowired
@@ -32,6 +32,7 @@ public class LoginController {
 
                 // 로그인 사용자 세션 저장
                 session.setAttribute("loginUser", user);
+                System.out.println(session.getId());
 
                 return ResponseEntity.ok(user);
             }

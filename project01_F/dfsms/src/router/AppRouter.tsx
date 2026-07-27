@@ -37,6 +37,8 @@ import SurveyList from '../cont/survey/SurveyList'
 import Notice from '../cont/community/Notice'
 import NoticeForm from '../cont/community/NoticeForm'
 import NoticeDetail from '../cont/community/NoticeDetail'
+import MypageLayout from '../cont/mypage/MypageLayout'
+import OrderList from '../cont/mypage/OrderList'
 
 
 const AppRouter: React.FC = () => {
@@ -94,6 +96,14 @@ const AppRouter: React.FC = () => {
           <Route path="surveyAdd" element={<SurveyAddForm />} />
           <Route path="surveyClient" element={<SurveyClient />} />
         </Route>
+
+        {/* 마이 페이지 */}
+        <Route path="/mypage" element={<MypageLayout />}>
+          <Route path="orderList" element={<OrderList />} />
+          <Route path="qna/:no" element={<StockDetail />} />
+          <Route path="usrinfo" element={<ItemList />} />
+        </Route>
+
       </Routes>
   )
 }

@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpSession;
 import kr.co.teamb.dfsms.service.CartService;
 import kr.co.teamb.dfsms.service.OrderService;
 import kr.co.teamb.dfsms.vo.OrderItemsVO;
 import kr.co.teamb.dfsms.vo.OrderVO;
+import kr.co.teamb.dfsms.vo.UserVO;
 import kr.co.teamb.dfsms.vo.ValidVO;
 
 import org.springframework.http.ResponseEntity;
@@ -27,13 +29,19 @@ public class OrderController {
 	@Autowired
 	private CartService cartService;
 	
-	//@GetMapping("/add")
-	//public ResponseEntity<Boolean> addOrder() {
+	//PostMan 테스트시 input param : x
 	@PostMapping("/add")
-	public ResponseEntity<ValidVO> addOrder(OrderVO ovo) {
+	public ResponseEntity<ValidVO> addOrder(OrderVO ovo, HttpSession ss) {
 		Map<String, String> map = new HashMap<>();
-		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 예정
-		map.put("usrno", String.valueOf(ovo.getUsrno()));
+		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 완료
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		if(vo == null) {
+			new ValidVO("NO_USR_INFO", "로그인 페이지로 이동하시겠습니까?");
+		} else if(vo.getRole() == 'A') {
+			new ValidVO("NO_MATCHED_ROLE", "해당 기능은 관리자가 이용하실 수 없습니다.");
+		} else {
+			map.put("usrno", String.valueOf(vo.getUsrno()));
+		}
 		
 		List<OrderItemsVO> oivoList = new ArrayList<>();
 		int totPrice = 0;

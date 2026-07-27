@@ -32,7 +32,7 @@ const NoticeDetail: React.FC = () => {
     };
 
     const delPage = async () => {
-        const url = `${backendUrl}/community/delete?num=${num}`
+        const url = `${backendUrl}/api/community/delete?num=${num}`
         const res = await axios.get(url)
         alert('삭제 완료')
         nav("/community/notice"); //리스트
@@ -43,7 +43,7 @@ const NoticeDetail: React.FC = () => {
             // const notice = { no: 1, title: "필독 - 무조건 읽어주세요.", writer: "운영자", hit: 0, 
             //     regdate: '2015-03-30', rank: 1, content: '공지에 들어갈 내용' };
             // setNotice(notice);
-            const url = `${backendUrl}/community/detail?num=${num}`
+            const url = `${backendUrl}/api/community/detail?num=${num}`
             const res = await axios.get(url)
             console.log(res.data)
             setNotice(res.data);

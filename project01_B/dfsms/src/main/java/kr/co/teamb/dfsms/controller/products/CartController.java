@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpSession;
 import kr.co.teamb.dfsms.service.CartService;
+import kr.co.teamb.dfsms.vo.UserVO;
 import kr.co.teamb.dfsms.vo.ValidVO;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +34,19 @@ public class CartController {
 		return cartService.cartSValid(pMap);
 	}
 	
+	//PostMan 테스트시 input param : productid, qty
 	@GetMapping("/add")
-	public ResponseEntity<ValidVO> cartAdd(@RequestParam Map<String, String> pMap) {
-		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 예정
-		//pMap.put("usrno", "2");
+	public ResponseEntity<ValidVO> cartAdd(@RequestParam Map<String, String> pMap, HttpSession ss) {
+		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 완료
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		if(vo == null) {
+			new ValidVO("NO_USR_INFO", "로그인 페이지로 이동하시겠습니까?");
+		} else if(vo.getRole() == 'A') {
+			new ValidVO("NO_MATCHED_ROLE", "해당 기능은 관리자가 이용하실 수 없습니다.");
+		} else {
+			pMap.put("usrno", String.valueOf(vo.getUsrno()));
+		}
+		
 		Map<String, Object> svalidRes = cartSValid(pMap);
 		if(cartPValid(pMap) > 0) {
 			return ResponseEntity.ok(new ValidVO("ALREADY_EXIST", "해당 상품은 이미 카트에 존재합니다.")); //해당 상품 카트에 존재
@@ -46,13 +57,17 @@ public class CartController {
 		return ResponseEntity.ok(new ValidVO("SUCCESS", "해당 상품이 장바구니에 담겼습니다.")); //code, message
 	}
 	
+	//PostMan 테스트시 input param : x
 	@GetMapping("/list")
-	public Map<String, Object> cartList(@RequestParam Map<String, String> pMap) {
-		//Map<String, String> map = new HashMap<>();
-		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 예정
-		//pMap.put("usrno", "3");
-		
+	public Map<String, Object> cartList(@RequestParam Map<String, String> pMap, HttpSession ss) {
 		Map<String, Object> res = new HashMap<>();
+		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 완료
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		if(vo == null) {
+			res.put("error", "로그인 정보가 없습니다.");
+		} else {
+			pMap.put("usrno", String.valueOf(vo.getUsrno()));
+		}
 		
 		List<Map<String, Object>> cartList = cartService.cartList(pMap);
 		

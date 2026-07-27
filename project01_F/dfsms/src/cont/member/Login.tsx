@@ -14,14 +14,19 @@ const Login: React.FC = () => {
     // Toast Message
     const [showToast, setShowToast] = useState(false);
 
+    const backendUrl = process.env.REACT_APP_BACK_END_URL;
+
     // 로그인 이벤트 발생 시 유효성 로직
     const handleLogin = async () => {
         try {
             const response = await axios.post(
-                "http://localhost/dfsms/member/login",
+                `${backendUrl}/api/member/login`,
                 {
                     usrid: userId,
                     pwd: password
+                },
+                {
+                    withCredentials: true
                 }
             );
 
