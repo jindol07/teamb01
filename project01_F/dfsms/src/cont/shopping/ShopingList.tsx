@@ -80,7 +80,7 @@ const ShoppingList: React.FC = () => {
   useEffect(() => {
     document.title = "Daily Food";
   }, []);
-
+  
   // API 데이터 호출
   const fetchProducts = useCallback(async (controller?: AbortController) => {
     try {
@@ -256,20 +256,25 @@ const ShoppingList: React.FC = () => {
           ).map((page) => (
             <button
               key={page}
-              type="button"
-              className={`${style.paginationBtn} ${currentPage === page ? style.activePage : ""
-                }`}
               onClick={() => setCurrentPage(page)}
+              style={{
+                fontWeight: currentPage === page ? "bold" : "normal",
+                margin: "0 4px",
+                padding: "6px 12px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                backgroundColor: currentPage === page ? "#007bff" : "#fff",
+                color: currentPage === page ? "#fff" : "#333",
+                cursor: "pointer"
+              }}
             >
               {page}
             </button>
           ))}
+
           {endPage < totalPages && (
-            <button
-              className={style.paginationBtn}
-              onClick={() => setCurrentPage(endPage + 1)}>다음</button>
+            <button onClick={() => setCurrentPage(endPage + 1)}>다음</button>
           )}
-          
         </div>
       )}
     </div>

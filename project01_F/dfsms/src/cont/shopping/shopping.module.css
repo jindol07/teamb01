@@ -63,11 +63,10 @@
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
 }
 
-/* 상품 리스트 그리드 레이아웃 (img-container) - Flexbox 방식 적용 */
+/* 상품 리스트 그리드 레이아웃 (img-container) */
 .img-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center; /* 남은 공간이 있을 때 중앙 정렬 */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 28px;
   max-width: 1200px;
   margin: 20px auto 60px;
@@ -84,9 +83,6 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  
-  /* 화면 크기에 맞춰 카드 너비 고정 */
-  flex: 0 1 220px; 
 }
 
 .img-container > div:hover {
@@ -124,59 +120,6 @@
   color: #111111;
 }
 
-/* 페이지네이션 컨테이너 */
-.paginationContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  margin: 30px auto 20px;
-}
-
-/* 페이지네이션 버튼 공통 스타일 */
-.paginationBtn {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  min-width: 40px;
-  padding: 0 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-color, #333333);
-  background-color: #ffffff;
-  border: 1px solid var(--border-color, #e0e0e0);
-  border-radius: 8px;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-/* 마우스 호버 효과 */
-.paginationBtn:hover {
-  background-color: var(--bg-hover, #f9f9f9);
-  border-color: var(--primary-color, #4caf50);
-  color: var(--primary-color, #4caf50);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-/* 현재 선택된 페이지 활성화 스타일 */
-.activePage {
-  background-color: var(--primary-color, #4caf50) !important;
-  border-color: var(--primary-color, #4caf50) !important;
-  color: #ffffff !important;
-  font-weight: 700;
-}
-
-/* 비활성화 상태 */
-.paginationBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
-}
-
 /* 반응형 모바일 대응 */
 @media (max-width: 600px) {
   .searchContainer {
@@ -184,13 +127,9 @@
   }
 
   .img-container {
+    grid-template-columns: repeat(2, 1fr); /* 모바일에서는 2열로 정렬 */
     gap: 16px;
     padding: 0 12px;
-  }
-
-  /* 모바일에서 2열로 깔끔하게 배치되도록 설정 */
-  .img-container > div {
-    flex: 0 1 calc(50% - 8px);
   }
 
   .img {
