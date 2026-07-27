@@ -151,24 +151,21 @@ localStorage.setItem(
   alert(`${productName} ${quantity}개가 장바구니에 담겼습니다!`);
 };
 
-  // 
-// 장바구니 페이지로 이동하면서 사용자 번호(useno) 상태를 함께 전달하는 함수
-  const handleClick = () => {
+// 장바구니 페이지로 이동하면서 로그인 여부 확인하는 함수
+const handleClick = () => {
   const user = JSON.parse(
-    localStorage.getItem("user") || "null"
+    sessionStorage.getItem("loginInfo") || "null"
   );
-  if (!user?.useno) {
+  
+  // loginNm(이름)이나 role(권한)이 존재하면 로그인된 상태로 인정
+  if (!user || !user.loginNm) {
     alert("로그인이 필요합니다.");
     navigate("/login");
     return;
   }
-  navigate("/cart", {
-    state: {
-      useno: user.useno
-    }
-  });
+  
+  navigate("/cart");
 };
-
   // 실시간 총 금액
   const totalPrice = productPrice * quantity;
 
