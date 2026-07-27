@@ -64,7 +64,7 @@ public class SurveyController {
 		System.out.println("surveytype: " + surveytype);
 		try {
 			surveyService.incrementSurveyCount(subcode, surveytype);
-			return ResponseEntity.ok("투표 성공");
+			return ResponseEntity.ok("update complete!");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");

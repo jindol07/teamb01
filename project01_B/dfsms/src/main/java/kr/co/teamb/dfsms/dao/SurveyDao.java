@@ -8,8 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import kr.co.teamb.dfsms.vo.SurveyContVO;
 import kr.co.teamb.dfsms.vo.SurveyVO;
 
-// mapper.xml에게 파라미터를 전달 parameterType X
-// @Param을 사용하면 기본적으로 매핑
+
 @Mapper
 public interface SurveyDao {
 	void saveSurvey(SurveyVO vo);

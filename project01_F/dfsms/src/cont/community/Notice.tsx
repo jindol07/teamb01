@@ -6,8 +6,6 @@ import btnStyle from '../components/btn.module.css'
 import axios from 'axios';
 
 const Notice: React.FC = () => {
-
-
   const [onData, setOnData] = useState(false);
   const nav = useNavigate();
   //interface 역할??
@@ -36,11 +34,13 @@ const Notice: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   //http://192.168.0.39/dfsms
   const backendUrl = process.env.REACT_APP_BACK_END_URL;
+  console.log(backendUrl);
 
   //서버측에 데이터 요청시(by axios : 비동기) 조건(params)도 같이 넘김
   const fetchMyNotice = async (page: number) => {
     try {
-      const url = `${backendUrl}/community/list`
+      const url = `${backendUrl}/community/list`;
+      console.log(url);
       const res = await axios.get(url, {
         params: {
           cPage: page,
