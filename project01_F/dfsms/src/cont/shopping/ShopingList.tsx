@@ -31,7 +31,7 @@ interface Product {
   image?: string;
 }
 
-const SPRING_SERVER_URL = "http://localhost";
+const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
 // 💡 [수정] static/imgfile/gallery 경로 매핑
 const getImageUrl = (rawImg?: string) => {
@@ -47,7 +47,7 @@ const getImageUrl = (rawImg?: string) => {
 
   // C:\upload\apple.jpg 처럼 경로가 포함되어 들어와도 순수 파일명만 추출
   const fileName = rawImg.split(/[/\\]/).pop();
-  return `${SPRING_SERVER_URL}/dfsms/imgfile/gallery/${fileName}`;
+  return `${backendUrl}/imgfile/gallery/${fileName}`;
 };
 
 // 카테고리 ID를 한국어 명칭으로 변환
@@ -80,12 +80,12 @@ const ShoppingList: React.FC = () => {
   useEffect(() => {
     document.title = "Daily Food";
   }, []);
-
+  
   // API 데이터 호출
   const fetchProducts = useCallback(async (controller?: AbortController) => {
     try {
-      const urls = "http://localhost/dfsms/products/list";
-      const response = await axios.get(urls, {
+      const response = await axios.get(`${backendUrl}/api/products/list`, {
+        withCredentials: true,
         params: {
           cPage: currentPage,
           searchType: searchInput.trim(), // 💡 실시간 입력 검색어 전달

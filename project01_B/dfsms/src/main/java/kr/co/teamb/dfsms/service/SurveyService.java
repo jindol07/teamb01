@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.teamb.dfsms.dao.SurveyDao;
-import kr.co.teamb.dfsms.vo.SurveyContVO;
+import kr.co.teamb.dfsms.vo.SurveyQuestionVO;
 import kr.co.teamb.dfsms.vo.SurveyVO;
 
 @Service
@@ -22,9 +22,9 @@ public class SurveyService {
 	public void saveSurvey(SurveyVO vo) {
 		surveyDao.saveSurvey(vo);
 		char stype = 'A';
-		List<SurveyContVO> contList = new ArrayList<>();
-		for (SurveyContVO c : vo.getContList()) {
-			SurveyContVO contVO = new SurveyContVO();
+		List<SurveyQuestionVO> contList = new ArrayList<>();
+		for (SurveyQuestionVO c : vo.getContList()) {
+			SurveyQuestionVO contVO = new SurveyQuestionVO();
 			contVO.setSurveytitle(c.getSurveytitle());
 			contVO.setSurveytype(String.valueOf(stype)); 
 			contVO.setSurveycnt(0);

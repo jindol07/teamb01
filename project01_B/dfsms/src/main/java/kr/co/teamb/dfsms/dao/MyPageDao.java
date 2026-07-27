@@ -10,4 +10,6 @@ public interface MyPageDao {
 
 	List<Map<String, Object>> orderHistory(Map<String, String> map);
 	
+	int totCnt(Map<String, String> map);
+	
 }

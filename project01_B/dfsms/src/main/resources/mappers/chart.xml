@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.ChartDao">
+
+	<select id="bestItemList" resultType="chrtvo">
+		SELECT
+			p.PRODUCTID
+			,p.pnm
+			,SUM(oi.qty) AS totqty
+		FROM p_order o
+			JOIN p_order_items oi
+    			ON o.orderid = oi.orderid
+			JOIN products p
+    			ON oi.productid = p.productid
+		WHERE 1=1
+		GROUP BY p.PRODUCTID, p.pnm
+		ORDER BY totqty DESC
+		FETCH FIRST 5 ROWS ONLY
+	</select>
+	
+	<select id="ctgyGroupList" parameterType="map" resultType="chrtvo">
+		SELECT
+    		c.categoryid,
+    		c.categorynm,
+    		SUM(oi.qty) AS ctgytotqty,
+    		ROUND(
+        		SUM(oi.qty) * 100.0 / NULLIF(SUM(SUM(oi.qty)) OVER(), 0), 2
+    		) AS ctgyratio
+		FROM users u
+			JOIN p_order o
+    			ON u.usrno = o.usrno
+			JOIN p_order_items oi
+    			ON o.orderid = oi.orderid
+			JOIN products p
+    			ON oi.productid = p.productid
+			JOIN p_category c
+    			ON p.categoryid = c.categoryid
+		WHERE 1=1
+    		AND u.gender = #{gender}
+    		AND u.birth BETWEEN #{syear} AND #{eyear}
+		GROUP BY
+    		c.categoryid,
+    		c.categorynm
+		ORDER BY
+    		ctgytotqty DESC
+	</select>
+
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.teamb.dfsms.dao.TopChartDao">
+	<select id="topProductList" resultType="tcvo">
+		SELECT
+		oi.PRODUCTID, SUM(oi.qty) AS bestitem
+		FROM p_order o
+		JOIN p_order_items oi
+		ON o.orderid = oi.orderid
+		JOIN products p
+		ON oi.productid = p.productid
+		WHERE 1=1
+		GROUP BY oi.PRODUCTID
+		ORDER BY bestitem DESC
+		FETCH FIRST 5 ROWS ONLY
+	</select>
+</mapper>

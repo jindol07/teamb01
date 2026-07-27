@@ -13,9 +13,10 @@ import lombok.Setter;
 public class SurveyVO {
 	private int surveyid;
 	private int usrno;
-	private int code;
+	private String surveytitle;
+	private String status;
 	private String rdate;
-	private String sub;
-	// 1 �� N 愿�怨�
-	private List<SurveyContVO> contList;
+	private String startdate;
+	private String enddate;
+	private List<SurveyQuestionVO> contList;
 }

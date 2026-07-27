@@ -25,7 +25,7 @@ public class SurveyController {
 	@PostMapping("/addsurvey")
 	public ResponseEntity<String> saveSurvey(@RequestBody SurveyVO vo) {
 		surveyService.saveSurvey(vo);
-		System.out.println("sub: " + vo.getSub());
+		System.out.println("sub: " + vo.getSurveytitle());
 		System.out.println("title: " + vo.getContList().get(0).getSurveytitle());
 		return ResponseEntity.ok("success");
 	}

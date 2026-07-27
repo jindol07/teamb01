@@ -29,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ loginNm, role }) => {
         {/*커뮤니티*/}
         <DropDownNav />
         {
-          role === 'ADMIN' && (
+          role === 'A' && (
             <NavLink to="/admin" className={commonLinkClass}>상품 관리(관리자)</NavLink>
           )
         }
