@@ -20,7 +20,7 @@ interface PrductsVO {
 
 const ItemForm: React.FC = () => {
 
-    //http://192.168.0.39/dfsms
+    //http://192.168.0.7/dfsms
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
     //const { no } = useParams<{ no: string }>();

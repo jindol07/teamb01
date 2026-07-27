@@ -39,6 +39,9 @@ import NoticeForm from '../cont/community/NoticeForm'
 import NoticeDetail from '../cont/community/NoticeDetail'
 import MypageLayout from '../cont/mypage/MypageLayout'
 import OrderList from '../cont/mypage/OrderList'
+import TopChart from '../cont/chart/TopChart'
+
+
 
 
 const AppRouter: React.FC = () => {
@@ -73,6 +76,7 @@ const AppRouter: React.FC = () => {
     ,{path:'/community/notice', element:<Notice/>}
     ,{path:'/community/notice/write', element:<NoticeForm/>}
     ,{path:'/community/notice/:num', element:<NoticeDetail/>}
+    ,{path:'/chart/topchart', element:<TopChart/>}
   ]
 
   return (
