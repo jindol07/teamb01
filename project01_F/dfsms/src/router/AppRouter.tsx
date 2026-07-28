@@ -17,6 +17,8 @@ import StockList from "../cont/admin/StockList";
 import StockDetail from '../cont/admin/StockDetail'
 import ItemList from '../cont/admin/ItemList'
 // import ItemDetail from '../cont/admin/ItemDetail'
+import ItemForm from '../cont/admin/ItemForm'
+import ItemDetail from '../cont/admin/ItemDetail'
 
 //장바구니
 import Payment from '../cont/cart/Payment'
@@ -97,7 +99,9 @@ const AppRouter: React.FC = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="stocklist" element={<StockList />} />
           <Route path="stockdetail/:no" element={<StockDetail />} />
+          <Route path="itemdetail/:no" element={<ItemDetail />} />
           <Route path="itemlist" element={<ItemList />} />
+          <Route path="itemForm" element={<ItemForm />} />
           {/* <Route path="itemdetail" element={<ItemDetail />} /> */}
           <Route path="surveyList" element={<SurveyList />} />
           <Route path="surveyAdd" element={<SurveyAddForm />} />
