@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import btnStyle from "../components/btn.module.css";
 import style from "./login.module.css";
-import twoStyle from "./TwoFactor.module.css"
+import twoStyle from "./twoFactor.module.css"
 
 const TwoFactor: React.FC = () => {
 
