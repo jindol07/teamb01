@@ -1,0 +1,51 @@
+/* 토스트 메시지 */
+.toast {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+
+    transform: translateX(-50%) translateY(-30px);
+    min-width: 280px;
+    padding: 16px 28px;
+
+    background: linear-gradient(
+            135deg,
+            #198754,
+            #146c43
+    );
+
+    color: white;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    z-index: 9999;
+    animation: toastDown 3s ease forwards;
+}
+
+
+/* 위에서 내려오는 애니메이션 */
+@keyframes toastDown {
+
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px);
+    }
+
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    80% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}

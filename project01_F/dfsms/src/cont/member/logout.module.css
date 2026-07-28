@@ -1,0 +1,117 @@
+.logout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user {
+    color: #198754;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.user:hover {
+    background-color: #f0f8f3;
+    color: #146c43;
+    font-weight: 700;
+}
+
+.btn {
+    border: 1px solid #198754;
+    color: #198754;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background-color: #198754;
+    color: white;
+}
+
+
+/* 로그아웃 전용 토스트 */
+/* 로그아웃 전체 컨테이너 */
+.logout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* 사용자 이름 */
+.user {
+    color: #198754;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.user:hover {
+    background-color: #f0f8f3;
+    color: #146c43;
+    font-weight: 700;
+}
+
+
+/* 버튼 */
+.btn {
+    border: 1px solid #198754;
+    color: #198754;
+    padding: 5px 12px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background-color: #198754;
+    color: white;
+}
+
+.logoutMsg {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background-color: rgba(25, 135, 84, 0.95);
+    color: white;
+
+    padding: 16px 30px;
+    border-radius: 12px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    z-index: 9999;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+
+    animation: logoutFade 3.5s ease forwards;
+}
+
+@keyframes logoutFade {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    85% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}
