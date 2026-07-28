@@ -20,24 +20,28 @@ public class ChartService {
 
 	public List<ChartVO> ctgyGroupList(Map<String, String> map) {
 		int birth = Integer.parseInt(map.get("birth"));
-	    int currentYear = java.time.Year.now().getValue();
-	    int age = currentYear - birth;
+		int currentYear = java.time.Year.now().getValue();
+		int age = currentYear - birth;
 
-	    int birthStart;
-	    int birthEnd;
-	    // 40대 이상
-	    if (age >= 40) {
-	        birthStart = 1900;       //최소년도
-	        birthEnd = currentYear - 40;
-	    } else {
-	        int ageGroup = (age / 10) * 10;
-	        birthStart = currentYear - (ageGroup + 9);
-	        birthEnd = currentYear - ageGroup;
-	    }
-	    map.put("syear", String.valueOf(birthStart));
-	    map.put("eyear", String.valueOf(birthEnd));
-	    
+		int birthStart;
+		int birthEnd;
+		// 40대 이상
+		if (age >= 40) {
+			birthStart = 1900; // 최소년도
+			birthEnd = currentYear - 40;
+		} else {
+			int ageGroup = (age / 10) * 10;
+			birthStart = currentYear - (ageGroup + 9);
+			birthEnd = currentYear - ageGroup;
+		}
+		map.put("syear", String.valueOf(birthStart));
+		map.put("eyear", String.valueOf(birthEnd));
+
 		return chartDao.ctgyGroupList(map);
+
 	}
-	
+
+	public List<ChartVO> getRecommendProducts(int categoryid) {
+		return chartDao.getRecommendProducts(categoryid);
+	}
 }

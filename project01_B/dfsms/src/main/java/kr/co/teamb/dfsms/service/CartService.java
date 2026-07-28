@@ -29,5 +29,13 @@ public class CartService {
 	public List<Map<String, Object>> cartList(Map<String, String> map) {
 		return cartDao.cartList(map);
 	}
-	 
+	
+	public void updateQty(Map<String, String> map) {
+	    cartDao.updateQty(map);
+	}
+	
+	public void delOneCartProduct(Map<String, String> map) {
+		cartDao.delOneCartProduct(map);
+	}
+	
 }

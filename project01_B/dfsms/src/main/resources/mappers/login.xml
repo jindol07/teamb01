@@ -4,11 +4,15 @@
 
 <mapper namespace="kr.co.teamb.dfsms.mapper.LoginMapper">
 
-    <!-- 로그인 -->
     <select id="login" parameterType="UserVO" resultType="UserVO">
         SELECT T.USRNO, T.USRID, T.PWD, T.USRNM, T.ROLE, T.DELYN, T.BIRTH,
         T.GENDER, T.ADDR, TO_CHAR(T.RDATE, 'YYYY-MM-DD') AS RDATE, T.EMAIL, T.TEL
-        FROM USERS T
-        WHERE T.USRID = #{usrid} AND T.PWD = #{pwd} AND T.DELYN = 'N'
+        FROM USERS T WHERE T.USRID = #{usrid} AND T.PWD = #{pwd} AND T.DELYN = 'N'
     </select>
+
+
+    <insert id="insertLoginHistory" parameterType="UserVO">
+        INSERT INTO MEMBER (NUM, USRID, USRNM, LOGIN_DATE)
+        VALUES (MEMBER_SEQ.NEXTVAL, #{usrid}, #{usrnm}, SYSDATE)
+    </insert>
 </mapper>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,7 +11,6 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useNavigate } from 'react-router-dom';
 import style from "./shopping.module.css";
 import axios from 'axios';
-
 
 ChartJS.register(
     CategoryScale,
@@ -28,17 +27,17 @@ export const options = {
         legend: { display: false },
         tooltip: {
             enabled: true,
-            padding: 16,            // 툴팁 안쪽 여백 (크기 확장)
-            boxPadding: 8,          // 컬러 박스와 텍스트 사이 간격
+            padding: 16,
+            boxPadding: 8,
             titleFont: {
-                size: 18,           // 제목 글씨 크기
+                size: 18,
                 weight: 'bold' as const,
             },
             bodyFont: {
-                size: 16,           // 본문 글씨 크기
+                size: 16,
             },
-            boxWidth: 16,           // 주황색 범례 네모 박스 가로 크기
-            boxHeight: 16,          // 주황색 범례 네모 박스 세로 크기
+            boxWidth: 16,
+            boxHeight: 16,
             callbacks: {
                 label: (context: any) => ` ${context.raw}개 판매`,
             },
@@ -64,8 +63,10 @@ export const options = {
             grid: { display: false },
             border: { display: false },
             ticks: {
-                font: { size: 18, weight: '600' as const },
+                font: { size: 14, weight: '600' as const }, // 글자 겹침을 방지하기 위해 크기만 14로 살짝 조절
                 color: '#475569',
+                maxRotation: 0, // 🔹 대각선 기울어짐 방지 (무조건 수평 고정)
+                minRotation: 0,
             },
         },
         y: {
@@ -76,64 +77,76 @@ export const options = {
     },
 };
 
-interface Product {
-    id: number;
-    name: string;
-    price: number;
-    image: string;
-}
+const SPRING_SERVER_URL = "http://localhost";
+const NO_IMAGE_PLACEHOLDER =
+    "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20fill%3D%22%23f0f0f0%22%20width%3D%22200%22%20height%3D%22200%22%2F%3E%3Ctext%20fill%3D%22%23888888%22%20font-family%3D%22sans-serif%22%20font-size%3D%2216%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
 
-const products: Product[] = [
-    { id: 1, name: "사과(500g)", price: 5000, image: "image/사과.jpg" },
-    { id: 2, name: "복숭아(500g)", price: 7000, image: "image/복숭아.jpg" },
-    { id: 3, name: "배(500g)", price: 5000, image: "image/배.jpg" },
-    { id: 4, name: "체리(500g)", price: 10000, image: "image/체리.jpg" },
-    { id: 5, name: "샤인머스캣(2KG)", price: 8000, image: "image/샤인머스캣.jpg" }
-];
+const getImageUrl = (rawImg?: string) => {
+    if (!rawImg) return NO_IMAGE_PLACEHOLDER;
+    if (
+        rawImg.startsWith("http://") ||
+        rawImg.startsWith("https://") ||
+        rawImg.startsWith("data:")
+    ) {
+        return rawImg;
+    }
+    const fileName = rawImg.split(/[/\\]/).pop();
+    return `${SPRING_SERVER_URL}/dfsms/imgfile/gallery/${fileName}`;
+};
+
+// 백엔드 ChartVO에 맞춰 정의된 타입
+interface TopChartData {
+    productid: number;
+    pnm: string;
+    price: number;
+    imgnm: string;
+    totqty: number;
+}
 
 const TopChart: React.FC = () => {
     const navigate = useNavigate();
-
-    // 🥇 1~3등 메달 이모지 배열
     const medals = ['🥇', '🥈', '🥉'];
-
-    interface TopChartData {
-        PRODUCTID?: number;
-        TITLE: String;
-        BESTITEM?: number;
-    }
     const [topProducts, setTopProducts] = useState<TopChartData[]>([]);
 
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
-    const fetchTopChartData = async () => {
+    const fetchTopChartData = useCallback(async (controller?: AbortController) => {
         try {
-            const url = `${backendUrl}/topchart/bestitem`
-            const response = await axios.get(url);
-
-            const resultList = response.data.data;
+            const url = `${backendUrl}/api/chart/list`;
+            const response = await axios.get(url, { signal: controller?.signal });
+            
+            const resultList: TopChartData[] = response.data.bestdata || [];
             setTopProducts(resultList);
         } catch (error) {
-            console.error("데이터 가져오기 실패:" + error);
+            if (axios.isCancel(error)) {
+                console.log("요청 취소됨");
+            } else {
+                console.error("데이터 가져오기 실패:", error);
+            }
         }
-    }
+    }, [backendUrl]);
+
     useEffect(() => {
-        fetchTopChartData()
-    }, [])
+        const controller = new AbortController();
+        fetchTopChartData(controller);
+
+        return () => {
+            controller.abort();
+        };
+    }, [fetchTopChartData]);
 
     const chartData = {
-        // labels: topProducts.map((item) => item.TITLE || `상품 ${item.PRODUCTID}`),
-        labels: [1,2,3,4,5],
+        // 원래 풀 네임 그대로 전달
+        labels: topProducts.map((item) => item.pnm || `상품 ${item.productid}`),
         datasets: [
             {
-                // data: topProducts.map((item) => item.BESTITEM || 0),
-                data: [5,4,3,2,1],
+                data: topProducts.map((item) => Number(item.totqty || 0)),
                 backgroundColor: [
-                    '#FFD700', // Gold
-                    '#C0C0C0', // Silver
-                    '#CD7F32', // Bronze
-                    '#cbd5e1', // Gray
-                    '#e2e8f0', // Light Gray
+                    '#FFD700', // 1등 Gold
+                    '#C0C0C0', // 2등 Silver
+                    '#CD7F32', // 3등 Bronze
+                    '#cbd5e1', // 4등
+                    '#e2e8f0', // 5등
                 ],
                 borderRadius: 8,
                 barPercentage: 0.45,
@@ -155,31 +168,57 @@ const TopChart: React.FC = () => {
             <section className={style.productSection}>
                 <h3 className={style.sectionTitle}>🛒 Top 5 상품</h3>
                 <div className={style["img-container"]}>
-                    {products.map((item, index) => (
-                        <div
-                            key={item.id}
-                            className={style.productCard}
-                            onClick={() => navigate(`../shopping/${item.id}`, { state: item })}
-                        >
-                            <div className={style.imgWrapper}>
-                                {/* 1, 2, 3등일 때 메달 배지 표시 */}
-                                {index < 3 && (
-                                    <span className={style.badge}>
-                                        {medals[index]}
-                                    </span>
-                                )}
-                                <img
-                                    src={item.image}
-                                    alt={item.name}
-                                    className={style.img}
-                                />
-                            </div>
-                            <div className={style.productInfo}>
-                                <span className={style.productName}>{item.name}</span>
-                                <span className={style.productPrice}>{item.price.toLocaleString()}원</span>
-                            </div>
-                        </div>
-                    ))}
+                    {topProducts && topProducts.length > 0 ? (
+                        topProducts.map((item, index) => {
+                            const imageUrl = getImageUrl(item.imgnm);
+
+                            return (
+                                <div
+                                    key={`top-${item.productid}-${index}`}
+                                    className={style.productCard}
+                                    onClick={() =>
+                                        navigate(`/shopping/${item.productid}`, {
+                                            state: {
+                                                productid: item.productid,
+                                                name: item.pnm,
+                                                price: item.price,
+                                                image: imageUrl,
+                                            },
+                                        })
+                                    }
+                                >
+                                    <div className={style.imgWrapper}>
+                                        {/* 1, 2, 3등 메달 배지 */}
+                                        {index < 3 && (
+                                            <span className={style.badge}>
+                                                {medals[index]}
+                                            </span>
+                                        )}
+                                        <img
+                                            src={imageUrl}
+                                            alt={item.pnm}
+                                            className={style.img}
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.onerror = null;
+                                                target.src = NO_IMAGE_PLACEHOLDER;
+                                            }}
+                                        />
+                                    </div>
+                                    <div className={style.productInfo}>
+                                        <span className={style.productName}>{item.pnm}</span>
+                                        <span className={style.productPrice}>
+                                            {(item.price || 0).toLocaleString()}원
+                                        </span>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <p style={{ textAlign: "center", width: "100%", color: "#888" }}>
+                            불러올 상품 데이터가 없습니다.
+                        </p>
+                    )}
                 </div>
             </section>
         </div>

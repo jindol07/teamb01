@@ -41,6 +41,7 @@ public class OrderController {
 			new ValidVO("NO_MATCHED_ROLE", "해당 기능은 관리자가 이용하실 수 없습니다.");
 		} else {
 			map.put("usrno", String.valueOf(vo.getUsrno()));
+			ovo.setUsrno(vo.getUsrno());
 		}
 		
 		List<OrderItemsVO> oivoList = new ArrayList<>();
@@ -50,6 +51,7 @@ public class OrderController {
 		for(Map<String, Object> item : cartService.cartList(map)) {
 			OrderItemsVO oivo = new OrderItemsVO();
 			Map<String, String> tMap = new HashMap<>();
+			tMap.put("usrno", String.valueOf(vo.getUsrno()));
 			oivo.setPrice(((Number) item.get("PRICE")).intValue());
 			oivo.setProductid(((Number) item.get("PRODUCTID")).intValue());
 			oivo.setQty(((Number) item.get("QTY")).intValue());

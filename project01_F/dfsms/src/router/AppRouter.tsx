@@ -17,6 +17,8 @@ import StockList from "../cont/admin/StockList";
 import StockDetail from '../cont/admin/StockDetail'
 import ItemList from '../cont/admin/ItemList'
 // import ItemDetail from '../cont/admin/ItemDetail'
+import ItemForm from '../cont/admin/ItemForm'
+import ItemDetail from '../cont/admin/ItemDetail'
 
 //장바구니
 import Payment from '../cont/cart/Payment'
@@ -40,6 +42,8 @@ import NoticeDetail from '../cont/community/NoticeDetail'
 import MypageLayout from '../cont/mypage/MypageLayout'
 import OrderList from '../cont/mypage/OrderList'
 import TopChart from '../cont/chart/TopChart'
+import PersonalChart from '../cont/chart/PersonalChart'
+import Usrinfo from '../cont/mypage/Usrinfo'
 
 
 
@@ -77,6 +81,7 @@ const AppRouter: React.FC = () => {
     ,{path:'/community/notice/write', element:<NoticeForm/>}
     ,{path:'/community/notice/:num', element:<NoticeDetail/>}
     ,{path:'/chart/topchart', element:<TopChart/>}
+    ,{path:'/chart/personalchart', element:<PersonalChart/>}
   ]
 
   return (
@@ -94,7 +99,9 @@ const AppRouter: React.FC = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="stocklist" element={<StockList />} />
           <Route path="stockdetail/:no" element={<StockDetail />} />
+          <Route path="itemdetail/:no" element={<ItemDetail />} />
           <Route path="itemlist" element={<ItemList />} />
+          <Route path="itemForm" element={<ItemForm />} />
           {/* <Route path="itemdetail" element={<ItemDetail />} /> */}
           <Route path="surveyList" element={<SurveyList />} />
           <Route path="surveyAdd" element={<SurveyAddForm />} />
@@ -105,7 +112,7 @@ const AppRouter: React.FC = () => {
         <Route path="/mypage" element={<MypageLayout />}>
           <Route path="orderList" element={<OrderList />} />
           <Route path="qna/:no" element={<StockDetail />} />
-          <Route path="usrinfo" element={<ItemList />} />
+          <Route path="usrinfo" element={<Usrinfo />} />
         </Route>
 
       </Routes>
