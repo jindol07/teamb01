@@ -82,5 +82,215 @@
 			,sysdate
 		)
 	</insert>
+	
+
+<select id="selectStockList" resultType="map" parameterType="map">
+SELECT 
+		PRODUCTID
+	   ,CATEGORYID
+	   ,CATEGORYNAME
+	   ,PNM
+	   ,title
+	   ,PRICE
+	   ,QTY
+	   ,IMGNM
+       ,row_num
+       ,rdate
+FROM ( SELECT 
+		a.PRODUCTID
+		,a.CATEGORYID
+		,CASE TO_CHAR(a.CATEGORYID) WHEN '1' THEN '과일류' WHEN '2' THEN '채소류' WHEN '3' THEN '육류' WHEN '4' THEN '어류' WHEN '5' THEN '밀키트' ELSE '기타' END AS CATEGORYNAME
+		, a.PNM
+		,a.title
+		, a.PRICE
+		, a.QTY,
+<!--  💡 [필수 추가] PRODUCTS 테이블의 QTY 컬럼을 가져옴  -->
+		NVL(b.IMGNM, '') AS IMGNM
+		, ROW_NUMBER() OVER(ORDER BY a.PRODUCTID DESC) AS row_num 
+		,a.rdate
+	   FROM PRODUCTS a LEFT JOIN ( 
+									SELECT PRODUCTID
+									, IMGNM 
+									FROM ( SELECT PRODUCTID
+												, IMGNM
+												, ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY IMGNM ASC) as rn 
+											FROM p_Gallery ) WHERE rn = 1 
+										  ) b ON a.PRODUCTID = b.PRODUCTID
+	  <where>
+		a.delyn = 'N'
+	  <if test="searchType != null and searchValue != null">
+					<choose>
+						<when test="searchType == 1">
+							AND PNM like '%'|| #{searchValue} ||'%'
+						</when>
+						<when test="searchType == 2">
+							AND title like '%'|| #{searchValue} ||'%'
+						</when>
+					</choose>
+				</if>
+	  </where>
+	  ) products_numrow_view 
+	  WHERE row_num BETWEEN #{begin} AND #{end}
+</select>
+
+<select id="totCnt" resultType="int" parameterType="map">
+		select count(*) cnt from products
+		<where>
+			AND delyn = 'N'
+			<if test="searchType != null and searchValue != null">
+				<choose>
+					<when test="searchType == 1">
+						AND PNM like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 2">
+						AND title like '%'|| #{searchValue} ||'%'
+					</when>
+				</choose>
+			</if>
+		</where>
+	</select>
+
+<update id="delProduct" parameterType="int">
+	update products set delyn = 'Y' where productid = #{productid}
+</update>
+
+<select id="selectHistory" resultType="HistoryVO" parameterType="map">
+	SELECT
+		HISTORYID
+ 		,PRODUCTID
+ 		,USRNO
+ 		,USRNM
+ 		,qty
+ 		,pnm
+ 		,BFRPNM
+ 		,UPDNM
+ 		,BFRPRICE
+ 		,UPDPRICE
+ 		,BFRTITLE
+ 		,UPDTITLE
+ 		,BFRCONT
+ 		,UPDTCONT
+ 		,BFRQTY
+ 		,UPDTQTY
+ 		,gbn
+ 		,RDATE
+ 		,row_num
+	FROM (
+		SELECT
+ 			h.HISTORYID
+ 			,p.PRODUCTID
+ 			,u.USRNO
+ 			,u.USRNM
+ 			,p.qty
+ 			,p.pnm
+ 			,h.BFRPNM
+ 			,h.UPDNM
+ 			,h.BFRPRICE
+ 			,h.UPDPRICE
+ 			,h.BFRTITLE
+ 			,h.UPDTITLE
+ 			,h.BFRCONT
+ 			,h.UPDTCONT
+ 			,h.BFRQTY
+ 			,h.UPDTQTY
+ 			,h.GBN
+ 			,h.RDATE
+ 			,ROW_NUMBER() OVER(ORDER BY h.HISTORYID DESC) AS row_num
+		FROM P_HISTORY h
+			JOIN USERS u
+				ON h.USRNO = u.USRNO
+			JOIN PRODUCTS p
+				ON p.PRODUCTID = h.PRODUCTID
+		<where>
+			   	1=1
+				<if test="searchType != null and searchValue != null">
+					<choose>
+						<when test="searchType == 1">
+							AND h.gbn like '%'|| #{searchValue} ||'%'
+						</when>
+						<when test="searchType == 2">
+							AND u.USRNM like '%'|| #{searchValue} ||'%'
+						</when>
+					</choose>
+				</if>
+		</where>
+) p_history_view
+WHERE row_num BETWEEN #{begin} AND #{end}
+
+</select>
+
+<select id="historyTotCnt" resultType="int" parameterType="map">
+		select count(*) cnt 
+			from P_HISTORY h
+				JOIN USERS u
+					ON h.USRNO = u.USRNO
+				JOIN PRODUCTS p
+					ON p.PRODUCTID = h.PRODUCTID
+		<where>
+			1=1
+			<if test="searchType != null and searchValue != null">
+				<choose>
+					<when test="searchType == 1">
+						AND h.gbn like '%'|| #{searchValue} ||'%'
+					</when>
+					<when test="searchType == 2">
+						AND u.USRNM like '%'|| #{searchValue} ||'%'
+					</when>
+				</choose>
+			</if>
+		</where>
+	</select>
+	
+	<select id="detailHistory" parameterType="int" resultType="HistoryVO">
+		SELECT
+			h.HISTORYID
+			 ,p.PRODUCTID
+			 ,u.USRNO
+			 ,u.USRNM
+			 ,p.qty
+			 ,p.PNM
+			 ,h.UPDNM
+			 ,p.PRICE
+			 ,h.UPDPRICE
+			 ,p.title
+			 ,h.UPDTITLE
+			 ,p.CONT
+			 ,h.UPDTCONT
+			 ,h.BFRQTY
+			 ,h.UPDTQTY
+			 ,h.GBN
+			 ,h.RDATE
+			FROM  P_HISTORY h
+				JOIN PRODUCTS p
+				ON h.PRODUCTID = p.PRODUCTID
+				JOIN USERS u
+				ON u.USRNO = h.USRNO
+			WHERE historyid = #{historyid}
+	</select>
+	
+	<update id="updateProduct" parameterType="HistoryVO">
+		update products
+			set
+			pnm = #{updnm}
+			,title = #{updtitle}
+			,cont = #{updtcont}
+			,price = #{updprice}
+			,qty = #{updtqty}
+			,rdate = sysdate
+		where productid = #{productid}
+	</update>
+	
+	<update id="updateHistory" parameterType="HistoryVO">
+		update P_HISTORY 
+			set 
+			updnm = #{updnm}
+			,updtitle = #{updtitle}
+			,updtcont = #{updtcont}
+			,updtqty = #{updtqty}
+			,updprice = #{updprice}
+			,usrno = #{usrno}
+			,rdate = sysdate
+		 where historyid = #{historyid}
+	</update>
 
 </mapper>

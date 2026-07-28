@@ -52,6 +52,8 @@ const Cart: React.FC = () => {
     const loginNm = loginInfo?.loginNm;
     const usrno = loginInfo?.usrno
 
+    const navigate = useNavigate();
+
     //서버측에 데이터 요청 시(by axios : 비동기) 조건(params)도 같이 넘김
     const fetchCartList = async () => {
         try {
@@ -89,6 +91,40 @@ const Cart: React.FC = () => {
         // }
 
     }
+    
+    //0727 s
+    const orderhandler = async () => {
+        try {
+            const url = `${backendUrl}/api/order/add`
+            const res = await axios.post( url, {}, // body
+                    {withCredentials: true}
+            )
+
+            if(res.data.code === 'NO_USR_INFO'){
+             //로그인 페이지로 이동
+                alert(res.data.message)
+            }else if(res.data.code === 'NO_MATCHED_ROLE'){
+             alert(res.data.message)
+            }else if(res.data.code === 'LACK_OF_QTY'){
+                alert(res.data.message)
+            }else{ //success
+             alert(res.data.message)
+             navigate('/shoppingList')
+            }
+
+            console.log(res.data.data);
+
+
+            //서버로부터 응답받은 데이터 useState에 바인딩
+            //setProductsList(res.data.data)
+
+        } catch (error) {
+            console.error("데이터 가져오기 실패 :", error);
+            alert(`데이터 가져오기 실패 : ${error}`);
+        }
+
+    }
+    //0727 e
 
     //useEffect를 사용해 최초 한번만 초기화
     useEffect(() => {
@@ -243,7 +279,7 @@ const Cart: React.FC = () => {
                 </tfoot>
             </table>
             <br />
-            <Link to="/payment" className={btnStyle.button}>결제하기</Link>
+            <Link to="" className={btnStyle.button} onClick={orderhandler}>결제하기</Link>
         </div>
     )
 }

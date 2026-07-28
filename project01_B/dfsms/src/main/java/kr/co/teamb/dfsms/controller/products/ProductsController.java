@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import kr.co.teamb.dfsms.cmn.PagingService;
 import kr.co.teamb.dfsms.service.ProductsService;
 import kr.co.teamb.dfsms.vo.GalleryVO;
 import kr.co.teamb.dfsms.vo.PageVO;
 import kr.co.teamb.dfsms.vo.ProductsVO;
+import kr.co.teamb.dfsms.vo.UserVO;
 
 @RestController
 @RequestMapping("/api/products")
@@ -73,7 +75,12 @@ public class ProductsController {
 
 	@PostMapping("/add")
 	public ResponseEntity<?> addProducts(ProductsVO pvo, @RequestParam("images") MultipartFile[] images,
-			HttpServletRequest request) {
+			HttpServletRequest request, HttpSession ss) {
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		if(vo != null) {
+			pvo.setUsrno(vo.getUsrno());
+		}
+		
 		// 이미지들을 저장해서 MyBatis로 보내기 위해서 생성
 		List<GalleryVO> imageList = new ArrayList<>();
 

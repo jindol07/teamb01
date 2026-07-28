@@ -3,18 +3,49 @@
 <mapper namespace="kr.co.teamb.dfsms.dao.ProductsDao">
 <!--  1. 상품 리스트 조회 (카테고리명 변환 + 갤러리 이미지 JOIN + 페이징)  -->
 <select id="selectProductList" resultType="map" parameterType="map">
-SELECT PRODUCTID, CATEGORYID, CATEGORYNAME, PNM, PRICE, QTY,
-<!--  💡 [필수 추가] QTY를 바깥 SELECT 목록에 추가  -->
-IMGNM, row_num FROM ( SELECT a.PRODUCTID, a.CATEGORYID, CASE TO_CHAR(a.CATEGORYID) WHEN '1' THEN '과일류' WHEN '2' THEN '채소류' WHEN '3' THEN '육류' WHEN '4' THEN '어류' WHEN '5' THEN '밀키트' ELSE '기타' END AS CATEGORYNAME, a.PNM, a.PRICE, a.QTY,
+SELECT PRODUCTID
+	   ,CATEGORYID
+	   ,CATEGORYNAME
+	   ,PNM
+	   ,title
+	   ,PRICE
+	   ,QTY
+	   ,IMGNM
+       ,row_num
+       ,rdate
+FROM ( SELECT 
+		a.PRODUCTID
+		,a.CATEGORYID
+		,CASE TO_CHAR(a.CATEGORYID) WHEN '1' THEN '과일류' WHEN '2' THEN '채소류' WHEN '3' THEN '육류' WHEN '4' THEN '어류' WHEN '5' THEN '밀키트' ELSE '기타' END AS CATEGORYNAME
+		, a.PNM
+		,a.title
+		, a.PRICE
+		, a.QTY,
 <!--  💡 [필수 추가] PRODUCTS 테이블의 QTY 컬럼을 가져옴  -->
-NVL(b.IMGNM, '') AS IMGNM, ROW_NUMBER() OVER(ORDER BY a.PRODUCTID DESC) AS row_num FROM PRODUCTS a LEFT JOIN ( SELECT PRODUCTID, IMGNM FROM ( SELECT PRODUCTID, IMGNM, ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY IMGNM ASC) as rn FROM p_Gallery ) WHERE rn = 1 ) b ON a.PRODUCTID = b.PRODUCTID
-<where>
-a.delyn = 'N'
-<if test="searchValue != null and searchValue != '' and searchValue != 'all'"> AND a.CATEGORYID = #{searchValue} </if>
-<if test="searchType != null and searchType != ''"> AND a.PNM LIKE '%' || #{searchType} || '%' </if>
-</where>
-) products_numrow_view WHERE row_num BETWEEN #{begin} AND #{end}
+		NVL(b.IMGNM, '') AS IMGNM
+		, ROW_NUMBER() OVER(ORDER BY a.PRODUCTID DESC) AS row_num 
+		,a.rdate
+	   FROM PRODUCTS a LEFT JOIN ( 
+									SELECT PRODUCTID
+									, IMGNM 
+									FROM ( SELECT PRODUCTID
+												, IMGNM
+												, ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY IMGNM ASC) as rn 
+											FROM p_Gallery ) WHERE rn = 1 
+										  ) b ON a.PRODUCTID = b.PRODUCTID
+	  <where>
+		a.delyn = 'N'
+	  <if test="searchValue != null and searchValue != '' and searchValue != 'all'"> 
+	  		AND a.CATEGORYID = #{searchValue} 
+	  </if>
+	  <if test="searchType != null and searchType != ''"> 
+	  		AND a.PNM LIKE '%' || #{searchType} || '%' 
+	  </if>
+	  </where>
+	  ) products_numrow_view 
+	  WHERE row_num BETWEEN #{begin} AND #{end}
 </select>
+
 <!--  2. 전체 상품 개수 조회 (페이징용)  -->
 <select id="totalCount" resultType="int" parameterType="map">
 SELECT count(*) cnt FROM PRODUCTS a
@@ -24,8 +55,35 @@ a.delyn = 'N'
 <if test="searchType != null and searchType != ''"> AND a.PNM LIKE '%' || #{searchType} || '%' </if>
 </where>
 </select>
+
 <!--  3. 상품 상세 조회  -->
-<select id="selectProductDetail" resultType="ProductsVO" parameterType="int"> SELECT a.PRODUCTID, a.CATEGORYID, a.PNM, a.PRICE, b.IMGNM FROM PRODUCTS a LEFT JOIN ( SELECT PRODUCTID, IMGNM FROM ( SELECT PRODUCTID, IMGNM, ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY PRODUCTID ASC) as rn FROM p_Gallery ) WHERE rn = 1 ) b ON a.PRODUCTID = b.PRODUCTID WHERE a.PRODUCTID = #{productid} </select>
+<select id="selectProductDetail" resultType="ProductsVO" parameterType="int"> 
+SELECT 
+	a.PRODUCTID
+	,a.CATEGORYID
+	,a.PNM
+	,a.PRICE
+	,b.IMGNM 
+FROM 
+	PRODUCTS a 
+		LEFT JOIN (
+					SELECT 
+						PRODUCTID
+					   ,IMGNM 
+					FROM 
+					   ( SELECT
+					   	   PRODUCTID
+						  ,IMGNM
+						  ,ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY PRODUCTID ASC) as rn 
+					 	 FROM p_Gallery
+					 	) 
+					WHERE rn = 1 
+					) b 
+			ON a.PRODUCTID = b.PRODUCTID
+WHERE 
+	a.PRODUCTID = #{productid}
+</select>
+
 <!--  4. 상품 추가  -->
 <insert id="addProduct" parameterType="ProductsVO"> INSERT INTO products VALUES ( products_seq.NEXTVAL, #{categoryid}, #{pnm}, #{price}, #{qty}, #{title}, #{cont}, 0, 'N', sysdate ) </insert>
 <!--  5. 갤러리 이미지 다중 추가  -->

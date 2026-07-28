@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./shoppingDetail.module.css";
+import axios from "axios";
 
 // 이미지 로딩 실패 시 기본 이미지 (SVG)
 const NO_IMAGE_PLACEHOLDER =
@@ -38,6 +39,8 @@ const ShoppingDetail: React.FC = () => {
 
   const rawProduct = location.state as ProductState | null;
 
+  //const [products, setProducts] = useState<ProductState>()
+
   // 수량 상태 관리 (기본값 1)
   const [quantity, setQuantity] = useState<number>(1);
 
@@ -58,12 +61,15 @@ const ShoppingDetail: React.FC = () => {
   const productPrice = Number(rawPrice) || 0;
   const productCont = rawProduct.cont || rawProduct.CONT || "상품 상세 설명이 없습니다.";
   const categoryName = rawProduct.categoryName || rawProduct.CATEGORYNAME || "Fresh Food";
-  
+  //0727
+  const productid = rawProduct.productid ?? rawProduct.PRODUCTID ?? null
+
   // RAW 이미지 파일명/경로 추출
   const rawImage = rawProduct.image || rawProduct.imgnm || rawProduct.IMGNM || rawProduct.pimg;
 
   // 재고 수량 추출
   const stockQty = rawProduct.qty ?? rawProduct.QTY ?? 0;
+
   const maxAllowedQty = Math.max(stockQty, 1);
 
   // static/imgfile/gallery 저장 경로에 맞춘 URL 생성 함수
@@ -100,72 +106,55 @@ const ShoppingDetail: React.FC = () => {
       setQuantity(value);
     }
   };
-  
-// 장바구니 담기 버튼 클릭 이벤트
-const handleAddToCart = () => {
-  // 현재 선택한 상품 정보를 객체로 생성
-  const cartItem = {
-    // 상품 번호 (백엔드 데이터가 소문자/대문자 둘 다 올 수 있어서 처리)
-    productid: rawProduct.productid || rawProduct.PRODUCTID,
-    // 상품명
-    productName,
-    // 상품 가격
-    price: productPrice,
-    // 선택한 수량
-    quantity
-  };
-  // 기존 localStorage에 저장되어 있는 장바구니 데이터 가져오기
-  // 데이터가 없으면 빈 배열([])로 초기화
-let existingCart = [];
-try {
- existingCart = JSON.parse(
-   localStorage.getItem("cart") || "[]"
- );
-} catch {
- existingCart = [];
-}
-// 기존 장바구니 목록에서 현재 추가하려는 상품과 같은 상품이 있는지 찾기
-// findIndex는 조건에 맞는 상품의 배열 위치(index)를 반환하고,
-// 없으면 -1을 반환함
-const index = existingCart.findIndex(
-  (item: any) => item.productid === cartItem.productid
-);
-if (index >= 0) {
-  // 기존 장바구니 상품의 수량에 선택한 수량을 추가
-  const newQty = existingCart[index].quantity + quantity;
-  // 재고 수량을 초과하지 않도록 최대 수량 제한
-  existingCart[index].quantity =
-    newQty > maxAllowedQty ? maxAllowedQty : newQty;
-} else {
-  // 같은 상품이 없는 경우
-  // 새로운 상품 정보를 장바구니 배열에 추가
-  existingCart.push(cartItem);
-}
-// 변경된 장바구니 데이터를 localStorage에 저장
-// localStorage는 문자열만 저장 가능하므로 JSON 문자열 형태로 변환
-localStorage.setItem(
-  "cart",
-  JSON.stringify(existingCart)
-);
-  // 사용자에게 상품 추가 완료 메시지 표시
-  alert(`${productName} ${quantity}개가 장바구니에 담겼습니다!`);
-};
 
-// 장바구니 페이지로 이동하면서 로그인 여부 확인하는 함수
-const handleClick = () => {
-  const user = JSON.parse(
-    sessionStorage.getItem("loginInfo") || "null"
-  );
-  
-  // loginNm(이름)이나 role(권한)이 존재하면 로그인된 상태로 인정
-  if (!user || !user.loginNm) {
-    alert("로그인이 필요합니다.");
-    navigate("/login");
-    return;
-  }
-  
-  navigate("/cart");
-};
+  // 장바구니 담기 버튼 클릭 이벤트
+  //0727 s
+  const handleAddToCart = async () => {
+    try {
+          const url = `${backendUrl}/api/cart/add`
+          const res = await axios.get(url, {
+            params: {
+              productid: productid
+              ,qty: quantity
+            }
+            ,withCredentials: true
+          });
+          console.log(res.data);
+          if(res.data.code === 'NO_USR_INFO'){
+             //로그인 페이지로 이동
+             alert(res.data.message)
+          }else if(res.data.code === 'NO_MATCHED_ROLE'){
+             alert(res.data.message)
+          }else if(res.data.code === 'LACK_OF_QTY'){
+             alert(res.data.message)
+          }else if(res.data.code === 'ALREADY_EXIST'){
+             alert(res.data.message)
+          }else{
+             alert(res.data.message)
+          }
+          //서버로부터 응답받은 데이터 useState에 바인딩
+    
+        } catch (error) {
+          console.error("데이터 가져오기 실패:" + error);
+        }
+  };
+  //0727 e
+
+  // 장바구니 페이지로 이동하면서 로그인 여부 확인하는 함수
+  const handleClick = () => {
+    const user = JSON.parse(
+      sessionStorage.getItem("loginInfo") || "null"
+    );
+
+    // loginNm(이름)이나 role(권한)이 존재하면 로그인된 상태로 인정
+    if (!user || !user.loginNm) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
+
+    navigate("/cart");
+  };
   // 실시간 총 금액
   const totalPrice = productPrice * quantity;
 
@@ -192,7 +181,7 @@ const handleClick = () => {
         <div className={style.rightSection}>
           <span className={style.category}>{categoryName}</span>
           <h2 className={style.productName}>{productName}</h2>
-          
+
           {/* 상품 단가 */}
           <p className={style.productPrice}>
             {productPrice.toLocaleString()}원
@@ -240,7 +229,7 @@ const handleClick = () => {
 
       {/* 하단 버튼 영역 */}
       <div className={style.bottomSection}>
-        <button  disabled={stockQty <= 0} className={style.cartBtn} onClick={handleAddToCart}>
+        <button disabled={stockQty <= 0} className={style.cartBtn} onClick={handleAddToCart}>
           장바구니 담기
         </button>
         <button className={style.goToCartBtn} onClick={handleClick}>
@@ -250,7 +239,7 @@ const handleClick = () => {
           뒤로가기
         </button>
       </div>
-      </div>
+    </div>
   );
 };
 
