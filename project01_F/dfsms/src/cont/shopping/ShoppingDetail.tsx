@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./shoppingDetail.module.css";
+import axios from "axios";
 
 // 이미지 로딩 실패 시 기본 이미지 (SVG)
 const NO_IMAGE_PLACEHOLDER =
@@ -30,7 +31,7 @@ interface ProductState {
   image?: string;
 }
 
-const SPRING_SERVER_URL = "http://localhost:80";
+const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
 const ShoppingDetail: React.FC = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const ShoppingDetail: React.FC = () => {
   const productPrice = Number(rawPrice) || 0;
   const productCont = rawProduct.cont || rawProduct.CONT || "상품 상세 설명이 없습니다.";
   const categoryName = rawProduct.categoryName || rawProduct.CATEGORYNAME || "Fresh Food";
+  const productid = rawProduct.productid ?? rawProduct.PRODUCTID ?? null;
   
   // RAW 이미지 파일명/경로 추출
   const rawImage = rawProduct.image || rawProduct.imgnm || rawProduct.IMGNM || rawProduct.pimg;
@@ -68,8 +70,9 @@ const ShoppingDetail: React.FC = () => {
 
   // static/imgfile/gallery 저장 경로에 맞춘 URL 생성 함수
   const getImageUrl = (imgStr?: string) => {
+    // 이미지 문자열이 없거나 비어있는 경우 기본 대체 이미지(PLACEHOLDER) 변환
     if (!imgStr) return NO_IMAGE_PLACEHOLDER;
-
+    // 이미 절대 경로이거너(http/https)이거나 Base64 데이터(data:) 형태인 경우 그대로 반환
     if (
       imgStr.startsWith("http://") ||
       imgStr.startsWith("https://") ||
@@ -77,98 +80,82 @@ const ShoppingDetail: React.FC = () => {
     ) {
       return imgStr;
     }
-
+    // 파일 경로에서 슬래시(/ 또는 \)를 기준으로 파일 이름만 추출
     const fileName = imgStr.split(/[/\\]/).pop();
-    return `${SPRING_SERVER_URL}/dfsms/imgfile/gallery/${fileName}`;
+    // 백엔드 서버의 갤러리 이미지 경로와 조합하여 완성된 URL 반환
+    return `${backendUrl}/imgfile/gallery/${fileName}`;
   };
-
+  // 원본 이미지 데이터를 함수에 전달하여 렌더링에 사용할 최종 이미지 소스(URL) 생성
   const imageSrc = getImageUrl(rawImage);
 
   // 수량 입력 핸들러
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 입력창에 (input)의 현재 값 가져오기
     const val = e.target.value;
+    // 입력값이 비어 있는경우 (백스페이스 등으로 다 지운 상태)
     if (val === "") {
-      setQuantity(1);
+      setQuantity(1); // 기본 값 1로 설정
       return;
     }
+    // 입력된 문자열을 10진수 정수로 변환
     const value = parseInt(val, 10);
+    // 숫자가 아니거나(NaN) 1미만의 숫자인 경우
     if (isNaN(value) || value < 1) {
-      setQuantity(1);
+      setQuantity(1); // 최소값인 1로 설정
+      // 허용돤 최대 수량(maxAllowedQty)을 초과한 경우
     } else if (value > maxAllowedQty) {
-      setQuantity(maxAllowedQty);
+      setQuantity(maxAllowedQty); // 최대 허용 수량으로 제한
+      // 정상적인 범위 내의 값인 경우
     } else {
-      setQuantity(value);
+      setQuantity(value); // 입력된 값으로 수량 설정
     }
   };
   
 // 장바구니 담기 버튼 클릭 이벤트
-const handleAddToCart = () => {
-  // 현재 선택한 상품 정보를 객체로 생성
-  const cartItem = {
-    // 상품 번호 (백엔드 데이터가 소문자/대문자 둘 다 올 수 있어서 처리)
-    productid: rawProduct.productid || rawProduct.PRODUCTID,
-    // 상품명
-    productName,
-    // 상품 가격
-    price: productPrice,
-    // 선택한 수량
-    quantity
-  };
-  // 기존 localStorage에 저장되어 있는 장바구니 데이터 가져오기
-  // 데이터가 없으면 빈 배열([])로 초기화
-let existingCart = [];
+const handleAddToCart = async() => {
 try {
- existingCart = JSON.parse(
-   localStorage.getItem("cart") || "[]"
- );
-} catch {
- existingCart = [];
+      // 장바구니 추가 API 앤드포인트 URL 생성
+      const url = `${backendUrl}/api/cart/add`
+      // Axios를 이용한 GET 요청 전송 (쿼리 파라미터와 쿠기 인증 포함)
+      const res = await axios.get(url,{
+        params:{
+          productid : productid, // 상품 ID
+          qty:quantity // 수량
+        }
+        ,withCredentials:true // 쿠키를 포함하여 요청 전송 (세션/인증 유지)
+      });
+      // 서버 응답 데이터 콘솔 출력
+      console.log(res.data);
+      // 응답 코드(code)에 따른 분기 처리 및 사용자 알림(alert)
+      if(res.data.code === 'NO_USR_INFO'){
+        alert(res.data.message) // 사용자 정보가 없는 경우
+      }else if(res.data.code === 'NO_MATCHED_ROLE'){
+        alert(res.data.message) // 권한이 일치하지 않는 경우
+      }else if(res.data.code === 'LACK_OF_QTY'){
+        alert(res.data.message) // 재고수량이 부족한 경우
+      }else if(res.data.code === 'ALREADY_EXIST'){
+        alert(res.data.message) // 이미 장바구니에 있는 경우
+      }else{
+        alert(res.data.message) // 그 외 성공 또는 기타 메세지 처리
+      }
+} catch (error) {
+  console.error("데이터 가져오기 실패:" + error);
 }
-// 기존 장바구니 목록에서 현재 추가하려는 상품과 같은 상품이 있는지 찾기
-// findIndex는 조건에 맞는 상품의 배열 위치(index)를 반환하고,
-// 없으면 -1을 반환함
-const index = existingCart.findIndex(
-  (item: any) => item.productid === cartItem.productid
-);
-if (index >= 0) {
-  // 기존 장바구니 상품의 수량에 선택한 수량을 추가
-  const newQty = existingCart[index].quantity + quantity;
-  // 재고 수량을 초과하지 않도록 최대 수량 제한
-  existingCart[index].quantity =
-    newQty > maxAllowedQty ? maxAllowedQty : newQty;
-} else {
-  // 같은 상품이 없는 경우
-  // 새로운 상품 정보를 장바구니 배열에 추가
-  existingCart.push(cartItem);
-}
-// 변경된 장바구니 데이터를 localStorage에 저장
-// localStorage는 문자열만 저장 가능하므로 JSON 문자열 형태로 변환
-localStorage.setItem(
-  "cart",
-  JSON.stringify(existingCart)
-);
-  // 사용자에게 상품 추가 완료 메시지 표시
-  alert(`${productName} ${quantity}개가 장바구니에 담겼습니다!`);
 };
-
-  // 
-// 장바구니 페이지로 이동하면서 사용자 번호(useno) 상태를 함께 전달하는 함수
-  const handleClick = () => {
+// 장바구니 페이지로 이동하면서 로그인 여부 확인하는 함수
+const handleClick = () => {
   const user = JSON.parse(
-    localStorage.getItem("user") || "null"
+    sessionStorage.getItem("loginInfo") || "null"
   );
-  if (!user?.useno) {
+  
+  // loginNm(이름)이나 role(권한)이 존재하면 로그인된 상태로 인정
+  if (!user || !user.loginNm) {
     alert("로그인이 필요합니다.");
     navigate("/login");
     return;
   }
-  navigate("/cart", {
-    state: {
-      useno: user.useno
-    }
-  });
+  navigate("/cart");
 };
-
   // 실시간 총 금액
   const totalPrice = productPrice * quantity;
 
