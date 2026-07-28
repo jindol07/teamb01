@@ -11,38 +11,62 @@
 		SELECT COUNT(productid)
 		FROM P_CART 
 		WHERE USRNO = #{usrno} 
-		 and productid = #{productid}
+		and productid = #{productid}
 	</select>
 
+	<!-- Map<String, Object> cartSValid(Map<String, String> map); -->
+	<!-- 상품의 전체 재고 - 디테일에서 사용자가 장바구니에 담은 수량 - 장바구니에서 +버튼으로 추가하려는 수량 -->
+	<!-- NVL(c.qty, 0) : 장바구니에 아무것도 없다면(null) 장바구니 수량을 0개로 취급 -->
 	<select id="cartSValid" parameterType="map" resultType="map">
-		SELECT
-		  qty - #{qty} as qty
-		FROM PRODUCTS 
-		WHERE productid = #{productid}
+		SELECT p.qty - NVL(c.qty, 0) - #{qty} AS qty
+		FROM PRODUCTS p
+		LEFT JOIN P_CART c
+			ON p.productid = c.productid
+			AND c.usrno = #{usrno}
+		WHERE p.productid = #{productid}
 	</select>
 
 	<select id="cartList" parameterType="map" resultType="map">
-		SELECT
-		c.productid
-		,p.categoryid
-		,p.pnm
-		,p.title
-		,DBMS_LOB.SUBSTR(p.cont, 200, 1) as cont
-		,p.qty as pqty
-		,c.qty
-		,p.price
-		,p.price * c.qty subtot
-		,u.usrnm
-		FROM P_CART c
-		JOIN products p
-		ON c.productid = p.productid
-		JOIN USERS u
-		ON u.usrno = c.usrno
-		WHERE u.usrno = #{usrno}
-	</select>
+    	SELECT
+        	c.productid
+        	,p.categoryid
+        	,p.pnm
+        	,p.title
+        	,DBMS_LOB.SUBSTR(p.cont, 200, 1) as cont
+        	,p.qty as pqty
+        	,c.qty
+        	,p.price
+        	,p.price * c.qty subtot
+        	,u.usrnm
+        	,g.imgnm
+    	FROM P_CART c
+    	JOIN PRODUCTS p
+        	ON c.productid = p.productid
+    	JOIN USERS u
+        	ON u.usrno = c.usrno
+    	LEFT JOIN P_GALLERY g
+        	ON p.productid = g.productid
+    	WHERE u.usrno = #{usrno}
+</select>
 
+	<!-- void updateQty(Map<String, String> map); -->
+	<update id="updateQty" parameterType="map">
+		UPDATE P_CART
+		SET QTY = QTY + #{qty}
+		WHERE USRNO = #{usrno}
+		AND PRODUCTID = #{productid}
+	</update>
+
+	<!-- void delCart(Map<String, String> map); -->
 	<delete id="delCart" parameterType="map">
 		delete from P_CART where usrno = #{usrno}
+	</delete>
+	
+	<!-- void delOneCartProduct(Map<String, String> map); -->
+	<delete id="delOneCartProduct" parameterType="map">
+		DELETE FROM P_CART
+		WHERE USRNO = #{usrno}
+		AND PRODUCTID = #{productid}
 	</delete>
 
 </mapper>

@@ -9,25 +9,25 @@
     padding: 10px;
 }
 
-/* 구매여부 체크 */
-.boardTable th:nth-child(1),
-.boardTable td:nth-child(1) {
-    width: 11%;
-    text-align: center;
-}
 
 /* 상품 정보 */
-.boardTable th:nth-child(2),
-.boardTable td:nth-child(2) {
-    width: 80%;
+.boardTable th:nth-child(1),
+.boardTable td:nth-child(1) {
+    width: 90%;
+    text-align: center;
 }
 
 /* 합계 금액 */
-.boardTable th:nth-child(3),
+.boardTable th:nth-child(2),
+.boardTable td:nth-child(2) {
+    width: 10%;
+}
+
+/* .boardTable th:nth-child(3),
 .boardTable td:nth-child(3) {
     width: 9%;
     text-align: center;
-}
+} */
 
 .boardTable thead {
     background-color: rgb(213, 228, 245);

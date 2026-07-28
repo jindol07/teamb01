@@ -51,6 +51,7 @@ public class OrderController {
 		for(Map<String, Object> item : cartService.cartList(map)) {
 			OrderItemsVO oivo = new OrderItemsVO();
 			Map<String, String> tMap = new HashMap<>();
+			tMap.put("usrno", String.valueOf(vo.getUsrno()));
 			oivo.setPrice(((Number) item.get("PRICE")).intValue());
 			oivo.setProductid(((Number) item.get("PRODUCTID")).intValue());
 			oivo.setQty(((Number) item.get("QTY")).intValue());

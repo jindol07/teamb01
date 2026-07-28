@@ -21,4 +21,8 @@ public interface CartDao {
 	List<Map<String, Object>> cartList(Map<String, String> map);
 	
 	void delCart(Map<String, String> map);
+	
+	void updateQty(Map<String, String> map);
+	
+	void delOneCartProduct(Map<String, String> map);
 }
