@@ -40,6 +40,8 @@ import NoticeDetail from '../cont/community/NoticeDetail'
 import MypageLayout from '../cont/mypage/MypageLayout'
 import OrderList from '../cont/mypage/OrderList'
 import TopChart from '../cont/chart/TopChart'
+import PersonalChart from '../cont/chart/PersonalChart'
+import Usrinfo from '../cont/mypage/Usrinfo'
 
 
 
@@ -77,6 +79,7 @@ const AppRouter: React.FC = () => {
     ,{path:'/community/notice/write', element:<NoticeForm/>}
     ,{path:'/community/notice/:num', element:<NoticeDetail/>}
     ,{path:'/chart/topchart', element:<TopChart/>}
+    ,{path:'/chart/personalchart', element:<PersonalChart/>}
   ]
 
   return (
@@ -105,7 +108,7 @@ const AppRouter: React.FC = () => {
         <Route path="/mypage" element={<MypageLayout />}>
           <Route path="orderList" element={<OrderList />} />
           <Route path="qna/:no" element={<StockDetail />} />
-          <Route path="usrinfo" element={<ItemList />} />
+          <Route path="usrinfo" element={<Usrinfo />} />
         </Route>
 
       </Routes>

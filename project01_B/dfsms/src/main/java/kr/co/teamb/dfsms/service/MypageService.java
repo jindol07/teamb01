@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.teamb.dfsms.dao.MyPageDao;
+import kr.co.teamb.dfsms.vo.UserVO;
 
 @Service
 public class MypageService {
@@ -49,6 +50,15 @@ public class MypageService {
 
 	public int totCnt(Map<String, String> map) {
 		return myPageDao.totCnt(map);
+	}
+
+
+	public int updateUserInfo(UserVO vo) {
+		return myPageDao.updateUserInfo(vo);
+	}
+
+	public UserVO selectUsrInfo(UserVO vo) {
+		return myPageDao.selectUsrInfo(vo);
 	}
 
 }

@@ -14,16 +14,16 @@ public class UserVO {
 
 private int usrno;
 private String usrid;
-private String pwd;
+private String pwd;		// *
 private String usrnm;
 private char role;
 private char delyn;
 private int birth;
 private char gender;
-private String addr;
-private String rdate;
-private String email;
-private String tel;
+private String addr;	// *
+private String rdate;	// * (sysdate DB Update 전환)
+private String email;	// *
+private String tel;		// *
 
 // 이메일 인증번호
 private String code;
