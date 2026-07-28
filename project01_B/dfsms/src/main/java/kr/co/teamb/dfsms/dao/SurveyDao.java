@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import kr.co.teamb.dfsms.vo.SurveyAnswerVO;
 import kr.co.teamb.dfsms.vo.SurveyQuestionVO;
 import kr.co.teamb.dfsms.vo.SurveyVO;
 
@@ -13,7 +14,8 @@ import kr.co.teamb.dfsms.vo.SurveyVO;
 public interface SurveyDao {
 	void saveSurvey(SurveyVO vo);
 	void saveSurveyQuestionList(List<SurveyQuestionVO> list);
-	void incrementSurveyQuestion(@Param("subcode") int subcode, @Param("surveytype") String surveytype);
+	void insertSurveyAnswers(List<SurveyAnswerVO> list);
 	Long getSurveyCount();
+	SurveyVO getSurvey(Long num);
 	SurveyVO getSurveyQuestions(Long num);
 }

@@ -5,20 +5,26 @@
 		insert into p_survey values (p_survey_seq.nextVal, #{usrno}, #{surveytitle}, #{status}, sysdate, TO_DATE(#{startdate}, 'YYYY-MM-DD'), 
 		TO_DATE(#{enddate}, 'YYYY-MM-DD'))
 	</insert>
-	<insert id="saveSurveyContentList" parameterType="java.util.List">
+	
+	<insert id="saveSurveyQuestionList" parameterType="java.util.List">
 		insert all 
 		<foreach collection="list" item="item"> 
-			into p_survey_question values (p_survey_question.nextVal, p_survey_seq.CURRVAL, #{item.questiontitle}, 
-				#{item.questiontype}, #{item.questionlist}, #{item.sort_order}
+			into p_survey_question values (p_survey_question_seq.nextVal, p_survey_seq.CURRVAL, #{item.questiontitle}, 
+				#{item.questiontype}, #{item.questionlistJson}, #{item.sort_order}
 			)
 		</foreach>
 		select * from dual
 	</insert>
+	
 	<select id="getSurveyCount" resultType="Long">
 		select max(surveyid) from p_survey where status = 'ACTIVE'
 	</select> 
 	
-	<!--property: vo member, column: alias -->
+	<select id="getSurvey" resultType="kr.co.teamb.dfsms.vo.SurveyVO">
+		select surveyid, usrno, surveytitle, status, startdate, enddate, rdate from p_survey where surveyid = #{num}
+	</select>
+	
+	<!--property: vo member, column: query alias -->
 	<resultMap id="surveyWithContentMap" type="kr.co.teamb.dfsms.vo.SurveyVO">   
 		<id property="surveyid" column="sid" />
 		<result property="surveytitle" column="title" />
@@ -31,7 +37,7 @@
 			<result property="surveyid" column="fsid" />
 			<result property="questiontitle" column="questiontitle" />
 			<result property="questiontype" column="questiontype" />
-			<result property="questionlist" column="questionlist" />
+			<result property="questionlistJson" column="questionlist" />
 			<result property="sort_order" column="sort_order" />
 		</collection>
 	</resultMap>
@@ -41,49 +47,16 @@
 		sq.questionlist AS questionlist, sq.sort_order AS sort_order 
 		FROM p_survey s, p_survey_question sq WHERE s.surveyid = sq.surveyid AND s.surveyid = #{num}
 	</select>
-	
-	
-<!--	<select id="getSurveyQuestions"
-        parameterType="Long"
-        resultType="map">
-
-    SELECT
-        s.surveyid AS sid,
-        s.surveytitle AS title,
-        sq.questionid AS qid,
-        sq.surveyid AS fsid
-    FROM p_survey s
-    INNER JOIN p_survey_question sq
-        ON s.surveyid = sq.surveyid
-    WHERE s.surveyid = #{num}
-
-</select>-->
-<!--	<resultMap id="surveyWithContentMap" type="kr.co.teamb.dfsms.vo.SurveyVO">   property: vo member, column: alias 
-		<id property="surveyid" column="sid" />
-		<result property="surveytitle" column="title" />
-		<result property="status" column="status" />
-		<result property="rdate" column="surveyRegDate" />
-	</resultMap>
-	<select id="getSurveyQuestions" parameterType="Long" resultType="kr.co.teamb.dfsms.vo.SurveyVO">
-		SELECT 
-		s.surveyid AS sid, 
-		s.surveytitle AS title, 
-		s.status AS status, 
-		s.rdate AS surveyRegDate	
-		FROM 
-		p_survey s, 
-		p_survey_question sq 
-		WHERE 
-		s.surveyid = #{num}
-	</select>-->
-
-	
-<!--	<select id="getSurveyQuestions" parameterType="Long" resultType="kr.co.teamb.dfsms.vo.SurveyVO">
-	    SELECT surveyid AS surveyid, surveytitle AS surveytitle, status AS status 
-	    FROM p_survey 
-	    WHERE surveyid = #{num}
-	</select>-->
-	<update id="incrementSurveyCount">
-		update p_survey_cont set surveycnt = surveycnt + 1 where surveyid=#{subcode} and surveytype=#{surveytype}
-	</update>
+<!--	<insert id="incrementSurveyCount" parameterType="map">
+		INSERT INTO p_survey_answer VALUES (p_survey_answer_seq.NEXTVAL, 1, 12, 48, 
+			'{"id": 2, "value":"기타", "text": "자동차" }', sysdate
+		);
+	</insert>-->
+	<insert id="insertSurveyAnswers" parameterType="java.util.List">
+		INSERT ALL
+		<foreach collection="list" item="item"> 
+			INTO p_survey_answer values (p_survey_answer_seq.NEXTVAL, #{item.userid}, #{item.surveyid}, #{item.questionid}, #{item.answerdataJson}, sysdate)
+		</foreach>
+		SELECT * FROM DUAL
+	</insert>
 </mapper>

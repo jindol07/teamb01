@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.teamb.dfsms.service.SurveyService;
+import kr.co.teamb.dfsms.vo.SurveyAnswerVO;
+import kr.co.teamb.dfsms.vo.SurveyQuestionVO;
 import kr.co.teamb.dfsms.vo.SurveyVO;
 
 @RestController
@@ -24,23 +26,20 @@ public class SurveyController {
 	
 	@PostMapping("/addsurvey")
 	public ResponseEntity<String> saveSurvey(@RequestBody SurveyVO vo) {
-//		{
-//		    "usrno" : 1,
-//		    "surveytitle" : "첫번째 테스트 설문글",
-//		    "status": "ACTIVE",
-//		    "startdate": "2026-07-27",
-//		    "enddate" : "2026-07-29"
-//		}
 		System.out.println(vo);
 		System.out.println(vo.getSurveytitle());
 		surveyService.saveSurvey(vo);
-		System.out.println("sub: " + vo.getSurveytitle());
-		System.out.println("title: " + vo.getQuestionList());
+		System.out.println("title: " + vo.getSurveytitle());
 		return ResponseEntity.ok("success");
 	}
 	@GetMapping("/latest")
 	public ResponseEntity<SurveyVO> getLatestSurvey() {
-		SurveyVO surveyVO = surveyService.getSurveyQuestions(surveyService.getSurveyCount());
+		Long lastItem = surveyService.getSurveyCount();
+		if (lastItem == null) {
+			System.out.println("현재 등록되거나 활성화된 설문조사가 없습니다.");
+			return ResponseEntity.noContent().build();
+		}
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(lastItem);
 		if (surveyVO != null) {
 			return ResponseEntity.ok(surveyVO);
 		} else {
@@ -66,20 +65,23 @@ public class SurveyController {
 			return ResponseEntity.noContent().build();
 		}
 	}
-	@PostMapping("/updateCount")
-	public ResponseEntity<String> incrementSurveyCount(@RequestBody Map<String, Object> payload) {
-		int subcode = (int) payload.get("subcode");
-		String surveytype = (String) payload.get("surveytype");
-		System.out.println("subcode: " + subcode);
-		System.out.println("surveytype: " + surveytype);
+	@PostMapping("/answers")
+	public ResponseEntity<String> insertSurveyAnswers(@RequestBody List<SurveyAnswerVO> list) {
+//		int subcode = (int) list.get("subcode");
+//		String surveytype = (String) list.get("surveytype");
+//		System.out.println("subcode: " + subcode);
+//		System.out.println("surveytype: " + surveytype);
+		System.out.println(1111);
 		try {
-			surveyService.incrementSurveyCount(subcode, surveytype);
+			surveyService.insertSurveyAnswers(list);
 			return ResponseEntity.ok("update complete!");
 		} catch (Exception e) {
+			System.out.println(e);
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
 		}
 	}
+//	@PostMapping("/tempsave")
 	
 	
 	
