@@ -28,7 +28,7 @@ const StockDetail: React.FC = () => {
     useEffect(() => {
         //axios를 사용해서 server api의 데이터를 받은 후 useState에 저장
         //const detailServer = async () => {
-        //const url = `http://192.168.0.39/myictstudy/stock/stockdetail?num=${no}`
+        //const url = `http://192.168.0.7/myictstudy/stock/stockdetail?num=${no}`
         //const res = await axios.get(url) //여기가 xhr's 콜백함수 부분이라고 보면 된다! 즉, 성공시(4 & 200)에만 반환!
         //console.log('Server Data')
         //console.log(res.data)

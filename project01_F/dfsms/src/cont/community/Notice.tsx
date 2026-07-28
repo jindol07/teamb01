@@ -22,7 +22,7 @@ const Notice: React.FC = () => {
     { name: "작성일", key: "rdate", width: 20 },
   ];
 
-  //http://192.168.0.39/dfsms/api/community/list?cPage=1&searchType=1&searchValue=무조건
+
   // ㄴ 서버에서 받아온 JSON 데이터를 JSOjbect 배열로 저장할 useState
   const [myNotice, setMyNotice] = useState<any>([]);
   //페이징 useState
@@ -34,7 +34,7 @@ const Notice: React.FC = () => {
   //<검색>을 위한 useState
   const [searchType, setSearchType] = useState('1');
   const [searchValue, setSearchValue] = useState('');
-  //http://192.168.0.39/dfsms
+  //http://192.168.0.7/dfsms
   const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
   //서버측에 데이터 요청시(by axios : 비동기) 조건(params)도 같이 넘김

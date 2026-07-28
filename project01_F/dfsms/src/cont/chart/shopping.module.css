@@ -1,0 +1,105 @@
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.chartSection,
+.productSection {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #1e293b;
+}
+
+.chartWrapper {
+  width: 100%;
+  height: 300px;
+}
+
+/* 🛒 상품 컨테이너: 5개 항목 무조건 한 줄 배치 */
+.img-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  width: 100%;
+}
+
+.productCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* 🖼️ 상품 이미지 영역 및 기준점 설정 */
+.imgWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 🏆 1,2,3등 메달 배지 */
+.badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 20px;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.9);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.productInfo {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.productName {
+  font-size: 15px;
+  color: #475569;
+}
+
+.productPrice {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f172a;
+}
+
+.noResult {
+  text-align: center;
+  color: #64748b;
+  font-size: 16px;
+  grid-column: 1 / -1;
+}
+
+/* 📱 모바일 등 아주 작은 화면에서 유동적 대응 */
+@media (max-width: 768px) {
+  .img-container {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+}
