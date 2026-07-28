@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import btnStyle from "../components/btn.module.css";
 import style from "./login.module.css";
-import twoStyle from "./twoFactor.module.css"
+import twoStyle from "./TwoFactor.module.css"
 
 const TwoFactor: React.FC = () => {
 
@@ -113,10 +113,8 @@ const TwoFactor: React.FC = () => {
 
             alert("2차 인증 완료");
 
-            sessionStorage.setItem(
-                "twoFactor",
-                "success"
-            );
+            sessionStorage.setItem("twoFactor", "success");
+            window.dispatchEvent(new Event("loginChange"));
 
             navigate("/");
 

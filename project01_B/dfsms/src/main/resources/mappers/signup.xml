@@ -7,37 +7,11 @@
     <!-- 회원가입 -->
     <insert id="insertUser" parameterType="UserVO">
         INSERT INTO users
-        (
-        usrno,
-        usrid,
-        pwd,
-        usrnm,
-        role,
-        delyn,
-        birth,
-        gender,
-        addr,
-        rdate,
-        email,
-        tel
-        )
-        VALUES
-        (
-        USERS_SEQ.NEXTVAL,
-        #{usrid},
-        #{pwd},
-        #{usrnm},
-        'U',
-        'N',
-        #{birth},
-        #{gender},
-        #{addr, jdbcType=VARCHAR},
-        SYSDATE,
-        #{email},
-        #{tel, jdbcType=VARCHAR}
-        )
+        (usrno, usrid, pwd, usrnm, role, delyn,
+        birth, gender, addr, rdate, email, tel)
+        VALUES (USERS_SEQ.NEXTVAL, #{usrid}, #{pwd}, #{usrnm},
+        'U', 'N', #{birth}, #{gender}, #{addr, jdbcType=VARCHAR}, SYSDATE, #{email}, #{tel, jdbcType=VARCHAR})
     </insert>
-
 
     <!-- 아이디 중복 확인 -->
     <select id="checkId" parameterType="String" resultType="int">
@@ -46,12 +20,10 @@
         WHERE usrid = #{value}
     </select>
 
-
     <!-- 이메일 중복 확인 -->
     <select id="checkEmail" parameterType="String" resultType="int">
         SELECT COUNT(*)
         FROM users
         WHERE email = #{value}
     </select>
-
 </mapper>
