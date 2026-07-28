@@ -1,5 +1,6 @@
 package kr.co.teamb.dfsms.controller.chart;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,14 @@ public class ChartController {
 			pMap.put("gender", String.valueOf(vo.getGender()));
 			List<ChartVO> ctryList = chartService.ctgyGroupList(pMap);
 			res.put("ctrydata", ctryList);
+
+			// 1위 카테고리 기반 추천 상품 데이터 추가
+			List<ChartVO> recommendProducts = new ArrayList<>();
+			if (ctryList != null && !ctryList.isEmpty()) {
+				int topCategoryId = ctryList.get(0).getCategoryid(); // 선호도 1위 카테고리 ID
+				recommendProducts = chartService.getRecommendProducts(topCategoryId);
+			}
+			res.put("recommendProducts", recommendProducts); // 프론트로 전달
 		}
 		
 		return res;

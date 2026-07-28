@@ -65,8 +65,8 @@ const ItemForm: React.FC = () => {
         try {
             console.log(`FormData => ${myFormdata}`)
             //axios나 fetch를 사용해 서버로 데이터를 전송
-            const res = await fetch(`${backendUrl}/products/add`
-                , { method: 'POST', body: myFormdata }
+            const res = await fetch(`${backendUrl}/api/products/add`
+                , { method: 'POST', body: myFormdata, credentials: 'include'}
             )
             navi("/admin/itemlist")
         } catch (error) {

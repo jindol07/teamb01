@@ -61,13 +61,7 @@ const Notice: React.FC = () => {
     } catch (error) {
       console.error("데이터 가져오기 실패:" + error);
     }
-    // const notice = await [
-    //   { no: 1, title: "필독 - 무조건 읽어주세요.", writer: "운영자", hit: 0, regdate: '2015-03-30', rank: 1 }
-    //   , { no: 2, title: "사이트 이용시 유의사항", writer: "운영자", hit: 32353, regdate: '2020-01-01', rank: 2 }
-    //   , { no: 3, title: "6월 한달 이벤트", writer: "운영자", hit: 3500, regdate: '2023-06-01', rank: 3 }
-    //   , { no: 4, title: "대량 구매시 할인 불가", writer: "운영자", hit: 3000, regdate: '2015-03-30', rank: 4 }
-    //   , { no: 5, title: "유선전화 서비스 이용불가 안내", writer: "운영자", hit: 1000, regdate: '2015-02-29', rank: 5 }
-    // ]
+
   }
 
   //useEffect를 사용해 페이지가 변경될 때마다 서버로 데이터 요청

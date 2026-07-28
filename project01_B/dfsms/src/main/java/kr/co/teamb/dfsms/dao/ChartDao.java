@@ -13,5 +13,8 @@ public interface ChartDao {
 	List<ChartVO> bestItemList();
 	
 	List<ChartVO> ctgyGroupList(Map<String, String> map);
+
+	// 추천 상품 목록 조회
+	List<ChartVO> getRecommendProducts(int categoryid);
 	
 }
