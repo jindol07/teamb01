@@ -7,4 +7,6 @@ import kr.co.teamb.dfsms.vo.UserVO;
 @Mapper
 public interface LoginMapper {
 	UserVO login(UserVO vo);
+
+	int insertLoginHistory(UserVO vo);
 }

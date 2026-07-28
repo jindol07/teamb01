@@ -33,7 +33,7 @@ const Logout: React.FC<LogoutProps> = ({ loginNm, role }) => {
         setTimeout(() => {
             setLogoutComplete(false);
             navigate("/");
-        }, 3500);
+        }, 2500);
     };
 
     return (
