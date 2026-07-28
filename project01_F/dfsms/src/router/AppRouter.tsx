@@ -41,6 +41,7 @@ import MypageLayout from '../cont/mypage/MypageLayout'
 import OrderList from '../cont/mypage/OrderList'
 import TopChart from '../cont/chart/TopChart'
 import PersonalChart from '../cont/chart/PersonalChart'
+import Usrinfo from '../cont/mypage/Usrinfo'
 
 
 
