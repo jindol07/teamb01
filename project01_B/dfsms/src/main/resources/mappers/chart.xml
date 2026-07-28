@@ -64,7 +64,7 @@
 			g.imgnm
 		FROM products p
 		LEFT JOIN p_gallery g ON p.productid = g.productid
-		WHERE p.categoryid = #{categoryid}
+		WHERE p.categoryid = #{categoryid} AND p.DELYN = 'N'
 	</select>
 
 </mapper>
