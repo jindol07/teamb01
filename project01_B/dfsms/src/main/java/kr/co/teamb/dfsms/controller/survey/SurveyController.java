@@ -24,23 +24,33 @@ public class SurveyController {
 	
 	@PostMapping("/addsurvey")
 	public ResponseEntity<String> saveSurvey(@RequestBody SurveyVO vo) {
+//		{
+//		    "usrno" : 1,
+//		    "surveytitle" : "첫번째 테스트 설문글",
+//		    "status": "ACTIVE",
+//		    "startdate": "2026-07-27",
+//		    "enddate" : "2026-07-29"
+//		}
+		System.out.println(vo);
+		System.out.println(vo.getSurveytitle());
 		surveyService.saveSurvey(vo);
 		System.out.println("sub: " + vo.getSurveytitle());
-		System.out.println("title: " + vo.getContList().get(0).getSurveytitle());
+		System.out.println("title: " + vo.getQuestionList());
 		return ResponseEntity.ok("success");
 	}
 	@GetMapping("/latest")
 	public ResponseEntity<SurveyVO> getLatestSurvey() {
-		SurveyVO surveyVO = surveyService.findBySNUM(surveyService.maxSurveyNum());
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(surveyService.getSurveyCount());
 		if (surveyVO != null) {
 			return ResponseEntity.ok(surveyVO);
 		} else {
+			System.out.println("no data");
 			return ResponseEntity.noContent().build();
 		}
 	}
 	@GetMapping("/result/{num}")
 	public ResponseEntity<SurveyVO> getSurveyResult(@PathVariable("num") Long num) {
-		SurveyVO surveyVO = surveyService.findBySNUM(num);
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(num);
 		if (surveyVO != null) {
 			return ResponseEntity.ok(surveyVO);
 		} else {

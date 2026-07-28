@@ -18,5 +18,5 @@ public class SurveyVO {
 	private String rdate;
 	private String startdate;
 	private String enddate;
-	private List<SurveyQuestionVO> contList;
+	private List<SurveyQuestionVO> questionList;
 }

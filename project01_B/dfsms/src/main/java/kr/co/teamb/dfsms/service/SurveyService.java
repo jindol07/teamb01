@@ -15,28 +15,29 @@ import kr.co.teamb.dfsms.vo.SurveyVO;
 public class SurveyService {
 	@Autowired
 	private SurveyDao surveyDao;
-	public Long maxSurveyNum() {
-		return surveyDao.maxSurveyNum();
+	public Long getSurveyCount() {
+		return surveyDao.getSurveyCount();
 	}
 	@Transactional
 	public void saveSurvey(SurveyVO vo) {
 		surveyDao.saveSurvey(vo);
-		char stype = 'A';
-		List<SurveyQuestionVO> contList = new ArrayList<>();
-		for (SurveyQuestionVO c : vo.getContList()) {
-			SurveyQuestionVO contVO = new SurveyQuestionVO();
-			contVO.setSurveytitle(c.getSurveytitle());
-			contVO.setSurveytype(String.valueOf(stype)); 
-			contVO.setSurveycnt(0);
-			contList.add(contVO);
-			stype++;
-		}
-		surveyDao.saveSurveyContentList(contList);
+//		char count = 0;
+//		List<SurveyQuestionVO> questionList = new ArrayList<>();
+//		for (SurveyQuestionVO v : vo.getQuestionList()) {
+//			SurveyQuestionVO questionVO = new SurveyQuestionVO();
+//			questionVO.setQuestiontitle(v.getQuestiontitle());
+//			questionVO.setQuestiontype(v.getQuestiontype());
+//			questionVO.setQuestionlist(v.getQuestionlist());
+//			questionVO.setSort_order(count);
+//			questionList.add(questionVO);
+//			count++;
+//		}
+//		surveyDao.saveSurveyQuestionList(questionList);
 	}
 	public List<SurveyVO> getSurveyList() {
 		List<SurveyVO> surveyList = new ArrayList<>();
-		for (int i = 0; i < surveyDao.maxSurveyNum(); i++) {
-			SurveyVO result = surveyDao.findBySNUM((long) i + 1);
+		for (int i = 0; i < surveyDao.getSurveyCount(); i++) {
+			SurveyVO result = surveyDao.getSurveyQuestions((long) i + 1);
 			if (result == null) {
 				continue;
 			} else {
@@ -45,8 +46,8 @@ public class SurveyService {
 		}
 		return surveyList;
 	}
-	public SurveyVO findBySNUM(Long num) {
-		SurveyVO result = surveyDao.findBySNUM(num);
+	public SurveyVO getSurveyQuestions(long num) {
+		SurveyVO result = surveyDao.getSurveyQuestions(num);
 		if (result == null) {
 			return null;
 		} else {
@@ -54,6 +55,6 @@ public class SurveyService {
 		}
 	}
 	public void incrementSurveyCount(int subcode, String surveytype) {
-		surveyDao.incrementSurveyCount(subcode, surveytype);
+		surveyDao.incrementSurveyQuestion(subcode, surveytype);
 	}
 }

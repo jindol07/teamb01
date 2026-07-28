@@ -12,8 +12,8 @@ import kr.co.teamb.dfsms.vo.SurveyVO;
 @Mapper
 public interface SurveyDao {
 	void saveSurvey(SurveyVO vo);
-	void saveSurveyContentList(List<SurveyQuestionVO> list);
-	void incrementSurveyCount(@Param("subcode") int subcode, @Param("surveytype") String surveytype);
-	Long maxSurveyNum();
-	SurveyVO findBySNUM(Long num);
+	void saveSurveyQuestionList(List<SurveyQuestionVO> list);
+	void incrementSurveyQuestion(@Param("subcode") int subcode, @Param("surveytype") String surveytype);
+	Long getSurveyCount();
+	SurveyVO getSurveyQuestions(Long num);
 }
