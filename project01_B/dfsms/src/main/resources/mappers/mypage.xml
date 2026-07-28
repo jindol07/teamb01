@@ -90,4 +90,20 @@
 		</where>
 	</select>
 	
+	<!-- 유저 정보 수정 -->
+	<update id="updateUserInfo" parameterType="UserVO">
+		UPDATE USERS
+    	SET
+	        PWD   = #{pwd},
+	        ADDR  = #{addr},
+	        EMAIL = #{email},
+	        TEL   = #{tel},
+	        RDATE = SYSDATE
+	    WHERE USRNO = #{usrno}
+	</update>
+	
+	<select id="selectUsrInfo" parameterType="UserVO" resultType="UserVO">
+		SELECT usrno, pwd, addr, email, tel FROM USERS WHERE usrno = #{usrno}
+	</select>
+	
 </mapper>
