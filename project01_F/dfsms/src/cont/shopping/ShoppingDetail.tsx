@@ -44,6 +44,10 @@ const ShoppingDetail: React.FC = () => {
   // 수량 상태 관리 (기본값 1)
   const [quantity, setQuantity] = useState<number>(1);
 
+  const [success, setSuccess] = useState(false);
+  const [already, setAlready] = useState(false);
+  const [message, setMessage] = useState(''); // 메시지 내용 저장용
+
   if (!rawProduct) {
     return (
       <div className={style.errorContainer}>
@@ -54,7 +58,6 @@ const ShoppingDetail: React.FC = () => {
       </div>
     );
   }
-
   // 백엔드 데이터 추출 (소문자/대문자 호환)
   const productName = rawProduct.pnm || rawProduct.PNM || rawProduct.title || rawProduct.TITLE || "상품명 없음";
   const rawPrice = rawProduct.price ?? rawProduct.PRICE ?? 0;
@@ -74,17 +77,19 @@ const ShoppingDetail: React.FC = () => {
 
   // static/imgfile/gallery 저장 경로에 맞춘 URL 생성 함수
   const getImageUrl = (imgStr?: string) => {
+    // 이미지 문자열이 없거나 빈 값인 경우 기본 대체 이미지(PLACEHOLDER) 반환
     if (!imgStr) return NO_IMAGE_PLACEHOLDER;
-
+    // 이미지 절대 경로(http/https) 이거나 Base64 인코딩 데이터(data:)인 경우 그대로 반환
     if (
       imgStr.startsWith("http://") ||
-      imgStr.startsWith("https://") ||
+      imgStr.startsWith("http://") ||
       imgStr.startsWith("data:")
     ) {
       return imgStr;
     }
-
+    // 파일 경로 형태인 경우, 슬래시(/)나 역슬래시(\)를 기준으로 파일명만 추출
     const fileName = imgStr.split(/[/\\]/).pop();
+    // 백엔드 서버의 이미지 파일 저장 경로와 조합하여 최종 URL 반환
     return `${backendUrl}/imgfile/gallery/${fileName}`;
   };
 
@@ -97,48 +102,53 @@ const ShoppingDetail: React.FC = () => {
       setQuantity(1);
       return;
     }
+    // 입력받은 값을 10진수 정수로 변환
     const value = parseInt(val, 10);
+    // 숫자가 아니거나 1 미만인 경우 최소값인 1로 설정
     if (isNaN(value) || value < 1) {
       setQuantity(1);
+    // 허용된 최대 수량(maxAllowedQty)을 초과한 경우 최대 허용 수량으로 설정
     } else if (value > maxAllowedQty) {
       setQuantity(maxAllowedQty);
+      // 유효한 범위 내의 값인 경우 그대로 수량으로 설정
     } else {
       setQuantity(value);
     }
   };
 
   // 장바구니 담기 버튼 클릭 이벤트
-  //0727 s
   const handleAddToCart = async () => {
     try {
-          const url = `${backendUrl}/api/cart/add`
-          const res = await axios.get(url, {
-            params: {
-              productid: productid
-              ,qty: quantity
-            }
-            ,withCredentials: true
-          });
-          console.log(res.data);
-          if(res.data.code === 'NO_USR_INFO'){
-             //로그인 페이지로 이동
-             alert(res.data.message)
-          }else if(res.data.code === 'NO_MATCHED_ROLE'){
-             alert(res.data.message)
-          }else if(res.data.code === 'LACK_OF_QTY'){
-             alert(res.data.message)
-          }else if(res.data.code === 'ALREADY_EXIST'){
-             alert(res.data.message)
-          }else{
-             alert(res.data.message)
-          }
-          //서버로부터 응답받은 데이터 useState에 바인딩
-    
-        } catch (error) {
-          console.error("데이터 가져오기 실패:" + error);
+      const url = `${backendUrl}/api/cart/add`
+      const res = await axios.get(url, {
+        params: {
+          productid: productid
+          , qty: quantity
         }
+        , withCredentials: true
+      });
+      console.log(res.data);
+      if (res.data.code === 'NO_USR_INFO') {
+        alert(res.data.message) // 사용자가 존재하지 않는 경우
+      } else if (res.data.code === 'NO_MATCHED_ROLE') {
+        alert(res.data.message) // 권한이나 역할이 잂치하지 않는 경우
+      } else if (res.data.code === 'LACK_OF_QTY') {
+        alert(res.data.message) // 수량이 부족한 경우(재고 부족 등)
+        // 이미 장바구니에 담겨 있는 경우
+      } else if (res.data.code === 'ALREADY_EXIST') {
+        setMessage(res.data.message); // 메시지 상태 설정
+        setAlready(true); // 중복 상태(already)를 true로 변경
+        // 그외의 모든 경우(성공 또는 기타 기본 처리)
+      } else {
+        setMessage(res.data.message); // 메시지 상태 설정
+        setSuccess(true); // 중복 상태(already)를 true로 변경
+      }
+      //서버로부터 응답받은 데이터 useState에 바인딩
+
+    } catch (error) {
+      console.error("데이터 가져오기 실패:" + error);
+    }
   };
-  //0727 e
 
   // 장바구니 페이지로 이동하면서 로그인 여부 확인하는 함수
   const handleClick = () => {
@@ -226,7 +236,22 @@ const ShoppingDetail: React.FC = () => {
           <p style={{ whiteSpace: "pre-line" }}>{productCont}</p>
         </div>
       )}
+       {/* 토스트 메시지 적용 */}
+      <div>
+        {/* 이미 장바구니에 있는 경우 토스트 */}
+        {already && (
+          <div className={style.logoutMsg}>
+            {message}
+          </div>
+        )}
 
+        {/* 성공 또는 기타 메시지 토스트 */}
+        {success && (
+          <div className={style.logoutMsg}>
+            {message}
+          </div>
+        )}
+      </div>
       {/* 하단 버튼 영역 */}
       <div className={style.bottomSection}>
         <button disabled={stockQty <= 0} className={style.cartBtn} onClick={handleAddToCart}>

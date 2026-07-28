@@ -134,3 +134,42 @@
     padding:20px;
     border-top:1px solid #ddd;
 }
+.logoutMsg {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    background-color: rgba(25, 135, 84, 0.95);
+    color: white;
+
+    padding: 16px 30px;
+    border-radius: 12px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    z-index: 9999;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+
+    animation: logoutFade 3.5s ease forwards;
+}
+@keyframes logoutFade {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-30px);
+    }
+    15% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    85% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+}
