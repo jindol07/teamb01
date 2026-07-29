@@ -13,18 +13,29 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+
+    const showToastMessage = (message: string) => {
+        setToastMessage(message);
+        setShowToast(true);
+
+        setTimeout(() => {
+            setShowToast(false);
+        }, 3000);
+    };
 
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
     const handleLogin = async () => {
 
-        console.log("===== 로그인 시작 =====");
-        console.log("BACKEND URL :", backendUrl);
-        console.log("아이디 :", userId);
+        // 입력값 체크
+        if (!userId || !password) {
+            showToastMessage("아이디와 비밀번호를 입력해주세요.");
+            return;
+        }
 
         if (!backendUrl) {
-            console.error("BACKEND URL이 없습니다.");
-            alert("백엔드 주소 설정을 확인해주세요.");
+            showToastMessage("백엔드 서버 설정을 확인해주세요.");
             return;
         }
 
@@ -35,11 +46,10 @@ const Login: React.FC = () => {
                     usrid: userId,
                     pwd: password
                 },
-                {withCredentials: true}
+                {
+                    withCredentials: true
+                }
             );
-
-            console.log("===== 로그인 성공 =====");
-            console.log("서버 응답 :", response.data);
 
             const loginUser = response.data;
 
@@ -52,53 +62,52 @@ const Login: React.FC = () => {
                 })
             );
 
-            // 관리자 admin 2차 인증 생략
+            // 관리자 로그인
             if (userId === "admin") {
+
                 sessionStorage.setItem("twoFactor", "success");
                 window.dispatchEvent(new Event("loginChange"));
 
-                setShowToast(true);
+                showToastMessage(`환영합니다 ${loginUser.usrnm} 님.`);
 
                 setTimeout(() => {
                     navigate("/");
                 }, 1000);
-
                 return;
             }
 
+            // 일반 사용자 로그인
             window.dispatchEvent(new Event("loginChange"));
 
-            // 일반 사용자는 2차 인증 진행
-            setShowToast(true);
+            showToastMessage(`환영합니다 ${loginUser.usrnm} 님.`);
 
             setTimeout(() => {
-                console.log("2차 인증 이동");
                 navigate("/twofactor");
             }, 1500);
-        } catch (error: any) {
+        }
 
-            console.log("===== 로그인 실패 =====");
-            console.log(error);
-
+        catch (error: any) {
             if (error.response) {
-
                 console.log("상태 코드 :", error.response.status);
                 console.log("서버 응답 :", error.response.data);
 
                 if (error.response.status === 400) {
-                    alert("아이디 또는 비밀번호가 올바르지 않습니다.");
-                } else if (error.response.status === 404) {
-                    alert("로그인 주소를 찾을 수 없습니다.");
-                } else if (error.response.status === 500) {
-                    alert("서버 오류가 발생했습니다.");
-                } else {
-                    alert("로그인 실패");
+                    showToastMessage("아이디 및 비밀번호를 확인해주세요.");
                 }
+                else if (error.response.status === 404) {
+                    showToastMessage("로그인 주소를 찾을 수 없습니다.");
+                }
+                else if (error.response.status === 500) {
+                    showToastMessage("서버 오류가 발생했습니다.");
+                }
+                else {
+                    showToastMessage("로그인 실패");
+                }
+            }
+            else {
 
-            } else {
                 console.log("서버 연결 실패");
-                alert("백엔드 서버 연결을 확인해주세요.");
-
+                showToastMessage("백엔드 서버 연결을 확인해주세요.");
             }
         }
     };
@@ -116,14 +125,14 @@ const Login: React.FC = () => {
             <div>
                 <label>아이디</label>
                 <input type="text" className={style.input} placeholder="아이디를 입력해주세요."
-                       value={userId} onChange={(e) => setUserId(e.target.value)}
+                    value={userId} onChange={(e) => setUserId(e.target.value)}
                 />
             </div>
 
             <div>
                 <label>비밀번호</label>
                 <input type="password" className={style.input} placeholder="비밀번호를 입력해주세요."
-                       value={password} onChange={(e) => setPassword(e.target.value)}
+                    value={password} onChange={(e) => setPassword(e.target.value)}
                 />
             </div>
 
@@ -133,14 +142,19 @@ const Login: React.FC = () => {
 
             <p style={{fontSize: "14px", textAlign: "center"}}>
                 해당 사이트가 처음이신가요?{" "}
-                <span onClick={goJoin} className={style.joinText} style={{cursor: "pointer", color: "blue"}}>
+                <span
+                    onClick={goJoin}
+                    className={style.joinText}
+                    style={{cursor: "pointer", color: "blue"}}
+                >
                     회원가입
                 </span>
             </p>
 
             {showToast && (
-                    <ToastMsg message="I'm not a robot. For real." />
+                <ToastMsg message={toastMessage}/>
             )}
+
         </div>
     );
 };
