@@ -12,6 +12,7 @@
 		p.title,
 		p.qty,
 		p.categoryid,
+		c.categorynm,
 		p.cont,
 		top_p.totqty
 		FROM (
@@ -25,6 +26,8 @@
 		) top_p
 		JOIN products p
 		ON top_p.productid = p.productid
+		LEFT JOIN p_category c
+		ON p.categoryid = c.categoryid
 		LEFT JOIN p_gallery g
 		ON p.productid = g.productid
 		ORDER BY top_p.totqty DESC
@@ -64,13 +67,18 @@
 		p.pnm,
 		p.price,
 		p.categoryid,
+		c.categorynm,
 		g.imgnm,
 		p.title,
 		p.qty,
 		p.cont
 		FROM products p
-		LEFT JOIN p_gallery g ON p.productid = g.productid
-		WHERE p.categoryid = #{categoryid} AND p.DELYN = 'N'
+		LEFT JOIN p_category c
+		ON p.categoryid = c.categoryid
+		LEFT JOIN p_gallery g
+		ON p.productid = g.productid
+		WHERE p.categoryid = #{categoryid}
+		AND p.DELYN = 'N'
 	</select>
 
 </mapper>
