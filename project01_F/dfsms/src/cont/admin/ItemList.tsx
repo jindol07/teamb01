@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import style from './admin.module.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import btnStyle from '../components/btn.module.css'
 import axios from 'axios';
+
 
 interface Product {
     PRODUCTID?: number;
@@ -45,6 +46,9 @@ const ItemList: React.FC = () => {
     const [searchType, setSearchType] = useState('1');
     const [searchValue, setSearchValue] = useState('');
 
+    const [toast, setToast] = useState("");
+    const navi = useNavigate();
+
     //page Handler
     const pageChange = (page: number) => {
         setCurrentPage(page);
@@ -85,10 +89,15 @@ const ItemList: React.FC = () => {
         fetchAItem(currentPage)
     }, [currentPage])
 
-    const handleUpdate = (no: number) => {
-        console.log("수정할 재고 번호 :", no);
-        //to detail
-    };
+    const delhandler = async (no:number) => {
+             const url = `${backendUrl}/api/stock/delete?num=${no}`
+                    const res = await axios.get(url)
+                    setToast('삭제가 완료되었습니다.')
+                    fetchAItem(1)
+                setTimeout(() => {
+                    navi("/admin/itemlist");
+                }, 1000);
+    }
 
     return (
         <div className={style.container}>
@@ -119,12 +128,13 @@ const ItemList: React.FC = () => {
                                 <td>{e.TITLE}</td>
                                 <td>{e.RDATE?.substring(0, 10)}</td>
                                 <td>
-                                    <Link
+                                    {/* <Link
                                         to={`/admin/itemdetail/${e.PRODUCTID}`}
                                         className={btnStyle.button}
                                     >
                                         삭제
-                                    </Link>
+                                    </Link> */}
+                                    <button className="page-link" onClick={() =>delhandler(e.PRODUCTID)}>삭제</button>
                                 </td>
                             </tr>
                         ))
@@ -185,6 +195,9 @@ const ItemList: React.FC = () => {
                     상품 등록
                 </Link>
             </div>
+
+            
+
         </div>
     )
 }

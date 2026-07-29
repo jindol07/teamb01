@@ -63,7 +63,40 @@ SELECT
 	,a.CATEGORYID
 	,a.PNM
 	,a.PRICE
-	,b.IMGNM 
+	,b.IMGNM
+FROM 
+	PRODUCTS a 
+		LEFT JOIN (
+					SELECT 
+						PRODUCTID
+					   ,IMGNM 
+					FROM 
+					   ( SELECT
+					   	   PRODUCTID
+						  ,IMGNM
+						  ,ROW_NUMBER() OVER(PARTITION BY PRODUCTID ORDER BY PRODUCTID ASC) as rn 
+					 	 FROM p_Gallery
+					 	) 
+					WHERE rn = 1 
+					) b 
+			ON a.PRODUCTID = b.PRODUCTID
+WHERE 
+	a.PRODUCTID = #{productid}
+</select>
+
+<select id="selDetailTemp" resultType="ProductsVO" parameterType="map">
+SELECT 
+	a.PRODUCTID
+	,a.CATEGORYID
+	,a.PNM
+	<choose>
+		<when test='subsrbat == "Y"'>
+		  ,TRUNC(a.PRICE * 0.9) as PRICE
+		</when>
+	</choose>
+	,a.PRICE as originprice
+	,a.cont
+	,b.IMGNM
 FROM 
 	PRODUCTS a 
 		LEFT JOIN (

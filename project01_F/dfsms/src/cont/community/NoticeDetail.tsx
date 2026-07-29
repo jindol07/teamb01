@@ -15,6 +15,11 @@ interface useNoticeCol {
 }
 
 const NoticeDetail: React.FC = () => {
+
+    const saved = sessionStorage.getItem("loginInfo");
+    const loginInfo = saved ? JSON.parse(saved) : null;
+    const role = loginInfo ? loginInfo.role : null;
+
     const { num } = useParams<{ num: string }>();
     // const [title, setTitle] = useState("");
     // const [content, setContent] = useState("");
@@ -87,9 +92,15 @@ const NoticeDetail: React.FC = () => {
                 <tfoot>
                     <tr>
                         <td colSpan={5}>
-                            <button className={btnStyle.button} onClick={() => { nav('/community/notice'/*, { state: { page: loc.state.currentPage } }*/) }}>목록</button>
-                            <button className={btnStyle.button} onClick={() => chgPage()}>수정</button>
-                            <button className={btnStyle.button} onClick={() => delPage()}>삭제</button>
+                            <button className={btnStyle.button} onClick={() => { nav('/community/notice') }}>목록</button>
+                            {
+                                role === 'A' && (
+                                    <>
+                                    <button className={btnStyle.button} onClick={() => chgPage()}>수정</button>
+                                    <button className={btnStyle.button} onClick={() => delPage()}>삭제</button>
+                                    </>
+                                )
+                            }
                         </td>
                     </tr>
                 </tfoot>

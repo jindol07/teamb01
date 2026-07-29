@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./shoppingDetail.module.css";
 import axios from "axios";
@@ -43,6 +43,27 @@ const ShoppingDetail: React.FC = () => {
 
   // 수량 상태 관리 (기본값 1)
   const [quantity, setQuantity] = useState<number>(1);
+
+  //0728
+  const [salePrice, setSalePrice] = useState(0);
+  const [oriPirce, setOriPirce] = useState(0);
+  const [cont, setCont] = useState("");
+  useEffect(() => {
+    const fetchMyNoticeDetail = async () => {
+      const url = `${backendUrl}/api/products/detailTemp`
+      const res = await axios.get(url, {
+        params: {
+          productid: productid
+        }
+        , withCredentials: true
+      })
+      console.log('pDetail: ', res.data)
+      setOriPirce(res.data.originprice)
+      setSalePrice(res.data.price)
+      setCont(res.data.cont)
+    }
+    fetchMyNoticeDetail()
+  }, []);
 
   if (!rawProduct) {
     return (
@@ -111,32 +132,32 @@ const ShoppingDetail: React.FC = () => {
   //0727 s
   const handleAddToCart = async () => {
     try {
-          const url = `${backendUrl}/api/cart/add`
-          const res = await axios.get(url, {
-            params: {
-              productid: productid
-              ,qty: quantity
-            }
-            ,withCredentials: true
-          });
-          console.log(res.data);
-          if(res.data.code === 'NO_USR_INFO'){
-             //로그인 페이지로 이동
-             alert(res.data.message)
-          }else if(res.data.code === 'NO_MATCHED_ROLE'){
-             alert(res.data.message)
-          }else if(res.data.code === 'LACK_OF_QTY'){
-             alert(res.data.message)
-          }else if(res.data.code === 'ALREADY_EXIST'){
-             alert(res.data.message)
-          }else{
-             alert(res.data.message)
-          }
-          //서버로부터 응답받은 데이터 useState에 바인딩
-    
-        } catch (error) {
-          console.error("데이터 가져오기 실패:" + error);
+      const url = `${backendUrl}/api/cart/add`
+      const res = await axios.get(url, {
+        params: {
+          productid: productid
+          , qty: quantity
         }
+        , withCredentials: true
+      });
+      console.log(res.data);
+      if (res.data.code === 'NO_USR_INFO') {
+        //로그인 페이지로 이동
+        alert(res.data.message)
+      } else if (res.data.code === 'NO_MATCHED_ROLE') {
+        alert(res.data.message)
+      } else if (res.data.code === 'LACK_OF_QTY') {
+        alert(res.data.message)
+      } else if (res.data.code === 'ALREADY_EXIST') {
+        alert(res.data.message)
+      } else {
+        alert(res.data.message)
+      }
+      //서버로부터 응답받은 데이터 useState에 바인딩
+
+    } catch (error) {
+      console.error("데이터 가져오기 실패:" + error);
+    }
   };
   //0727 e
 
@@ -156,7 +177,8 @@ const ShoppingDetail: React.FC = () => {
     navigate("/cart");
   };
   // 실시간 총 금액
-  const totalPrice = productPrice * quantity;
+  //const totalPrice = productPrice * quantity;
+  const totalPrice = (salePrice > 0 ? salePrice : productPrice) * quantity;
 
   return (
     <div className={style.detailContainer}>
@@ -184,7 +206,17 @@ const ShoppingDetail: React.FC = () => {
 
           {/* 상품 단가 */}
           <p className={style.productPrice}>
-            {productPrice.toLocaleString()}원
+            {/* {productPrice.toLocaleString()}원 */}
+            {salePrice > 0 ? (
+              <>
+                <span>{salePrice.toLocaleString()}원</span>&nbsp;[구독 회원 할인]<br/>
+                <del style={{ color: "black", fontSize: "20px" }}>
+                  {productPrice.toLocaleString()}원
+                </del>
+              </>
+            ) : (
+              <span>{oriPirce.toLocaleString()}원</span>
+            )}
           </p>
 
           <hr className={style.divider} />
@@ -223,7 +255,7 @@ const ShoppingDetail: React.FC = () => {
       {productCont && (
         <div className={style.productDetail}>
           <h3>상품 상세 정보</h3>
-          <p style={{ whiteSpace: "pre-line" }}>{productCont}</p>
+          <p style={{ whiteSpace: "pre-line" }}>{cont}</p>
         </div>
       )}
 

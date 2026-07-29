@@ -25,6 +25,7 @@ import kr.co.teamb.dfsms.vo.GalleryVO;
 import kr.co.teamb.dfsms.vo.PageVO;
 import kr.co.teamb.dfsms.vo.ProductsVO;
 import kr.co.teamb.dfsms.vo.UserVO;
+import kr.co.teamb.dfsms.vo.ValidVO;
 
 @RestController
 @RequestMapping("/api/products")
@@ -71,6 +72,15 @@ public class ProductsController {
 	@GetMapping("/detail")
 	public ProductsVO selectProductDetail(@RequestParam("productid") int productid) {
 		return productService.selectProductDetail(productid);
+	}
+	
+	@GetMapping("/detailTemp")
+	public ProductsVO selectProductDetail(@RequestParam Map<String, String> pMap, HttpSession ss) {
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		if(vo != null) {
+			pMap.put("subsrbat", String.valueOf(vo.getSubsrbat()));
+		}
+		return productService.selDetailTemp(pMap);
 	}
 
 	@PostMapping("/add")

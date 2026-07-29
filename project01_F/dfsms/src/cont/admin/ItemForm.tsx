@@ -259,6 +259,7 @@ const ItemForm: React.FC = () => {
                         <tr>
                             <th colSpan={2}>
                                 <button type="submit" className={btnStyle.button}>등록</button>
+                                <button className={btnStyle.button} onClick={() => { navi('/admin/itemlist') }}>목록</button>
                             </th>
                         </tr>
                     </tfoot>

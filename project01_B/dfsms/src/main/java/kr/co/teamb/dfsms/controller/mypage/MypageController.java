@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,7 @@ import kr.co.teamb.dfsms.cmn.PagingService;
 import kr.co.teamb.dfsms.service.MypageService;
 import kr.co.teamb.dfsms.vo.PageVO;
 import kr.co.teamb.dfsms.vo.UserVO;
+import kr.co.teamb.dfsms.vo.ValidVO;
 
 @RestController
 @RequestMapping("/api/mypage")
@@ -79,5 +81,23 @@ public class MypageController {
 			if(resCnt > 0) System.out.println("업데이트 성공");
 		}
 		return null;
+	}
+	
+	@GetMapping("/subscribe")
+	public ResponseEntity<ValidVO> goSubscribe(@RequestParam("subsrbat") String subsrbat, HttpSession ss) {
+		UserVO vo = (UserVO) ss.getAttribute("loginUser");
+		if (vo != null)
+		{
+			if(subsrbat.equals("N")) {
+				vo.setSubsrbat('N');
+				mypageService.updateSubscribe(vo);
+				return ResponseEntity.ok(new ValidVO("SUCCESS", "N"));
+			} else {
+				vo.setSubsrbat('Y');
+				mypageService.updateSubscribe(vo);
+				return ResponseEntity.ok(new ValidVO("SUCCESS", "Y"));
+			}
+	    }
+		return ResponseEntity.ok(new ValidVO("FAIl", "로그인 정보가 없습니다."));
 	}
 }

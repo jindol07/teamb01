@@ -20,4 +20,6 @@ public interface MyPageDao
 	
 	UserVO selectUsrInfo(UserVO vo);
 	
+	int updateSubscribe(UserVO vo);
+	
 }

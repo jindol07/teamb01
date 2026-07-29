@@ -21,4 +21,6 @@ public interface ProductsDao {
 	void addProduct(ProductsVO pvo);
 
 	void addImg(List<GalleryVO> gvo);
+	
+	ProductsVO selDetailTemp(Map<String, String> map);
 }

@@ -103,7 +103,15 @@
 	</update>
 	
 	<select id="selectUsrInfo" parameterType="UserVO" resultType="UserVO">
-		SELECT usrno, pwd, addr, email, tel FROM USERS WHERE usrno = #{usrno}
+		SELECT usrno, pwd, addr, email, tel, subsrbat FROM USERS WHERE usrno = #{usrno}
 	</select>
+	
+	<!-- 구독 정보 수정 -->
+	<update id="updateSubscribe" parameterType="UserVO">
+		UPDATE USERS
+    	SET
+	        subsrbat = #{subsrbat}
+	    WHERE USRNO = #{usrno}
+	</update>
 	
 </mapper>

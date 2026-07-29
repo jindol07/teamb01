@@ -61,4 +61,8 @@ public class MypageService {
 		return myPageDao.selectUsrInfo(vo);
 	}
 
+	public int updateSubscribe(UserVO vo) {
+		return myPageDao.updateSubscribe(vo);
+	}
+
 }

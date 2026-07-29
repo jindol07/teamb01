@@ -3,6 +3,8 @@ import style from '../community/community.module.css'
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import btnStyle from '../components/btn.module.css'
+import ToastMsg from '../components/ToastMsg';
+import Confirm from "../components/Confirm";
 
 interface formContext {
     boardid: number,
@@ -15,6 +17,14 @@ const NoticeForm: React.FC = () => {
     //const [title, setTitle] = useState("");
     //const [usrnm, setUsrnm] = useState("");
     //const [cont, setCont] = useState("");
+
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [toast, setToast] = useState("");
+
+    const confirmHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault(); 
+        setShowConfirm(true);
+    };
 
     let url = '';
     //수정창
@@ -41,8 +51,7 @@ const NoticeForm: React.FC = () => {
 
     const nav = useNavigate();
 
-    const boardSubmit = async (e: React.SubmitEvent) => {
-        e.preventDefault();
+    const boardSubmit = async () => {
         const data = new FormData();
         data.append('title', formData.title);
         data.append('usrnm', formData.usrnm);
@@ -57,11 +66,17 @@ const NoticeForm: React.FC = () => {
                 data.append('boardid', formData.boardid.toString());
                 url = `${backendUrl}/api/community/update` //수정
                 await axios.post(url, data)
-                nav(`/community/notice/${notice.boardid}`); //상세
+                setToast('공지사항이 수정 되었습니다.')
+                setTimeout(() => {
+                    nav(`/community/notice/${notice.boardid}`); //상세
+                }, 1000);
             }else{
                 url = `${backendUrl}/api/community/add` //등록
                 await axios.post(url, data)
-                nav("/community/notice"); //리스트
+                setToast('공지사항이 등록 되었습니다.')
+                setTimeout(() => {
+                    nav("/community/notice"); //리스트
+                }, 1000);
             }
     
         } catch {
@@ -125,7 +140,7 @@ const NoticeForm: React.FC = () => {
                     <tfoot>
                         <tr>
                             <th colSpan={2}>
-                                <button type="submit" className={btnStyle.button}>
+                                <button type="submit" className={btnStyle.button} onClick={confirmHandler}>
                                     {state ? "수정" : "등록"}
                                 </button>
                                 <Link
@@ -139,6 +154,20 @@ const NoticeForm: React.FC = () => {
                     </tfoot>
                 </table>
             </form>
+
+            {showConfirm && (
+                <Confirm
+                    message={state ? "수정하시겠습니까?" : "등록하시겠습니까?"}
+                    onConfirm={() => {
+                        setShowConfirm(false)
+                        boardSubmit()
+                    }}
+                    onCancel={() => setShowConfirm(false)}
+                />
+            )}
+
+            {toast && <ToastMsg message={toast}/>}
+
         </div>
     )
 }

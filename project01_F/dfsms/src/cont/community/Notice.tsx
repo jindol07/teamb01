@@ -7,8 +7,10 @@ import axios from 'axios';
 
 const Notice: React.FC = () => {
 
+  const saved = sessionStorage.getItem("loginInfo");
+  const loginInfo = saved ? JSON.parse(saved) : null;
+  const role = loginInfo ? loginInfo.role : null;
 
-  const [onData, setOnData] = useState(false);
   const nav = useNavigate();
   //interface 역할??
   const col = [
@@ -66,7 +68,7 @@ const Notice: React.FC = () => {
 
   //useEffect를 사용해 페이지가 변경될 때마다 서버로 데이터 요청
   useEffect(() => {
-    setOnData(true) //이건 뭐지??
+    //setOnData(true)
     fetchMyNotice(currentPage)
   }, [currentPage])
 
@@ -101,7 +103,11 @@ const Notice: React.FC = () => {
               </select>
               <input type="text" onChange={(e) => { setSearchValue(e.target.value) }} />
               <button className='btn btn-warning' onClick={searchFunction}>검색</button>
-              <button className={btnStyle.button} style={{ float: 'right' }} onClick={() => nav('/community/notice/write')}>글쓰기</button>
+              {
+                role === 'A' && (
+                  <button className={btnStyle.button} style={{ float: 'right' }} onClick={() => nav('/community/notice/write')}>글쓰기</button>
+                )
+              }
             </th>
           </tr>
           <tr>

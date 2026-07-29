@@ -19,14 +19,14 @@ const SideMenu: React.FC = () => {
                         }
                     >📦 주문 내역</NavLink>
                 </li>
-                <li>
+                {/* <li>
                     <NavLink to="/mypage/qna"
                         className={({ isActive }) =>
                             `nav-link active aria-current="page" ${isActive ? btnStyle.activeStyle : btnStyle.inactiveStyle
                             }`
                         }
                     >💬 1:1 문의</NavLink>
-                </li>
+                </li> */}
                 <li>
                     <NavLink to="/mypage/usrinfo"
                         className={({ isActive }) =>

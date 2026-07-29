@@ -40,9 +40,9 @@ public class CartController {
 		//userInfo : 로그인기능 완료시 세션정보 받아오는걸로 수정 완료
 		UserVO vo = (UserVO) ss.getAttribute("loginUser");
 		if(vo == null) {
-			new ValidVO("NO_USR_INFO", "로그인 페이지로 이동하시겠습니까?");
+			return ResponseEntity.ok(new ValidVO("NO_USR_INFO", "로그인 페이지로 이동하시겠습니까?"));
 		} else if(vo.getRole() == 'A') {
-			new ValidVO("NO_MATCHED_ROLE", "해당 기능은 관리자가 이용하실 수 없습니다.");
+			return ResponseEntity.ok(new ValidVO("NO_MATCHED_ROLE", "해당 기능은 관리자가 이용하실 수 없습니다."));
 		} else {
 			pMap.put("usrno", String.valueOf(vo.getUsrno()));
 		}
@@ -67,6 +67,7 @@ public class CartController {
 			res.put("error", "로그인 정보가 없습니다.");
 		} else {
 			pMap.put("usrno", String.valueOf(vo.getUsrno()));
+			pMap.put("subsrbat", String.valueOf(vo.getSubsrbat()));
 		}
 		
 		List<Map<String, Object>> cartList = cartService.cartList(pMap);

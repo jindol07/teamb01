@@ -6,7 +6,7 @@
 
     <select id="login" parameterType="UserVO" resultType="UserVO">
         SELECT T.USRNO, T.USRID, T.PWD, T.USRNM, T.ROLE, T.DELYN, T.BIRTH,
-        T.GENDER, T.ADDR, TO_CHAR(T.RDATE, 'YYYY-MM-DD') AS RDATE, T.EMAIL, T.TEL
+        T.GENDER, T.ADDR, TO_CHAR(T.RDATE, 'YYYY-MM-DD') AS RDATE, T.EMAIL, T.TEL, T.subsrbat
         FROM USERS T WHERE T.USRID = #{usrid} AND T.PWD = #{pwd} AND T.DELYN = 'N'
     </select>
 

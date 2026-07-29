@@ -24,6 +24,7 @@ public class ProductsVO {
 	private Date rdate;
 	//0724추가
 	private int usrno;
+	private int originprice;
 	
 //	1 대 N 관계
 	private List<GalleryVO> galleryList;

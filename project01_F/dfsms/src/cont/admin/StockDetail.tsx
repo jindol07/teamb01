@@ -4,6 +4,7 @@ import style from './admin.module.css'
 import btnStyle from '../components/btn.module.css'
 import axios from 'axios';
 //import axios from 'axios';
+import ToastMsg from '../components/ToastMsg';
 
 interface History {
     historyid: number;
@@ -37,6 +38,8 @@ const StockDetail: React.FC = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [price, setPrice] = useState(0);
+
+    const [toast, setToast] = useState("");
 
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
@@ -74,8 +77,10 @@ const StockDetail: React.FC = () => {
         try {
             const url = `${backendUrl}/api/stock/update`
             await axios.post(url, data, {withCredentials: true})
-            alert("수정 완료");
-            navi("/admin/stocklist")
+            setToast('수정이 완료되었습니다.')
+            setTimeout(() => {
+                navi("/admin/stocklist");
+            }, 1000);
         } catch (error) {
              alert("관리자 재고 수정 오류");
         }
@@ -199,66 +204,18 @@ const StockDetail: React.FC = () => {
                                 >
                                     수정
                                 </button>
+                                <button className={btnStyle.button} onClick={() => { navi('/admin/stocklist') }}>목록</button>
                             </th>
                         </tr>
                     </tfoot>
                 </table>
             </form>
+
+            {toast && <ToastMsg message={toast}/>}
+
         </div>
 
-
-        // <div className={style.container}>
-        //     <h2>재고 관리 : <span style={{ color: 'gray' }}>no.{no}</span></h2>
-        //     <hr />
-        //     <form action="" onSubmit={myFormSubmit}>
-        //         <table className={style.boardTable}>
-        //             <tbody>
-        //                 <tr>
-        //                     <th className={style.diagonal}></th>
-        //                     <th>Info</th>
-        //                     <th>Input</th>
-        //                 </tr>
-        //                 <tr>
-        //                     <th>상품명</th>
-        //                     <td>사과</td>
-        //                     <td>
-        //                         <input
-        //                             type="text"
-        //                             value={itemNm}
-        //                             onChange={(e) => setItemNm(e.target.value)}
-        //                         />
-        //                     </td>
-        //                 </tr>
-        //                 <tr>
-        //                     <th>수량</th>
-        //                     <td>10</td>
-        //                     <td>
-        //                         <input
-        //                             type="number" min={0} step={10}
-        //                             value={qty}
-        //                             onChange={(e) => setQty(Number(e.target.value))}
-        //                         />
-        //                     </td>
-        //                 </tr>
-        //                 <tr>
-        //                     <th>최종갱신일</th>
-        //                     <td colSpan={2}></td>
-        //                 </tr>
-        //                 <tr>
-        //                     <th>최종수정자</th>
-        //                     <td colSpan={2}></td>
-        //                 </tr>
-        //             </tbody>
-        //             <tfoot>
-        //                 <tr>
-        //                     <th colSpan={3}>
-        //                         <button type="submit" className={btnStyle.button}>수정</button>
-        //                     </th>
-        //                 </tr>
-        //             </tfoot>
-        //         </table>
-        //     </form>
-        // </div>
+        
     )
 }
 

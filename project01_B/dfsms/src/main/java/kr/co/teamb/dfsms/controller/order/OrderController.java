@@ -41,6 +41,7 @@ public class OrderController {
 			new ValidVO("NO_MATCHED_ROLE", "해당 기능은 관리자가 이용하실 수 없습니다.");
 		} else {
 			map.put("usrno", String.valueOf(vo.getUsrno()));
+			map.put("subsrbat", String.valueOf(vo.getSubsrbat()));
 			ovo.setUsrno(vo.getUsrno());
 		}
 		

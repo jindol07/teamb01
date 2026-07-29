@@ -39,4 +39,8 @@ public class ProductsService {
 		stockService.addPHistory(pvo);
 	}
 
+	public ProductsVO selDetailTemp(Map<String, String> map) {
+		return productsDao.selDetailTemp(map);
+	}
+
 }

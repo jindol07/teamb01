@@ -30,8 +30,16 @@
 		,DBMS_LOB.SUBSTR(p.cont, 200, 1) as cont
 		,p.qty as pqty
 		,c.qty
-		,p.price
-		,p.price * c.qty subtot
+		<choose>
+			<when test='subsrbat == "Y"'>
+		  		,TRUNC(p.price * 0.9) as price
+		  		,TRUNC(p.price * 0.9) * c.qty subtot
+			</when>
+			<otherwise>
+		 		,p.price
+				,p.price * c.qty subtot
+			</otherwise>
+		</choose>
 		,u.usrnm
 		FROM P_CART c
 		JOIN products p
