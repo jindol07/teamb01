@@ -3,6 +3,8 @@ import style from './signup.module.css'
 import {useNavigate} from "react-router-dom";
 import btnStyle from '../components/btn.module.css'
 import axios from "axios";
+// import confirm from "../components/Confirm";
+// import toastMsg from "../components/ToastMsg";
 
 // 주소 검색 interface
 interface DaumPostcodeData {
@@ -118,7 +120,7 @@ const Signup: React.FC = () => {
         try {
 
             const response = await axios.get(
-                "http://localhost/dfsms/member/checkId",
+                "http://192.168.0.39/dfsms/member/checkId",
                 {
                     params: {
                         usrid: id
@@ -183,7 +185,7 @@ const Signup: React.FC = () => {
                 console.log("회원가입 전송 데이터:", newmember);
 
                 await axios.post(
-                    "http://localhost/dfsms/member/signup",
+                    "http://192.168.0.39/dfsms/member/signup",
                     newmember
                 );
 
