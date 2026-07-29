@@ -101,6 +101,10 @@ interface TopChartData {
     price: number;
     imgnm: string;
     totqty: number;
+    qty: number;
+    cont: string;
+    categoryid: number;
+    title: string;
 }
 
 const TopChart: React.FC = () => {
@@ -171,6 +175,14 @@ const TopChart: React.FC = () => {
                     {topProducts && topProducts.length > 0 ? (
                         topProducts.map((item, index) => {
                             const imageUrl = getImageUrl(item.imgnm);
+                            const price = item.price
+                            const id = item.productid
+                            const name = item.pnm
+                            const qty = item.qty
+                            const cont = item.cont
+                            const title = item.title
+                            const categoryid = item.categoryid
+
 
                             return (
                                 <div
@@ -179,10 +191,15 @@ const TopChart: React.FC = () => {
                                     onClick={() =>
                                         navigate(`/shopping/${item.productid}`, {
                                             state: {
-                                                productid: item.productid,
-                                                name: item.pnm,
-                                                price: item.price,
+                                                ...item, // 원본 객체 전체 포함
+                                                productid: id,
+                                                pnm: name,
+                                                price: price,
                                                 image: imageUrl,
+                                                qty: qty,       // 💡 재고 수량 명시
+                                                cont: cont,     // 💡 상세 설명 명시
+                                                title: title,
+                                                categoryid: categoryid
                                             },
                                         })
                                     }
