@@ -21,4 +21,6 @@ public class ChartVO {
 	private String categorynm;
 	private int ctgytotqty;
 	private Double ctgyratio;
+	private int qty;
+	private String title;
 }

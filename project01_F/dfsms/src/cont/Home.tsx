@@ -4,8 +4,8 @@ import TopChart from './chart/TopChart'
 import PersonalChart from './chart/PersonalChart'
 
 const Home: React.FC = () => {
-  const loginNm = sessionStorage.getItem("loginInfo");
-
+   const loginNm = sessionStorage.getItem("loginInfo");
+  //const { loginNm } = JSON.parse(sessionStorage.getItem("loginInfo") || "{}");
   return (
     <div>
       <h1 style={{ textAlign: 'center' }}>What we are ?</h1>

@@ -47,7 +47,8 @@ const Login: React.FC = () => {
                 "loginInfo",
                 JSON.stringify({
                     loginNm: loginUser.usrnm,
-                    role: loginUser.role
+                    role: loginUser.role,
+                    usrno: loginUser.usrno
                 })
             );
 

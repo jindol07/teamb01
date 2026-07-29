@@ -63,10 +63,23 @@ const getImageUrl = (rawImg?: string) => {
 
 interface RecommendProduct {
     productid?: number;
+    PRODUCTID?: number;
     pnm?: string;
+    PNM?: string;
+    title?: string;
+    TITLE?: string;
     price?: number;
+    PRICE?: number;
     imgnm?: string;
+    IMGNM?: string;
+    pimg?: string;
     categoryid?: number;
+    CATEGORYID?: number;
+    qty?: number;
+    QTY?: number;
+    cont?: string;
+    CONT?: string;
+    [key: string]: any; // 기타 백엔드 필드 대응
 }
 
 interface CategoryChartData {
@@ -84,11 +97,11 @@ export const PersonalChart: React.FC = () => {
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
     const { loginNm } = JSON.parse(sessionStorage.getItem("loginInfo") || "{}");
+
     const fetchPersonalChartData = useCallback(async (controller?: AbortController) => {
         try {
             const url = `${backendUrl}/api/chart/list`;
 
-            // 🔑 핵심: withCredentials 옵션 추가 (세션/쿠키 전달)
             const response = await axios.get(url, {
                 signal: controller?.signal,
                 withCredentials: true, 
@@ -96,7 +109,6 @@ export const PersonalChart: React.FC = () => {
 
             console.log("차트 Response Data:", response.data);
 
-            // 서버 응답 구조 유연하게 분기 (ctrydata, categoryData, chartList 등 대응)
             const chartData = response.data?.ctrydata || response.data?.categoryData || response.data?.chartList || [];
             const productSource = response.data?.recommendProducts || response.data?.bestdata || [];
 
@@ -184,22 +196,33 @@ export const PersonalChart: React.FC = () => {
                                 autoplaySpeed: 3500,
                             }}
                             renderItem={(product, idx) => {
-                                const name = product.pnm || '상품명 없음';
-                                const price = product.price || 0;
-                                const id = product.productid || idx;
-                                const imageUrl = getImageUrl(product.imgnm);
+                                // 소문자/대문자 필드 모두 고려하여 추출
+                                const name = product.pnm || product.PNM || product.title || product.TITLE || '상품명 없음';
+                                const price = product.price ?? product.PRICE ?? 0;
+                                const id = product.productid ?? product.PRODUCTID ?? idx;
+                                const rawImg = product.imgnm || product.IMGNM || product.pimg;
+                                const imageUrl = getImageUrl(rawImg);
+                                
+                                // 💡 재고량(qty) 및 상세설명(cont) 추출
+                                const qty = product.qty ?? product.QTY ?? 0;
+                                const cont = product.cont || product.CONT || '';
+                                const categoryid = product.categoryid ?? product.CATEGORYID;
 
                                 return (
                                     <div 
                                         style={{ padding: '0 14px', boxSizing: 'border-box' }} 
-                                        onClick={() => navigate(`/shopping/${id}`,
-                                            {state: {
+                                        onClick={() => navigate(`/shopping/${id}`, {
+                                            state: {
+                                                ...product, // 원본 객체 전체 포함
                                                 productid: id,
-                                                name: name,
+                                                pnm: name,
                                                 price: price,
                                                 image: imageUrl,
-                                            },}
-                                        )}
+                                                qty: qty,       // 💡 재고 수량 명시
+                                                cont: cont,     // 💡 상세 설명 명시
+                                                categoryid: categoryid
+                                            },
+                                        })}
                                     >
                                         <div style={{ textAlign: 'center', cursor: 'pointer' }}>
                                             {/* 이미지 박스 */}
