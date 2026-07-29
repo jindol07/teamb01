@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import style from './cart.module.css'
-import { Link, useNavigate } from 'react-router-dom';
-import axios from "axios";
+import { Link, useNavigate } from 'react-router-dom'
+import axios from "axios"
 import btnStyle from '../components/btn.module.css'
-import { Button, InputGroup, FormControl } from 'react-bootstrap';
+import Confirm from '../components/Confirm'
+import confirmStyle from '../components/confirm.module.css'
+import ToastMsg from '../components/ToastMsg'
+import toastStyle from '../components/toastMsg.module.css'
+
 
 // interface 세워서 타입 정의
 interface CartItem {
@@ -16,7 +20,7 @@ interface CartItem {
     TITLE: string; // 상품제목
     IMGNM?: string; // 이미지
     PRODUCTID: number; // 상품번호
-    CONT: string; // 상품설명(상세)
+    CONT?: string; // 상품설명(상세)
     PNM: string; // 상품명
 }
 
@@ -40,26 +44,21 @@ interface CartItem {
 }
 */
 
+const backendUrl = process.env.REACT_APP_BACK_END_URL;
+// `${backendUrl}/api/cart/list?usrno=${usrno}`
+
 const NO_IMAGE_PLACEHOLDER =
     "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20fill%3D%22%23f0f0f0%22%20width%3D%22400%22%20height%3D%22400%22%2F%3E%3Ctext%20fill%3D%22%23888888%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
 
 const Cart: React.FC = () => {
 
-    // 데이터 받아올 경로 : http://192.168.0.23/dfsms/api/cart/list?usrno=2
-    const backendUrl = process.env.REACT_APP_BACK_END_URL;
-    // `${backendUrl}/api/cart/list?usrno=${usrno}`
-    // ㄴ 서버에서 받아온 JSON 데이터를 JSOjbect 배열로 저장할 useState
+    // 서버에서 받아온 JSON 데이터를 JSON Object 배열로 저장할 useState
     const [productsList, setProductsList] = useState<CartItem[]>([]);
-
-    // const url = `${backendUrl}/api/order/add`
-    const [orderList, setOrderList] = useState<[]>([]);
 
     // 로그인 사용자 정보
     const saved = sessionStorage.getItem("loginInfo");
     const loginInfo = saved ? JSON.parse(saved) : null;
     const loginNm = loginInfo?.loginNm;
-    const usrno = loginInfo?.usrno
-    console.log(loginInfo);
 
     const navigate = useNavigate();
 
@@ -93,12 +92,16 @@ const Cart: React.FC = () => {
         } catch (error) {
             console.error("데이터 가져오기 실패 :", error);
             alert(`데이터 가져오기 실패 : ${error}`);
+            // <Confirm
+            //         message="로그아웃 하시겠습니까?"
+            //         onConfirm={logout}
+            //         onCancel={() => setShowConfirm(false)}
+            //     />
         }
 
     }
 
-    //0727 s
-    const orderhandler = async () => {
+    const orderHandler = async () => {
         try {
             const url = `${backendUrl}/api/order/add`
             const res = await axios.post(url, {/*비어있는 바디(백단에서 이미 다 받아와서 보낼 데이터가 없음)*/ },
@@ -114,11 +117,9 @@ const Cart: React.FC = () => {
                 alert(res.data.message)
             } else { //success
                 alert(res.data.message)
-                navigate('/Payment')
+                navigate('/Payment');
             }
             console.log(res.data.data);
-            //서버로부터 응답받은 데이터 useState에 바인딩
-            setOrderList(res.data.data)
 
         } catch (error) {
             console.error("데이터 가져오기 실패 :", error);
@@ -126,7 +127,6 @@ const Cart: React.FC = () => {
         }
 
     }
-    //0727 e
 
     //useEffect를 사용해 최초 한번만 초기화
     useEffect(() => {
@@ -173,7 +173,6 @@ const Cart: React.FC = () => {
 
             if (res.data.code === 'SUCCESS') {
                 alert(res.data.message);
-                setProductsList(productsList.filter(item => item.PRODUCTID !== productid));
                 fetchCartList();
             }
 
@@ -267,28 +266,30 @@ const Cart: React.FC = () => {
                     )}
                 </tbody>
                 <tfoot>
-                    {productsList.length === 0 ? (
-                        <tr>
-                            <td colSpan={2} style={{ padding: '30px' }}>
-                                구매하실 상품을 장바구니에 담아주세요!
-                            </td>
-                        </tr>
-                    ) : (
-                        <tr>
-                            <td colSpan={2}>총 가격 : <strong>{totalPrice.toLocaleString()}</strong>원</td>
-                        </tr>
-                    )}
+                    {
+                        productsList.length === 0
+                            ?
+                            <tr>
+                                <td colSpan={2} style={{ padding: '30px' }}>
+                                    구매하실 상품을 장바구니에 담아주세요!
+                                </td>
+                            </tr>
+                            :
+                            <tr>
+                                <td colSpan={2}>총 가격 : <strong>{totalPrice.toLocaleString()}</strong>원</td>
+                            </tr>
+                    }
                 </tfoot>
             </table>
             <br />
             {
                 productsList.length === 0
                     ?
-                    <Link to={`/shoppingList`} className={btnStyle.button}>
+                    <Link to='/shoppingList' className={btnStyle.button}>
                         상품 리스트
                     </Link>
                     :
-                    <button className={btnStyle.button} onClick={orderhandler}>
+                    <button className={btnStyle.button} onClick={orderHandler}>
                         결제하기
                     </button>
             }

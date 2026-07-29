@@ -15,7 +15,7 @@
 	</select>
 
 	<!-- Map<String, Object> cartSValid(Map<String, String> map); -->
-	<!-- 상품의 전체 재고 - 디테일에서 사용자가 장바구니에 담은 수량 - 장바구니에서 +버튼으로 추가하려는 수량 -->
+	<!-- (상품의 전체 재고) - (디테일에서 사용자가 장바구니에 담은 수량) - (장바구니에서 +버튼으로 추가하려는 수량) -->
 	<!-- NVL(c.qty, 0) : 장바구니에 아무것도 없다면(null) 장바구니 수량을 0개로 취급 -->
 	<select id="cartSValid" parameterType="map" resultType="map">
 		SELECT p.qty - NVL(c.qty, 0) - #{qty} AS qty
@@ -47,7 +47,7 @@
     	LEFT JOIN P_GALLERY g
         	ON p.productid = g.productid
     	WHERE u.usrno = #{usrno}
-</select>
+	</select>
 
 	<!-- void updateQty(Map<String, String> map); -->
 	<update id="updateQty" parameterType="map">
