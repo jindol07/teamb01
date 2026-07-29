@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import kr.co.teamb.dfsms.dao.SurveyDao;
 import kr.co.teamb.dfsms.vo.SurveyAnswerVO;
 import kr.co.teamb.dfsms.vo.SurveyQuestionVO;
+import kr.co.teamb.dfsms.vo.SurveyQuestionVO.QuestionListItem;
 import kr.co.teamb.dfsms.vo.SurveyVO;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 @Service
@@ -47,29 +49,37 @@ public class SurveyService {
 			return null;
 		}
 	}
-	public List<SurveyVO> getSurveyList() {
+	public List<SurveyVO> getSurveyList() { // 나중에 바꾸기
 		List<SurveyVO> surveyList = new ArrayList<>();
 		for (int i = 0; i < surveyDao.getSurveyCount(); i++) {
 			SurveyVO result = surveyDao.getSurveyQuestions((long) i + 1);
 			if (result == null) {
 				continue;
 			} else {
+				for (SurveyQuestionVO e : result.getQuestionList()) {
+					e.setQuestionlist(objectMapper.readValue(e.getQuestionlistJson(), new TypeReference<List<QuestionListItem>>() {}));
+				}
 				surveyList.add(result);
 			}
 		}
 		return surveyList;
 	}
-	public SurveyVO getSurvey(long num) {
-		SurveyVO result = surveyDao.getSurvey(num);
-		if (result == null) {
-			return null;
-		}
-		return result;
-	}
+//	public SurveyVO getSurvey(long num) {
+//		SurveyVO result = surveyDao.getSurvey(num);
+//		if (result == null) {
+//			return null;
+//		}
+//		result.getQuestionList()
+//		
+//		return result;
+//	}
 	public SurveyVO getSurveyQuestions(long num) {
 		SurveyVO result = surveyDao.getSurveyQuestions(num);
 		if (result == null) {
 			return null;
+		}
+		for (SurveyQuestionVO e : result.getQuestionList()) {
+			e.setQuestionlist(objectMapper.readValue(e.getQuestionlistJson(), new TypeReference<List<QuestionListItem>>() {}));
 		}
 		return result;
 	}

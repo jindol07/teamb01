@@ -19,7 +19,6 @@ public class SurveyAnswerVO {
 	private int userid;
 	private int surveyid;
 	private int questionid;
-	@JsonIgnore
 	private List<AnswerItem> answerdata;
 	private String answerdataJson;
 	private String rdate;

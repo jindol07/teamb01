@@ -47,6 +47,17 @@ public class SurveyController {
 			return ResponseEntity.noContent().build();
 		}
 	}
+	@GetMapping("/detail/{num}")
+	public ResponseEntity<SurveyVO> getSurvey(@PathVariable("num") Long num) {
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(num);
+		if (surveyVO != null) {
+			System.out.println(1);
+			return ResponseEntity.ok(surveyVO);
+		} else {
+			System.out.println(2);
+			return ResponseEntity.noContent().build();
+		}
+	}
 	@GetMapping("/result/{num}")
 	public ResponseEntity<SurveyVO> getSurveyResult(@PathVariable("num") Long num) {
 		SurveyVO surveyVO = surveyService.getSurveyQuestions(num);
@@ -67,11 +78,6 @@ public class SurveyController {
 	}
 	@PostMapping("/answers")
 	public ResponseEntity<String> insertSurveyAnswers(@RequestBody List<SurveyAnswerVO> list) {
-//		int subcode = (int) list.get("subcode");
-//		String surveytype = (String) list.get("surveytype");
-//		System.out.println("subcode: " + subcode);
-//		System.out.println("surveytype: " + surveytype);
-		System.out.println(1111);
 		try {
 			surveyService.insertSurveyAnswers(list);
 			return ResponseEntity.ok("update complete!");

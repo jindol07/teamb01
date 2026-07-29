@@ -17,8 +17,8 @@ public class SurveyQuestionVO {
 	private int surveyid;
 	private String questiontitle;	
 	private String questiontype;
-	@JsonIgnore
 	private List<QuestionListItem> questionlist;
+	@JsonIgnore
 	private String questionlistJson;
 	private int sort_order;
 	

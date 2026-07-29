@@ -6,64 +6,31 @@ import btnStyle from '../components/btn.module.css'
 
 interface Survey {
     surveyid: number,
-    sub: string,
-    usrno: string,
-    code: number,
-    contList: SurveyContent[],
-    rdate: string,
-}
-interface SurveyContent {
-    surveyid: number,
-    surveytype: string,
     surveytitle: string,
-    surveycnt: number,
+    usrno: string,
+    status?: string,
+    questionList?: [],
 }
 
 const SurveyClient: React.FC = () => {
     const [loginInfo, setLoginInfo] = useState<string | null>(null);
-    const [survey, setSurvey] = useState<Survey | null>(null);
+    const [surveys, setSurveys] = useState<Survey[] | null>(null);
     const [contentsLength, setContentsLength] = useState(2);
     const [selectedsurveyType, setSelectedsurveyType] = useState<string | null>(null);
     const navigate = useNavigate();
     // 서버에서 최신 설문 데이터를 가져오는 함수
     const fetchLatestSurvey = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/survey/latest`);
+            const response = await axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/survey/allList`);
             if (response.status === 200) {
                 console.log(response.data);
-                setSurvey(response.data);
+                setSurveys(response.data);
             } else {
                 console.log("No survey data available.");
                 return <div>현재 진행중인 설문조사가 없습니다.</div>;
             }
         } catch (error) {
             console.error("Failed to fetch survey:", error);
-        }
-    };
-    const submitSurvey = async (e: React.FormEvent) => {
-        e.preventDefault(); // 폼 기본 동작 방지
-        if (!selectedsurveyType || !survey) {
-            alert("항목을 선택해주세요.");
-            return;
-        }
-        try {
-            // 선택된 설문 항목을 서버로 전송
-            console.log(survey.surveyid, selectedsurveyType);
-            const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/updateCount`, {
-                subcode: survey.surveyid, // 설문 번호
-                surveytype: selectedsurveyType, // 선택된 설문 유형
-            });
-            console.log(response);
-            if (response.status === 200) {
-                alert("설문이 성공적으로 제출되었습니다.");
-                //fetchLatestSurvey(); // 제출 후 설문 데이터 다시 로드
-                navigate(`/community/surveyclientResult/${survey.surveyid}`);  // 설문조사 이후 결과로 이동
-            } else {
-                alert("설문 제출에 실패했습니다.");
-            }
-        } catch (error) {
-            console.error("Failed to submit survey:", error);
-            alert("설문 제출 중 오류가 발생했습니다.");
         }
     };
     useEffect(() => {
@@ -75,81 +42,21 @@ const SurveyClient: React.FC = () => {
         }
         //여기까지
         fetchLatestSurvey();
-        setContentsLength(survey ? survey.contList.length : 0);
-        // let dom:Survey = {  
-        //     num: 1,
-        //     sub: "설문지 제목", // subject
-        //     cont: "7월맞이 쿠폰 이벤트 진행중입니다! 원하시는 항목에 투표해주세요ggg.", // content 
-        //     code: 3,
-        //     contents: [
-        //         {
-        //             surveyId: 1,
-        //             surveyType: "A",
-        //             surveyTitle: "선택지 1",
-        //             surveyCnt: 0,
-        //         }, {
-        //             surveyId: 1,
-        //             surveyType: "B",
-        //             surveyTitle: "선택지 2",
-        //             surveyCnt: 0,
-        //         }, {
-        //             surveyId: 1,
-        //             surveyType: "C",
-        //             surveyTitle: "선택지 3",
-        //             surveyCnt: 0,
-        //         }
-        //     ]
-        // };
-        // setSurvey(dom);
+        setContentsLength(surveys ? surveys.length : 0);
     }, []);
-    if (!survey) {
+    if (!surveys) {
         return <div>설문 데이터를 불러오는 중...</div>;
     }
     return (
         <div className={`container ${style.surveyContainer}`}>
             <div className={`card ${style.surveyCard}`}>
                 <div className="card-body">
-                    <h2 className={style.title}>{survey.sub}</h2>
-                    {/* <h4 className={style.contt}>{survey.cont}</h4> */}
-                    <p className={style.info}>총 {contentsLength}문항</p>
-                    <form onSubmit={submitSurvey}>
-                        {survey.contList.map((content, index) => (
-                            <div
-                                key={index}
-                                className={style.questionItem}
-                            >
-                                <input
-                                    className={style.radio}
-                                    type="radio"
-                                    name="surveyType"
-                                    value={content.surveytype}
-                                    id={`survey-${index}`}
-                                    onChange={(e) => setSelectedsurveyType(e.target.value)}
-                                />
-                                <label
-                                    className={style.questionLabel}
-                                    htmlFor={`survey-${index}`}
-                                >
-                                    {content.surveytitle}
-                                </label>
-                            </div>
-                        ))}
-                        {/* <div className={style.actionArea}> */}
-                        <div className={`${style.actionArea} text-center`}>
-                            {loginInfo === 'U' && (
-                                <button type="submit" className={`${btnStyle.submitBtn}`}>
-                                    제출하기
-                                </button>
-                            )}
+                    <h2 className={style.title}>설문 조사 리스트</h2>
+                    {surveys.map((e, i) => e.questionList?.length && (
+                        <div key={i}>
+                            <Link to={`/community/survey/${e.surveyid}`}>{e.surveytitle}</Link>
                         </div>
-                    </form>
-                    <div className={`${style.actionArea} text-center`}>
-                        {loginInfo === 'A' && (
-                            <Link to={`/admin/surveyList`} className={btnStyle.button}>
-                                확인 (관리자)
-                            </Link>
-                        )}
-                    </div>
+                    ))}
                 </div>
             </div>
         </div>
