@@ -6,7 +6,6 @@ import btnStyle from '../components/btn.module.css'
 import Confirm from '../components/Confirm'
 import ToastMsg from '../components/ToastMsg'
 
-
 // interface 세워서 타입 정의
 interface CartItem {
     PQTY: number; // 남은 재고 수량
@@ -45,13 +44,17 @@ interface CartItem {
 const backendUrl = process.env.REACT_APP_BACK_END_URL;
 // `${backendUrl}/api/cart/list?usrno=${usrno}`
 
-const NO_IMAGE_PLACEHOLDER =
-    "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20fill%3D%22%23f0f0f0%22%20width%3D%22400%22%20height%3D%22400%22%2F%3E%3Ctext%20fill%3D%22%23888888%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
+const NO_IMAGE_PLACEHOLDER = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20fill%3D%22%23f0f0f0%22%20width%3D%22400%22%20height%3D%22400%22%2F%3E%3Ctext%20fill%3D%22%23888888%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
 
 const Cart: React.FC = () => {
 
     // 서버에서 받아온 JSON 데이터를 JSON Object 배열로 저장할 useState
     const [productsList, setProductsList] = useState<CartItem[]>([]);
+
+    // confirm과 toastMsg
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [delProductById, setDelProductById] = useState<number | null>(null);
+    const [toastMsg, setToastMsg] = useState("");
 
     // 로그인 사용자 정보
     const saved = sessionStorage.getItem("loginInfo");
@@ -85,7 +88,7 @@ const Cart: React.FC = () => {
             });
             console.log(res.data.data);
             //서버로부터 응답받은 데이터 useState에 바인딩
-            setProductsList(res.data.data)
+            setProductsList(res.data.data);
 
         } catch (error) {
             console.error("데이터 가져오기 실패 :", error);
@@ -94,6 +97,7 @@ const Cart: React.FC = () => {
 
     }
 
+    // 결제하기
     const orderHandler = async () => {
         try {
             const url = `${backendUrl}/api/order/add`
@@ -103,14 +107,16 @@ const Cart: React.FC = () => {
 
             if (res.data.code === 'NO_USR_INFO') {
                 //로그인 페이지로 이동
-                alert(res.data.message)
+                showToast(res.data.message)
             } else if (res.data.code === 'NO_MATCHED_ROLE') {
-                alert(res.data.message)
+                showToast(res.data.message)
             } else if (res.data.code === 'LACK_OF_QTY') {
-                alert(res.data.message)
+                showToast(res.data.message)
             } else { //success
-                alert(res.data.message)
-                navigate('/orderstatus');
+                setToastMsg(res.data.message)
+                setTimeout(() => {
+                    navigate('/orderstatus');
+                }, 1000);
             }
             console.log(res.data.data);
 
@@ -142,11 +148,11 @@ const Cart: React.FC = () => {
             });
 
             if (res.data.code === "LACK_OF_QTY") {
-                alert(res.data.message);
+                showToast(res.data.message);
                 return;
             }
-            fetchCartList();
             console.log(res.data);
+            fetchCartList();
 
         } catch (error) {
             console.error("수량 변경 실패:", error);
@@ -165,12 +171,13 @@ const Cart: React.FC = () => {
             });
 
             if (res.data.code === 'SUCCESS') {
-                alert(res.data.message);
+                showToast(res.data.message);
                 fetchCartList();
             }
 
         } catch (error) {
             console.error("삭제 실패 :", error);
+            alert(`삭제 실패 : ${error}`);
         }
 
     };
@@ -181,6 +188,14 @@ const Cart: React.FC = () => {
         total += item.SUBTOT;
     });
     const totalPrice = total;
+
+    // 토스트메세지 공통 함수
+    const showToast = (message: string) => {
+        setToastMsg(message);
+        setTimeout(() => {
+            setToastMsg("");
+        }, 2000);
+    };
 
     return (
         <div style={{ textAlign: 'center' }}>
@@ -194,69 +209,74 @@ const Cart: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {productsList.length === 0 ? (
-                        <tr>
-                            <td colSpan={2} style={{ padding: '30px' }}>
-                                장바구니에 담긴 상품이 없습니다.
-                            </td>
-                        </tr>
-                    ) : (
-                        productsList.map((item) => (
-                            <tr key={item.PRODUCTID}>
-                                <td>
-                                    <img
-                                        src={getImageUrl(item.IMGNM)}
-                                        alt={item.PNM}
-                                        onError={(e) => {
-                                            const target = e.target as HTMLImageElement;
-                                            target.onerror = null;
-                                            target.src = NO_IMAGE_PLACEHOLDER;
-                                        }}
-                                        style={{ width: '100px', height: '100px', marginLeft: '21px' }}
-                                    />
-                                    {/* X 버튼 */}
-                                    <button
-                                        style={{ float: 'right' }}
-                                        className="btn btn-danger btn-sm"
-                                        onClick={() => handledelOneCartProduct(item.PRODUCTID)}
-                                    >
-                                        X
-                                    </button>
-                                    <p style={{ fontWeight: 'bold' }}>{item.TITLE}</p>
-                                    <p>{item.PRICE?.toLocaleString()} * {item.QTY} 원</p>
-                                    {/* toLocaleString() : 큰 수에 천단위로 쉼표 찍어줌 */}
-                                    <div className="input-group" style={{ width: '120px', margin: '0 auto' }}>
-                                        {/* - 버튼 */}
-                                        <button
-                                            className="btn btn-outline-secondary"
-                                            type="button"
-                                            onClick={() => handleQuantityChange(item.PRODUCTID, item.QTY, -1)}
-                                        >
-                                            -
-                                        </button>
-
-                                        {/* 수량 */}
-                                        <input
-                                            type="text"
-                                            className="form-control text-center"
-                                            value={item.QTY}
-                                            readOnly
-                                        />
-
-                                        {/* + 버튼 */}
-                                        <button
-                                            className="btn btn-outline-secondary"
-                                            type="button"
-                                            onClick={() => handleQuantityChange(item.PRODUCTID, item.QTY, 1)}
-                                        >
-                                            +
-                                        </button>
-                                    </div>
+                    {
+                        productsList.length === 0
+                            ?
+                            <tr>
+                                <td colSpan={2} style={{ padding: '30px' }}>
+                                    장바구니에 담긴 상품이 없습니다.
                                 </td>
-                                <td>{item.SUBTOT.toLocaleString()} 원</td>
                             </tr>
-                        ))
-                    )}
+                            :
+                            productsList.map((item) => (
+                                <tr key={item.PRODUCTID}>
+                                    <td>
+                                        <img
+                                            src={getImageUrl(item.IMGNM)}
+                                            alt={item.PNM}
+                                            onError={(e) => {
+                                                const target = e.target as HTMLImageElement;
+                                                target.onerror = null;
+                                                target.src = NO_IMAGE_PLACEHOLDER;
+                                            }}
+                                            style={{ width: '100px', height: '100px', marginLeft: '21px' }}
+                                        />
+                                        {/* X 버튼 */}
+                                        <button
+                                            style={{ float: 'right' }}
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() => {
+                                                setDelProductById(item.PRODUCTID);
+                                                setShowConfirm(true);
+                                            }}
+                                        >
+                                            X
+                                        </button>
+                                        <p style={{ fontWeight: 'bold' }}>{item.TITLE}</p>
+                                        <p>{item.PRICE?.toLocaleString()} * {item.QTY} 원</p>
+                                        {/* toLocaleString() : 큰 수에 천단위로 쉼표 찍어줌 */}
+                                        <div className="input-group" style={{ width: '120px', margin: '0 auto' }}>
+                                            {/* - 버튼 */}
+                                            <button
+                                                className="btn btn-outline-secondary"
+                                                type="button"
+                                                onClick={() => handleQuantityChange(item.PRODUCTID, item.QTY, -1)}
+                                            >
+                                                -
+                                            </button>
+
+                                            {/* 수량 */}
+                                            <input
+                                                type="text"
+                                                className="form-control text-center"
+                                                value={item.QTY}
+                                                readOnly
+                                            />
+
+                                            {/* + 버튼 */}
+                                            <button
+                                                className="btn btn-outline-secondary"
+                                                type="button"
+                                                onClick={() => handleQuantityChange(item.PRODUCTID, item.QTY, 1)}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td>{item.SUBTOT.toLocaleString()} 원</td>
+                                </tr>
+                            ))
+                    }
                 </tbody>
                 <tfoot>
                     {
@@ -286,7 +306,26 @@ const Cart: React.FC = () => {
                         결제하기
                     </button>
             }
-        </div>
+            {
+                showConfirm && (
+                    <Confirm
+                        message="장바구니에서 삭제하시겠습니까?"
+                        onConfirm={() => {
+                            if (delProductById !== null) {
+                                handledelOneCartProduct(delProductById);
+                            }
+                            setShowConfirm(false);
+                            setDelProductById(null);
+                        }}
+                        onCancel={() => {
+                            setShowConfirm(false);
+                            setDelProductById(null);
+                        }}
+                    />
+                )
+            }
+            {toastMsg && <ToastMsg message={toastMsg} />}
+        </div >
     )
 }
 
