@@ -105,7 +105,6 @@ const Login: React.FC = () => {
                 }
             }
             else {
-
                 console.log("서버 연결 실패");
                 showToastMessage("백엔드 서버 연결을 확인해주세요.");
             }
