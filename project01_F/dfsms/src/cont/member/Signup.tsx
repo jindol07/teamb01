@@ -46,6 +46,8 @@ const Signup: React.FC = () => {
     const [telOpen, setTelOpen] = useState<boolean>(false); // 첫 번째 선택 목록 열림 여부
     // 날짜 선택 사항 제거 => 가입 시 해당 정보 기반으로 저장될 예정
 
+    const backendUrl = process.env.REACT_APP_BACK_END_URL;
+
     const telList = [
         "010", "011", "016", "017", "018", "019"
     ]
@@ -120,7 +122,8 @@ const Signup: React.FC = () => {
         try {
 
             const response = await axios.get(
-                "http://192.168.0.39/dfsms/member/checkId",
+                //"http://localhost/dfsms/member/checkId",
+                `${backendUrl}/api/member/checkId`,
                 {
                     params: {
                         usrid: id
@@ -185,7 +188,8 @@ const Signup: React.FC = () => {
                 console.log("회원가입 전송 데이터:", newmember);
 
                 await axios.post(
-                    "http://192.168.0.39/dfsms/member/signup",
+                    //"http://localhost/dfsms/member/signup",
+                    `${backendUrl}/api/member/signup`,
                     newmember
                 );
 
