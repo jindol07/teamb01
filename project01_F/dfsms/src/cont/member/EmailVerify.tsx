@@ -12,6 +12,7 @@ const EmailVerify: React.FC = () => {
 
     // 페이지 이동 함수
     const navi = useNavigate();
+    const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
     // 인증번호 확인 버튼 클릭
     const verifyCode = async () => {
@@ -26,7 +27,7 @@ const EmailVerify: React.FC = () => {
             console.log("code:", code);
 
             await axios.post(
-                "http://localhost/dfsms/member/emailVerify",
+                `${backendUrl}/api/member/emailVerify`,
                 {
                     email: email,
                     code: code

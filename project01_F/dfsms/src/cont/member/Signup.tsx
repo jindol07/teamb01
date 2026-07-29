@@ -3,8 +3,8 @@ import style from './signup.module.css'
 import {useNavigate} from "react-router-dom";
 import btnStyle from '../components/btn.module.css'
 import axios from "axios";
-// import confirm from "../components/Confirm";
-// import toastMsg from "../components/ToastMsg";
+import Confirm from "../components/Confirm";
+import ToastMsg from "../components/ToastMsg";
 
 // 주소 검색 interface
 interface DaumPostcodeData {
@@ -47,6 +47,10 @@ const Signup: React.FC = () => {
     // 날짜 선택 사항 제거 => 가입 시 해당 정보 기반으로 저장될 예정
 
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
+
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [confirmMessage, setConfirmMessage] = useState("");
+    const [confirmCallback, setConfirmCallback] = useState<() => void>(() => () => {});
 
     const telList = [
         "010", "011", "016", "017", "018", "019"
