@@ -242,7 +242,7 @@ const Cart: React.FC = () => {
                                         >
                                             X
                                         </button>
-                                        <p style={{ fontWeight: 'bold' }}>{item.TITLE}</p>
+                                        <p style={{ fontWeight: 'bold' }}>{item.PNM}</p>
                                         <p>{item.PRICE?.toLocaleString()} * {item.QTY} 원</p>
                                         {/* toLocaleString() : 큰 수에 천단위로 쉼표 찍어줌 */}
                                         <div className="input-group" style={{ width: '120px', margin: '0 auto' }}>
