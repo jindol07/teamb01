@@ -4,9 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from "axios"
 import btnStyle from '../components/btn.module.css'
 import Confirm from '../components/Confirm'
-import confirmStyle from '../components/confirm.module.css'
 import ToastMsg from '../components/ToastMsg'
-import toastStyle from '../components/toastMsg.module.css'
 
 
 // interface 세워서 타입 정의
@@ -92,11 +90,6 @@ const Cart: React.FC = () => {
         } catch (error) {
             console.error("데이터 가져오기 실패 :", error);
             alert(`데이터 가져오기 실패 : ${error}`);
-            // <Confirm
-            //         message="로그아웃 하시겠습니까?"
-            //         onConfirm={logout}
-            //         onCancel={() => setShowConfirm(false)}
-            //     />
         }
 
     }
@@ -117,7 +110,7 @@ const Cart: React.FC = () => {
                 alert(res.data.message)
             } else { //success
                 alert(res.data.message)
-                navigate('/Payment');
+                navigate('/orderstatus');
             }
             console.log(res.data.data);
 

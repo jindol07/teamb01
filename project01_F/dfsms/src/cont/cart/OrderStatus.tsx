@@ -29,21 +29,6 @@ const OrderStatus = () => {
                     <br />
                     상품 준비가 완료되면 배송이 시작됩니다.
                 </p>
-                {/* 주문 정보 */}
-                <div className="border rounded p-3 mt-4 text-start">
-                    <h5 className="mb-3">
-                        📦 주문 정보
-                    </h5>
-                    <p className="mb-1">
-                        상품명 : 샐러드 정기배송
-                    </p>
-                    <p className="mb-1">
-                        결제 금액 : 30,000원
-                    </p>
-                    <p className="mb-0">
-                        배송 상태 : 배송 준비중
-                    </p>
-                </div>
                 {/* 버튼 */}
                 <div className="mt-4">
                     <button
@@ -54,7 +39,7 @@ const OrderStatus = () => {
                     </button>
                     <button
                         className="btn btn-outline-success"
-                        onClick={() => navigate("/mypage")}
+                        onClick={() => navigate("/mypage/orderList")}
                     >
                         주문 내역 보기(마이페이지)
                     </button>
