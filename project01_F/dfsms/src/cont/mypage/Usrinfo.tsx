@@ -28,7 +28,8 @@ const Usrinfo: React.FC = () => {
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
     const [showConfirmU, setShowConfirmU] = useState(false);
-    const [toast, setToast] = useState("");
+    const [showConfirmS, setShowConfirmS] = useState(false);
+    const [toast, setToast] = useState<string | null>("");
     const [subsrbat, setSubsrbat] = useState<string | null>();
 
     const confirmHandlerU = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -36,8 +37,9 @@ const Usrinfo: React.FC = () => {
         setShowConfirmU(true);
     };
 
-    const confirmHandlerS = (e: React.MouseEvent<HTMLButtonElement>) => {
-        
+    const confirmHandlerS = () => {
+        console.log('구독버튼이벤트')
+        setShowConfirmS(true);
     };
 
     useEffect(() => {
@@ -55,6 +57,12 @@ const Usrinfo: React.FC = () => {
             }
         };
         getUserInfo();
+        //토스트메시지 호출되면 DOM에서 제거
+        const timer = setTimeout(() => {
+            setToast(null);
+        }, 2000);
+        return () => clearTimeout(timer);
+
     }, [subsrbat]);
 
     const nav = useNavigate();
@@ -97,23 +105,24 @@ const Usrinfo: React.FC = () => {
         }
     }
 
-    const goSubscrible = async (wantSrb:string) => {
+    const goSubscrible = async (wantSrb: string) => {
         try {
-                const res = await axios.get(`${backendUrl}/api/mypage/subscribe`,
-                    {
-                        params: {
-                            subsrbat: (wantSrb === 'Y') ? 'Y' : 'N'
-                        }
-                        ,withCredentials: true, // HttpSession 사용 시 필요(CORS 환경이라면)
-                    });
-                if(res.data.code !== 'FAIL') {
-                    setSubsrbat(res.data.subsrbat);
-                    console.log('구독여부: ',res.data.message)
-                }
+            const res = await axios.get(`${backendUrl}/api/mypage/subscribe`,
+                {
+                    params: {
+                        subsrbat: (wantSrb === 'Y') ? 'N' : 'Y'
+                    }
+                    , withCredentials: true, // HttpSession 사용 시 필요(CORS 환경이라면)
+                });
+            if (res.data.code !== 'FAIL') {
+                setSubsrbat(res.data.subsrbat);
+                console.log('구독여부: ', res.data.message)
+                setToast(subsrbat === 'Y' ? "구독이 취소되었습니다." : "구독 되었습니다.")
             }
-            catch (err) {
-                console.error("구독 프로세스 실패", err);
-            }
+        }
+        catch (err) {
+            console.error("구독 프로세스 실패", err);
+        }
     }
 
     return (
@@ -187,9 +196,9 @@ const Usrinfo: React.FC = () => {
                                     subsrbat === 'Y'
                                         ? <>
                                             <span>구독중</span>&nbsp;
-                                            <button type="button" className={btnStyle.button} onClick={() => goSubscrible('N')}>구독취소</button>
-                                          </>
-                                        :   <button type="button" className={btnStyle.button} onClick={() => goSubscrible('Y')}>구독하기</button>
+                                            <button type="button" className={btnStyle.button} onClick={confirmHandlerS}>구독취소</button>
+                                        </>
+                                        : <button type="button" className={btnStyle.button} onClick={confirmHandlerS}>구독하기</button>
                                 }
                             </td>
                         </tr>
@@ -220,6 +229,20 @@ const Usrinfo: React.FC = () => {
                         updateUsr()
                     }}
                     onCancel={() => setShowConfirmU(false)}
+                />
+            )}
+
+            {showConfirmS && (
+                <Confirm
+                    message={subsrbat === 'Y' ? "구독취소 하시겠습니까?" : "구독 하시겠습니까?"}
+                    onConfirm={() => {
+                        setShowConfirmS(false)
+                        if (subsrbat != null) {
+                            console.log('구독컨펌창1: ', subsrbat)
+                            goSubscrible(subsrbat)
+                        }
+                    }}
+                    onCancel={() => setShowConfirmS(false)}
                 />
             )}
 

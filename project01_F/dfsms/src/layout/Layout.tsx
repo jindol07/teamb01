@@ -69,7 +69,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <div className="position-absolute top-50 start-50 translate-middle text-center">
                             <Link to="/" className="text-decoration-none">
 
-                                <img src="images/dailyfood.png" alt="Fresh Meal"
+                                <img src="/images/dailyfood.png" alt="Fresh Meal"
                                      style={{
                                          height: "42px",
                                          objectFit: "contain"
@@ -104,7 +104,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <div className="row">
                         <div className="col-md-4 mb-4">
                             <div className="mb-3">
-                                <img src="images/dailyfood.png" alt="Fresh Meal"
+                                <img src="/images/dailyfood.png" alt="Fresh Meal"
                                      style={{
                                          height: "50px",
                                          width: "auto",
