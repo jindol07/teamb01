@@ -26,7 +26,7 @@ const DropDownNav: React.FC = () => {
         isOpen && (<div className={style.dropdownContent}> 
                     <NavLink to ="/community/notice" onClick={closeDropdown} className={linkClass}>공지사항</NavLink>
                     <NavLink to ="/community/surveyClient" onClick={closeDropdown} className={linkClass}>설문조사</NavLink>
-                    <NavLink to ="/community/poem" onClick={closeDropdown} className={linkClass}>시</NavLink>
+                    <NavLink to ="/community/poem" onClick={closeDropdown} className={linkClass}>우농(愚農) 시인</NavLink>
                   </div> )
       }
     </div>
