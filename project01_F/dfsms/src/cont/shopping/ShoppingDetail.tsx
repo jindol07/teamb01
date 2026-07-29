@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./shoppingDetail.module.css";
 import axios from "axios";
+import Confirm from "../components/Confirm";
 
 // 이미지 로딩 실패 시 기본 이미지 (SVG)
 const NO_IMAGE_PLACEHOLDER =
@@ -67,13 +68,14 @@ const ShoppingDetail: React.FC = () => {
 
   const [success, setSuccess] = useState(false);
   const [already, setAlready] = useState(false);
+  const [logins, setLogins] = useState(false);
   const [message, setMessage] = useState(''); // 메시지 내용 저장용
 
   if (!rawProduct) {
     return (
       <div className={style.errorContainer}>
         <p className={style.error}>존재하지 않거나 잘못된 접근입니다.</p>
-        <button className={style.backBtn} onClick={() => navigate("/shopping")}>
+        <button className={style.backBtn} onClick={() => navigate("/shopping/list")}>
           쇼핑 목록으로 돌아가기
         </button>
       </div>
@@ -103,7 +105,7 @@ const ShoppingDetail: React.FC = () => {
     // 이미지 절대 경로(http/https) 이거나 Base64 인코딩 데이터(data:)인 경우 그대로 반환
     if (
       imgStr.startsWith("http://") ||
-      imgStr.startsWith("http://") ||
+      imgStr.startsWith("https://") ||
       imgStr.startsWith("data:")
     ) {
       return imgStr;
@@ -128,7 +130,7 @@ const ShoppingDetail: React.FC = () => {
     // 숫자가 아니거나 1 미만인 경우 최소값인 1로 설정
     if (isNaN(value) || value < 1) {
       setQuantity(1);
-    // 허용된 최대 수량(maxAllowedQty)을 초과한 경우 최대 허용 수량으로 설정
+      // 허용된 최대 수량(maxAllowedQty)을 초과한 경우 최대 허용 수량으로 설정
     } else if (value > maxAllowedQty) {
       setQuantity(maxAllowedQty);
       // 유효한 범위 내의 값인 경우 그대로 수량으로 설정
@@ -136,7 +138,14 @@ const ShoppingDetail: React.FC = () => {
       setQuantity(value);
     }
   };
-
+  // 장바구니 담기 클릭시 로그인을 하지 않았을 경우 이동
+  const login1 = () => {
+    setLogins(false);
+    window.dispatchEvent(new Event("loginChange"));
+    setTimeout(() => {
+      navigate("/login");
+    }, 2000)
+  };
   // 장바구니 담기 버튼 클릭 이벤트
   const handleAddToCart = async () => {
     try {
@@ -150,9 +159,10 @@ const ShoppingDetail: React.FC = () => {
       });
       console.log(res.data);
       if (res.data.code === 'NO_USR_INFO') {
-        alert(res.data.message) // 사용자가 존재하지 않는 경우
+        // alert(res.data.message) // 사용자가 존재하지 않는 경우
+        setLogins(true);
       } else if (res.data.code === 'NO_MATCHED_ROLE') {
-        alert(res.data.message) // 권한이나 역할이 잂치하지 않는 경우
+        alert(res.data.message) // 권한이나 역할이 일치하지 않는 경우
       } else if (res.data.code === 'LACK_OF_QTY') {
         alert(res.data.message) // 수량이 부족한 경우(재고 부족 등)
         // 이미 장바구니에 담겨 있는 경우
@@ -169,6 +179,7 @@ const ShoppingDetail: React.FC = () => {
     } catch (error) {
       console.error("데이터 가져오기 실패:" + error);
     }
+
   };
 
   // 장바구니 페이지로 이동하면서 로그인 여부 확인하는 함수
@@ -183,7 +194,6 @@ const ShoppingDetail: React.FC = () => {
       navigate("/login");
       return;
     }
-
     navigate("/cart");
   };
   // 실시간 총 금액
@@ -219,7 +229,7 @@ const ShoppingDetail: React.FC = () => {
             {/* {productPrice.toLocaleString()}원 */}
             {salePrice > 0 ? (
               <>
-                <span>{salePrice.toLocaleString()}원</span>&nbsp;[구독 회원 할인]<br/>
+                <span>{salePrice.toLocaleString()}원</span>&nbsp;[구독 회원 할인]<br />
                 <del style={{ color: "black", fontSize: "20px" }}>
                   {productPrice.toLocaleString()}원
                 </del>
@@ -268,7 +278,16 @@ const ShoppingDetail: React.FC = () => {
           <p style={{ whiteSpace: "pre-line" }}>{cont}</p>
         </div>
       )}
-       {/* 토스트 메시지 적용 */}
+      {/* 확인 클릭 시 2.5초 후 로그인 페이지로 이동 */}
+      {logins && (
+        <Confirm
+          message="로그인페이지로 이동합니다."
+          onConfirm={login1}
+          onCancel={() => setLogins(false)}
+        />
+      )
+      }
+      {/* 토스트 메시지 적용 */}
       <div>
         {/* 이미 장바구니에 있는 경우 토스트 */}
         {already && (
