@@ -79,6 +79,7 @@ interface RecommendProduct {
     QTY?: number;
     cont?: string;
     CONT?: string;
+    categorynm?: string;
     [key: string]: any; // 기타 백엔드 필드 대응
 }
 
@@ -104,7 +105,7 @@ export const PersonalChart: React.FC = () => {
 
             const response = await axios.get(url, {
                 signal: controller?.signal,
-                withCredentials: true, 
+                withCredentials: true,
             });
 
             console.log("차트 Response Data:", response.data);
@@ -150,6 +151,18 @@ export const PersonalChart: React.FC = () => {
                 borderColor: '#ffffff',
             },
         ],
+    };
+
+    const getCategoryName = (categoryId?: number | string) => {
+        const id = String(categoryId);
+        switch (id) {
+            case "1": return "과일류";
+            case "2": return "채소류";
+            case "3": return "육류";
+            case "4": return "어류";
+            case "5": return "밀키트";
+            default: return "Fresh Food";
+        }
     };
 
     return (
@@ -202,15 +215,18 @@ export const PersonalChart: React.FC = () => {
                                 const id = product.productid ?? product.PRODUCTID ?? idx;
                                 const rawImg = product.imgnm || product.IMGNM || product.pimg;
                                 const imageUrl = getImageUrl(rawImg);
-                                
+                                const rawCategory = product.CATEGORYID ?? product.categoryid;
+                                const categoryName = getCategoryName(rawCategory);
                                 // 💡 재고량(qty) 및 상세설명(cont) 추출
                                 const qty = product.qty ?? product.QTY ?? 0;
                                 const cont = product.cont || product.CONT || '';
                                 const categoryid = product.categoryid ?? product.CATEGORYID;
+                               
+
 
                                 return (
-                                    <div 
-                                        style={{ padding: '0 14px', boxSizing: 'border-box' }} 
+                                    <div
+                                        style={{ padding: '0 14px', boxSizing: 'border-box' }}
                                         onClick={() => navigate(`/shopping/${id}`, {
                                             state: {
                                                 ...product, // 원본 객체 전체 포함
@@ -220,7 +236,8 @@ export const PersonalChart: React.FC = () => {
                                                 image: imageUrl,
                                                 qty: qty,       // 💡 재고 수량 명시
                                                 cont: cont,     // 💡 상세 설명 명시
-                                                categoryid: categoryid
+                                                categoryid: categoryid,
+                                                categoryName: categoryName
                                             },
                                         })}
                                     >
@@ -236,10 +253,10 @@ export const PersonalChart: React.FC = () => {
                                                 justifyContent: 'center',
                                                 overflow: 'hidden'
                                             }}>
-                                                <img 
-                                                    src={imageUrl} 
-                                                    alt={name} 
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={name}
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                                     onError={(e) => {
                                                         const target = e.target as HTMLImageElement;
                                                         target.onerror = null;
