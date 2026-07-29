@@ -148,6 +148,14 @@ const ShoppingDetail: React.FC = () => {
   };
   // 장바구니 담기 버튼 클릭 이벤트
   const handleAddToCart = async () => {
+    // 로그아웃 시 장바구니 담기 안되도록 수정(재 로그인 시 이상 없음)
+    const user = JSON.parse(
+        sessionStorage.getItem("loginInfo") || "null"
+    );
+    if (!user || !user.loginNm) {
+        setLogins(true);
+        return;
+    }
     try {
       const url = `${backendUrl}/api/cart/add`
       const res = await axios.get(url, {
@@ -196,6 +204,7 @@ const ShoppingDetail: React.FC = () => {
     }
     navigate("/cart");
   };
+  
   // 실시간 총 금액
   //const totalPrice = productPrice * quantity;
   const totalPrice = (salePrice > 0 ? salePrice : productPrice) * quantity;
