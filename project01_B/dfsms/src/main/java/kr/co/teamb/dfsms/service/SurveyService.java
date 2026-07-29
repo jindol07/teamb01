@@ -25,21 +25,38 @@ public class SurveyService {
 	public void saveSurvey(SurveyVO vo) {
 		surveyDao.saveSurvey(vo);
 		char count = 0;
-		List<SurveyQuestionVO> questionList = new ArrayList<>();
 		for (SurveyQuestionVO v : vo.getQuestionList()) {
 			SurveyQuestionVO questionVO = new SurveyQuestionVO();
 			questionVO.setQuestiontitle(v.getQuestiontitle());
 			questionVO.setQuestiontype(v.getQuestiontype());
 			String questionlistJson = objectMapper.writeValueAsString(v.getQuestionlist());
-			System.out.println(questionlistJson);
 			questionVO.setQuestionlistJson(questionlistJson);
 			questionVO.setSort_order(count);
-			questionList.add(questionVO);
+			System.out.println(questionlistJson);
 			System.out.println(v.getQuestiontitle());
+			surveyDao.saveSurveyQuestionList(questionVO);
 			count++;
 		}
-		surveyDao.saveSurveyQuestionList(questionList);
 	}
+//	public void saveSurvey(SurveyVO vo) {
+//		surveyDao.saveSurvey(vo);
+//		char count = 0;
+//		List<SurveyQuestionVO> questionList = new ArrayList<>();
+//		for (SurveyQuestionVO v : vo.getQuestionList()) {
+//			SurveyQuestionVO questionVO = new SurveyQuestionVO();
+//			questionVO.setQuestiontitle(v.getQuestiontitle());
+//			questionVO.setQuestiontype(v.getQuestiontype());
+//			String questionlistJson = objectMapper.writeValueAsString(v.getQuestionlist());
+//			System.out.println(questionlistJson);
+//			questionVO.setQuestionlistJson(questionlistJson);
+//			questionVO.setSort_order(count);
+//			questionList.add(questionVO);
+//			System.out.println(v.getQuestiontitle());
+//			count++;
+//		}
+//		surveyDao.saveSurveyQuestionList(questionList);
+//	}
+
 	public Long getSurveyCount() {
 		try {
 			return surveyDao.getSurveyCount();
@@ -83,16 +100,30 @@ public class SurveyService {
 		}
 		return result;
 	}
+	@Transactional
 	public void insertSurveyAnswers(List<SurveyAnswerVO> list) {
-		System.out.println(123123);
+		System.out.println("사용자 설문 제출 시도");
 		try {
 			for (SurveyAnswerVO item : list) {
 				String answerdataJson = objectMapper.writeValueAsString(item.getAnswerdata());
 				item.setAnswerdataJson(answerdataJson);
+				System.out.println(answerdataJson);
+				surveyDao.insertSurveyAnswers(item);
 			}
-			surveyDao.insertSurveyAnswers(list);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+//	public void insertSurveyAnswers(List<SurveyAnswerVO> list) {
+//		System.out.println("사용자 설문 제출 시도");
+//		try {
+//			for (SurveyAnswerVO item : list) {
+//				String answerdataJson = objectMapper.writeValueAsString(item.getAnswerdata());
+//				item.setAnswerdataJson(answerdataJson);
+//			}
+//			surveyDao.insertSurveyAnswers(list);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 }

@@ -13,8 +13,9 @@ import kr.co.teamb.dfsms.vo.SurveyVO;
 @Mapper
 public interface SurveyDao {
 	void saveSurvey(SurveyVO vo);
-	void saveSurveyQuestionList(List<SurveyQuestionVO> list);
-	void insertSurveyAnswers(List<SurveyAnswerVO> list);
+	void saveSurveyQuestionList(SurveyQuestionVO vo);
+//	void insertSurveyAnswers(List<SurveyAnswerVO> list);
+	void insertSurveyAnswers(SurveyAnswerVO list);
 	Long getSurveyCount();
 	SurveyVO getSurvey(Long num);
 	SurveyVO getSurveyQuestions(Long num);

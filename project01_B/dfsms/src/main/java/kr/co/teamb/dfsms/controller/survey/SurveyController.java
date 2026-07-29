@@ -78,6 +78,7 @@ public class SurveyController {
 	}
 	@PostMapping("/answers")
 	public ResponseEntity<String> insertSurveyAnswers(@RequestBody List<SurveyAnswerVO> list) {
+		System.out.println("사용자 제출 시도 contoller");
 		try {
 			surveyService.insertSurveyAnswers(list);
 			return ResponseEntity.ok("update complete!");

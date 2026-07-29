@@ -6,7 +6,11 @@
 		TO_DATE(#{enddate}, 'YYYY-MM-DD'))
 	</insert>
 	
-	<insert id="saveSurveyQuestionList" parameterType="java.util.List">
+	<insert id="saveSurveyQuestionList" parameterType="surveyquestionvo">
+		insert into p_survey_question values (p_survey_question_seq.nextVal, p_survey_seq.CURRVAL, #{questiontitle}, 
+				#{questiontype}, #{questionlistJson}, #{sort_order})
+	</insert>
+<!--	<insert id="saveSurveyQuestionList" parameterType="java.util.List">
 		insert all 
 		<foreach collection="list" item="item"> 
 			into p_survey_question values (p_survey_question_seq.nextVal, p_survey_seq.CURRVAL, #{item.questiontitle}, 
@@ -14,7 +18,7 @@
 			)
 		</foreach>
 		select * from dual
-	</insert>
+	</insert>-->
 	
 	<select id="getSurveyCount" resultType="Long">
 		select max(surveyid) from p_survey where status = 'ACTIVE'
@@ -52,11 +56,14 @@
 			'{"id": 2, "value":"기타", "text": "자동차" }', sysdate
 		);
 	</insert>-->
-	<insert id="insertSurveyAnswers" parameterType="java.util.List">
+	<insert id="insertSurveyAnswers" parameterType="surveyanswervo">
+		INSERT INTO p_survey_answer values (p_survey_answer_seq.NEXTVAL, #{userid}, #{surveyid}, #{questionid}, #{answerdataJson}, sysdate)
+	</insert>
+<!--	<insert id="insertSurveyAnswers" parameterType="java.util.List">
 		INSERT ALL
 		<foreach collection="list" item="item"> 
 			INTO p_survey_answer values (p_survey_answer_seq.NEXTVAL, #{item.userid}, #{item.surveyid}, #{item.questionid}, #{item.answerdataJson}, sysdate)
 		</foreach>
 		SELECT * FROM DUAL
-	</insert>
+	</insert>-->
 </mapper>

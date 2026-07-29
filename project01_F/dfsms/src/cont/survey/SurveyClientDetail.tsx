@@ -1,8 +1,9 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, useRef } from "react";
 import axios from "axios";
 import style from "./surveyclient.module.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import btnStyle from '../components/btn.module.css';
+import ToastMsg from "../components/ToastMsg";
 
 interface Survey {
     surveyid: number,
@@ -31,7 +32,7 @@ interface SurveyQuestionList {
 interface SurveyAnswer {
     userid: number,
     surveyid: number,
-    quetionid: number,
+    questionid: number,
     answerdata: SurveyAnswerData[],
 }
 interface SurveyAnswerData {
@@ -42,18 +43,18 @@ interface SurveyAnswerData {
 
 const SurveyClientDetail: React.FC = () => {
     const { num } = useParams<{ num : string}>();
-    const [loginInfo, setLoginInfo] = useState<string | null>(null);
+    const [loginInfo, setLoginInfo] = useState<{ role: string, usrno: number } | null>(null);
     const [survey, setSurvey] = useState<Survey | null>(null);
-    const [questionCount, setQuestionCount] = useState(0);
     // const [selectedsurveyType, setSelectedsurveyType] = useState<string | null>(null);
-    const [answerData, setAnswerData] = useState<SurveyAnswer[]>([]);
+    // const [answerData, setAnswerData] = useState<SurveyAnswer[]>([]);
+    // const [answerMapList, setAnswerMapList] = useState<SurveyAnswerData[]>([]);
+    const [answerData, setAnswerData] = useState<Record<number, SurveyAnswer>>({});
     const navigate = useNavigate();
     const inputTypeMap = {
         RADIO: "radio",
         TEXT: "text",
         CHECKBOX: "checkbox",
     };
-    let userId : number = 0;
     let surveyId : number = Number(num);
     const fetchLatestSurvey = async () => {
         try {
@@ -69,53 +70,69 @@ const SurveyClientDetail: React.FC = () => {
         }
     };
     const handleAnswerChange = (q:SurveyQuestion, e:SurveyQuestionList) => {
-        answerData[q.questionid] = {
-            userid: userId,
-            surveyid: surveyId,
-            quetionid: q.questionid,
-            answerdata: [],
+        if (!answerData[q.questionid]) {
+            if (!loginInfo) {
+                <ToastMsg message="로그인 정보가 없습니다." />
+                return;
+            }
+            answerData[q.questionid] = {
+                userid: loginInfo.usrno,
+                surveyid: surveyId,
+                questionid: q.questionid,
+                answerdata: [{
+                    id: e.id,
+                    value: e.value,
+                    text: "",
+                }],
+            };
+        } else {
+            for (let f of answerData[q.questionid].answerdata) {
+                if (f.id == e.id) {
+                    f.value = e.value;
+                } else {
+                    if (q.questiontype == "CHECKBOX") {
+                        // 작업 예정
+                    }
+                }
+            }
         }
     }
     const submitSurvey = async (e: React.FormEvent) => {
         e.preventDefault(); // 폼 기본 동작 방지
-        // if (!selectedsurveyType || !survey) {
-        //     alert("항목을 선택해주세요.");
-        //     return;
-        // }
         try {
-            
-            //answerData.answerdata.push();
-
             // 선택된 설문 항목을 서버로 전송
-            const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/answer`, answerData);
+            console.log(answerData);
+            Object.values(answerData)
+            const answerDataToArray = Object.values(answerData);
+            if (answerDataToArray.length !== survey?.questionList.length) {
+                <ToastMsg message="항목을 선택하지 않은 질문이 있습니다." />
+                return;
+            }
+            console.log(answerDataToArray);
+            const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/answers`, answerDataToArray);
             console.log(response);
             if (response.status === 200) {
-                alert("설문이 성공적으로 제출되었습니다.");
-                //fetchLatestSurvey(); // 제출 후 설문 데이터 다시 로드
-                // navigate(`/community/surveyclientResult/${survey.surveyid}`);  // 설문조사 이후 결과로 이동
+                <ToastMsg message="설문이 성공적으로 제출되었습니다." />
+                navigate(`/community/survey`);  // 설문조사 이후 결과로 이동
             } else {
-                alert("설문 제출에 실패했습니다.");
+                <ToastMsg message="설문 제출에 실패했습니다." />
             }
         } catch (error) {
             console.error("Failed to submit survey:", error);
-            alert("설문 제출 중 오류가 발생했습니다.");
+                <ToastMsg message="설문 제출 중 오류가 발생했습니다." />
         }
     };
     useEffect(() => {
         const userData = sessionStorage.getItem("loginInfo");
         if (userData != null) {
             const userDataJson = JSON.parse(userData);
-            setLoginInfo(userDataJson.role)
-            userId = userDataJson.usmo;
+            setLoginInfo(userDataJson)
         } else {
             setLoginInfo(null);
-        }
+        }   
         //여기까지
         fetchLatestSurvey();
-        if (survey != null) {
-            setQuestionCount(survey.questionList.length);
-        }
-    }, [survey]);
+    }, []);
     if (!survey) {
         return <div>설문 데이터를 불러오는 중...</div>;
     }
@@ -125,7 +142,7 @@ const SurveyClientDetail: React.FC = () => {
                 <div className="card-body">
                     <h2 className={style.title}>{survey.surveytitle}</h2>
                     {/* <h4 className={style.contt}>{survey.cont}</h4> */}
-                    <p className={style.info}>총 {questionCount}문항</p>
+                    <p className={style.info}>총 {survey.questionList.length}문항</p>
                     <form onSubmit={submitSurvey}>
                         {survey.questionList.map((q, i) => (
                             <div key={i} className={style.questionItem} id={"question_" + q.questionid}>
@@ -144,7 +161,7 @@ const SurveyClientDetail: React.FC = () => {
                         ))}
                         {/* <div className={style.actionArea}> */}
                         <div className={`${style.actionArea} text-center`}>
-                            {loginInfo === 'U' && (
+                            {loginInfo?.role === 'U' && (
                                 <button type="submit" className={`${btnStyle.submitBtn}`} style={{ marginBottom: 20 }}>
                                     제출하기
                                 </button>
@@ -153,7 +170,7 @@ const SurveyClientDetail: React.FC = () => {
                     </form>
                     <div className={`${style.actionArea} text-center`}>
                         <Link to={"/community/survey"} className={btnStyle.button}>목록</Link>
-                        {loginInfo === 'A' && (
+                        {loginInfo?.role === 'A' && (
                             <Link to={`/admin/surveyList`} className={btnStyle.button}>
                                 수정
                             </Link>

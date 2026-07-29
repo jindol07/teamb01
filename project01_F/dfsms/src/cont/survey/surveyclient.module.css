@@ -1,107 +1,141 @@
-/* 페이지 */
+/* 컨테이너 메인 영역 */
 .surveyContainer {
-    max-width: 700px;
-    margin: 60px auto;
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
-/* 카드 */
-.surveyCard {
-    background: rgba(244, 252, 244, 0.95);
-    border: 1px solid #dcefdc;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(95, 145, 95, 0.08);
+/* 헤더 영역 */
+.headerSection {
+  margin-bottom: 30px;
+  text-align: center;
 }
 
-/* 제목 */
 .title {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #4e6b4e;
-    margin-bottom: 10px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1d20;
+  margin-bottom: 8px;
 }
 
-/* 문항 수 */
-.info {
-    text-align: center;
-    color: #6f8a6f;
-    margin-bottom: 30px;
+.subtitle {
+  font-size: 15px;
+  color: #6c757d;
+  margin: 0;
 }
 
-.contt {
-    text-align: center;
-    color: #254225;
-    margin-bottom: 30px;
+/* 설문 카드 그리드 레이아웃 */
+.surveyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
-/* 질문 카드 */
-.questionItem {
-    /* display: flex; */
-    align-items: center;
-    gap: 18px;      /* 라디오 버튼과 텍스트 사이 간격 */
-    padding: 15px 18px;
-    margin-bottom: 15px;
-    border: 1px solid #d6ead6;
-    border-radius: 12px;
-    background: rgba(255,255,255,.7);
+/* 설문 카드 스타일 */
+.surveyCard {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-/* 마우스를 올렸을 때 */
-.questionItem:hover {
-    background: rgba(225, 245, 225, 0.8);
-    border-color: #a8d5a2;
+.surveyCard:hover {
+  transform: translateY(-4px);
+  border-color: #198754;
+  box-shadow: 0 8px 20px rgba(25, 135, 84, 0.12);
 }
 
-/* 선택되었을 때 */
-.questionItem:has(input:checked) {
-    background: rgba(209, 239, 209, 0.9);
-    border-color: #8cc98c;
+/* 뱃지 영역 */
+.badgeGroup {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
 }
 
-/* 라벨 */
-.questionLabel {
-    margin-left: 30px;
-    cursor: pointer;
-    color: #4e5d4e;
-    font-size: 1rem;
+.statusBadge {
+  background-color: #e8f5e9;
+  color: #198754;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
 }
 
-/* 라디오 버튼 */
-.questionItem input[type="radio"] {
-    transform: scale(1.15);
-    accent-color: #88c98d;
-    cursor: pointer;
-    margin-right: 12px;
+.questionCount {
+  font-size: 13px;
+  color: #868e96;
 }
 
-/* 제출 버튼 */
-.submitBtn {
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: #4e6b4e;
-    background: rgba(176, 224, 176, 0.45);
-    border: 1px solid #9dd29d;
-    border-radius: 12px;
-    transition: all .25s ease;
+/* 카드 제목 */
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+  line-height: 1.4;
+  margin: 0 0 20px 0;
+  word-break: keep-all;
 }
 
-/* 버튼 Hover */
-.submitBtn:hover {
-    background: rgba(152, 214, 152, 0.7);
-    border-color: #84c484;
-    color: #fff;
-    transform: translateY(-2px);
+/* 카드 하단 바로가기 안내 */
+.cardFooter {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f1f3f5;
+  padding-top: 12px;
 }
 
-/* 버튼 클릭 */
-.submitBtn:active {
-    transform: scale(0.98);
+.actionText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #198754;
+  transition: color 0.2s;
 }
 
-.radio {
-    accent-color: #88c98d;
-    transform: scale(1.2);
-    margin: 0;      /* Bootstrap 영향 제거 */
+.surveyCard:hover .actionText {
+  color: #157347;
+}
+
+/* 설문 없을 때 안내문 */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px dashed #dee2e6;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+/* 로딩 스피너 및 스타일 */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #6c757d;
+  font-size: 15px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #198754;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
