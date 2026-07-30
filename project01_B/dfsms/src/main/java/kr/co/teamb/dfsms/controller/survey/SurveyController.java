@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.teamb.dfsms.service.SurveyService;
+import kr.co.teamb.dfsms.vo.SurveyAnswerVO;
+import kr.co.teamb.dfsms.vo.SurveyQuestionVO;
 import kr.co.teamb.dfsms.vo.SurveyVO;
 
 @RestController
@@ -24,23 +26,41 @@ public class SurveyController {
 	
 	@PostMapping("/addsurvey")
 	public ResponseEntity<String> saveSurvey(@RequestBody SurveyVO vo) {
+		System.out.println(vo);
+		System.out.println(vo.getSurveytitle());
 		surveyService.saveSurvey(vo);
-		System.out.println("sub: " + vo.getSub());
-		System.out.println("title: " + vo.getContList().get(0).getSurveytitle());
+		System.out.println("title: " + vo.getSurveytitle());
 		return ResponseEntity.ok("success");
 	}
 	@GetMapping("/latest")
 	public ResponseEntity<SurveyVO> getLatestSurvey() {
-		SurveyVO surveyVO = surveyService.findBySNUM(surveyService.maxSurveyNum());
+		Long lastItem = surveyService.getSurveyCount();
+		if (lastItem == null) {
+			System.out.println("현재 등록되거나 활성화된 설문조사가 없습니다.");
+			return ResponseEntity.noContent().build();
+		}
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(lastItem);
 		if (surveyVO != null) {
 			return ResponseEntity.ok(surveyVO);
 		} else {
+			System.out.println("no data");
+			return ResponseEntity.noContent().build();
+		}
+	}
+	@GetMapping("/detail/{num}")
+	public ResponseEntity<SurveyVO> getSurvey(@PathVariable("num") Long num) {
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(num);
+		if (surveyVO != null) {
+			System.out.println(1);
+			return ResponseEntity.ok(surveyVO);
+		} else {
+			System.out.println(2);
 			return ResponseEntity.noContent().build();
 		}
 	}
 	@GetMapping("/result/{num}")
 	public ResponseEntity<SurveyVO> getSurveyResult(@PathVariable("num") Long num) {
-		SurveyVO surveyVO = surveyService.findBySNUM(num);
+		SurveyVO surveyVO = surveyService.getSurveyQuestions(num);
 		if (surveyVO != null) {
 			return ResponseEntity.ok(surveyVO);
 		} else {
@@ -56,20 +76,19 @@ public class SurveyController {
 			return ResponseEntity.noContent().build();
 		}
 	}
-	@PostMapping("/updateCount")
-	public ResponseEntity<String> incrementSurveyCount(@RequestBody Map<String, Object> payload) {
-		int subcode = (int) payload.get("subcode");
-		String surveytype = (String) payload.get("surveytype");
-		System.out.println("subcode: " + subcode);
-		System.out.println("surveytype: " + surveytype);
+	@PostMapping("/answers")
+	public ResponseEntity<String> insertSurveyAnswers(@RequestBody List<SurveyAnswerVO> list) {
+		System.out.println("사용자 제출 시도 contoller");
 		try {
-			surveyService.incrementSurveyCount(subcode, surveytype);
-			return ResponseEntity.ok("��ǥ ����");
+			surveyService.insertSurveyAnswers(list);
+			return ResponseEntity.ok("update complete!");
 		} catch (Exception e) {
+			System.out.println(e);
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
 		}
 	}
+//	@PostMapping("/tempsave")
 	
 	
 	

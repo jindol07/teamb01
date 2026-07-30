@@ -4,7 +4,7 @@ import style from "./confirm.module.css";
 interface ConfirmProps {
     message : string;
     onConfirm: () => void;
-    onCancel?: () => void;
+    onCancel: () => void;
 }
 
 const Confirm: React.FC<ConfirmProps> = ({
@@ -19,7 +19,7 @@ const Confirm: React.FC<ConfirmProps> = ({
 
                 <div className={style.buttonBox}>
                     <button onClick={onConfirm}>확인</button>
-                    { onCancel && <button onClick={onCancel}>취소</button> }
+                    <button onClick={onCancel}>취소</button>
                 </div>
             </div>
         </div>
