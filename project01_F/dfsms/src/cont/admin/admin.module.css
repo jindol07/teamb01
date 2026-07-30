@@ -19,6 +19,7 @@
 /* 헤더 */
 .boardTable thead {
   background-color: rgba(25, 135, 84, 0.18);
+  text-align: center;
 }
 
 /* 헤더 글자 */

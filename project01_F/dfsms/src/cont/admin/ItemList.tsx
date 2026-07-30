@@ -3,7 +3,8 @@ import style from './admin.module.css'
 import { Link, useNavigate } from 'react-router-dom';
 import btnStyle from '../components/btn.module.css'
 import axios from 'axios';
-
+import Confirm from '../components/Confirm'
+import ToastMsg from '../components/ToastMsg'
 
 interface Product {
     PRODUCTID?: number;
@@ -33,6 +34,11 @@ interface Product {
 const ItemList: React.FC = () => {
     const [adminItem, setAdminItem] = useState<Product[]>([]);
 
+    // confirm과 toastMsg
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [delProductById, setDelProductById] = useState<number | null>(null);
+    const [toastMsg, setToastMsg] = useState("");
+
     //0727
     //http://192.168.0.39/dfsms
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
@@ -46,7 +52,6 @@ const ItemList: React.FC = () => {
     const [searchType, setSearchType] = useState('1');
     const [searchValue, setSearchValue] = useState('');
 
-    const [toast, setToast] = useState("");
     const navi = useNavigate();
 
     //page Handler
@@ -89,15 +94,24 @@ const ItemList: React.FC = () => {
         fetchAItem(currentPage)
     }, [currentPage])
 
-    const delhandler = async (no:number) => {
-             const url = `${backendUrl}/api/stock/delete?num=${no}`
-                    const res = await axios.get(url)
-                    setToast('삭제가 완료되었습니다.')
-                    fetchAItem(1)
-                setTimeout(() => {
-                    navi("/admin/itemlist");
-                }, 1000);
+    const delhandler = async (no: number) => {
+        const url = `${backendUrl}/api/stock/delete?num=${no}`
+        const res = await axios.get(url)
+        showToast('삭제가 완료되었습니다.')
+        fetchAItem(1)
+        // setTimeout(() => {
+        //     navi("/admin/itemlist");
+        // }, 1000);
+        navi("/admin/itemlist");
     }
+
+    // 토스트메세지 공통 함수
+    const showToast = (message: string) => {
+        setToastMsg(message);
+        setTimeout(() => {
+            setToastMsg("");
+        }, 2000);
+    };
 
     return (
         <div className={style.container}>
@@ -134,7 +148,17 @@ const ItemList: React.FC = () => {
                                     >
                                         삭제
                                     </Link> */}
-                                    <button className="page-link" onClick={() =>delhandler(e.PRODUCTID)}>삭제</button>
+
+                                    {/* <button className={btnStyle.button} onClick={() => delhandler(e.PRODUCTID)}>삭제</button> */}
+                                    <button
+                                        className={btnStyle.button}
+                                        onClick={() => {
+                                            setDelProductById(e.PRODUCTID);
+                                            setShowConfirm(true);
+                                        }}
+                                    >
+                                        삭제
+                                    </button>
                                 </td>
                             </tr>
                         ))
@@ -196,8 +220,25 @@ const ItemList: React.FC = () => {
                 </Link>
             </div>
 
-            
-
+            {
+                showConfirm && (
+                    <Confirm
+                        message="삭제하시겠습니까?"
+                        onConfirm={() => {
+                            if (delProductById !== null) {
+                                delhandler(delProductById);
+                            }
+                            setShowConfirm(false);
+                            setDelProductById(null);
+                        }}
+                        onCancel={() => {
+                            setShowConfirm(false);
+                            setDelProductById(null);
+                        }}
+                    />
+                )
+            }
+            {toastMsg && <ToastMsg message={toastMsg} />}
         </div>
     )
 }

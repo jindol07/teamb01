@@ -249,7 +249,7 @@ const Signup: React.FC = () => {
                         value={id}
                     />
 
-                    <button type="button" onClick={idDuplicateCheck}>
+                    <button type="button" className={btnStyle.button} onClick={idDuplicateCheck}>
                         중복 확인
                     </button>
                 </div>

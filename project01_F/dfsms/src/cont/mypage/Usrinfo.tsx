@@ -207,14 +207,14 @@ const Usrinfo: React.FC = () => {
                         <tr>
                             <th colSpan={2}>
                                 <button type="submit" className={btnStyle.button} onClick={confirmHandlerU}>
-                                    수정
+                                    회원정보 수정
                                 </button>
-                                <Link
+                                {/* <Link
                                     to="/mypage"
                                     className={btnStyle.button}
                                 >
                                     취소
-                                </Link>
+                                </Link> */}
                             </th>
                         </tr>
                     </tfoot>
