@@ -93,8 +93,8 @@ const StockList: React.FC = () => {
             <hr />
             <div style={{ marginBottom: '15px' }}>
                 <select onChange={(e) => { setSearchType(e.target.value) }} style={{ marginRight: '15px' }}>
-                    <option value="1">구분</option>
-                    <option value="2">처리자</option>
+                    {/* <option value="1">구분</option> */}
+                    <option value="1">처리자</option>
                 </select>
                 <input type="text" onChange={(e) => { setSearchValue(e.target.value) }} style={{ width: '75%' }} />
                 <button className={btnStyle.button} onClick={searchFunction}>조회</button>

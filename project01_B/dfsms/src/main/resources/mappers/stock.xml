@@ -206,10 +206,10 @@ FROM ( SELECT
 				<if test="searchType != null and searchValue != null">
 					<choose>
 						<when test="searchType == 1">
-							AND h.gbn like '%'|| #{searchValue} ||'%'
+							AND u.USRNM like '%'|| #{searchValue} ||'%'
 						</when>
 						<when test="searchType == 2">
-							AND u.USRNM like '%'|| #{searchValue} ||'%'
+							AND h.gbn like '%'|| #{searchValue} ||'%'
 						</when>
 					</choose>
 				</if>
