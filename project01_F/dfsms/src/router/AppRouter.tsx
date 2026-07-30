@@ -45,6 +45,7 @@ import TopChart from '../cont/chart/TopChart'
 import PersonalChart from '../cont/chart/PersonalChart'
 import Usrinfo from '../cont/mypage/Usrinfo'
 import PoetryPlayer from '../cont/community/PoetryPlayer'
+import SurveyClientDetail from '../cont/survey/SurveyClientDetail'
 
 
 
