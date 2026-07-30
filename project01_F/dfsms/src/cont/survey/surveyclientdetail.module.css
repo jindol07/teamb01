@@ -1,0 +1,158 @@
+/* =========================================
+   [1] 상세 페이지 전체 컨테이너
+   ========================================= */
+.surveyContainer {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  color: #212529;
+}
+
+/* =========================================
+   [2] 최상위 카드 영역 (Header)
+   ========================================= */
+.surveyCard {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  padding: 32px;
+  margin-bottom: 30px;
+}
+
+/* 설문 제목 */
+.title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1d20;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+/* 메타 정보 (총 X문항) */
+.info {
+  font-size: 14px;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  margin: 0 0 24px 0;
+}
+
+/* =========================================
+   [3] 질문 문항 스타일 (Question)
+   ========================================= */
+.questionItem {
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* 현재 마우스가 올라가 있거나 내부 요소를 선택했을 때 초록색 강조 */
+.questionItem:hover,
+.questionItem:focus-within {
+  border-color: #198754;
+  box-shadow: 0 2px 8px rgba(25, 135, 84, 0.08);
+}
+
+/* 질문 제목 */
+.questionItem h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 18px 0;
+  line-height: 1.4;
+}
+
+/* =========================================
+   [4] 보기 목록 및 커스텀 인풋 (Options)
+   ========================================= */
+/* 보기 한 줄 */
+.questionItem > div {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  margin-bottom: 4px;
+}
+
+/* 커스텀 라디오/체크박스 스타일 포인트 (색상 통일) */
+.radio {
+  accent-color: #198754; /* 핵심: 브라우저 기본 포인트를 초록색으로 변경 */
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin: 0; /* 라벨과의 간격은 라벨 margin-left로 조절 */
+}
+
+/* 보기 텍스트 (라벨) */
+.questionLabel {
+  font-size: 15px;
+  color: #343a40;
+  cursor: pointer;
+  margin-left: 10px;
+  flex: 1; /* 글자가 길어져도 영역 차지 */
+  user-select: none; /* 드래그 방지 */
+}
+
+/* =========================================
+   [5] 하단 버튼 영역 (Actions)
+   ========================================= */
+.actionArea {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #f1f3f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 제출하기 버튼 영역 (form 내부) */
+form .actionArea {
+  border-top: none; /* form 내부 영역 구분선 제거 */
+  margin-top: 10px;
+}
+
+/* '제출하기' 버튼 커스텀 (제공된 btn.module.css에 우선하여 포인트 적용) */
+/* .actionArea button {
+  width: 100%;
+  max-width: 320px;
+  padding: 12px;
+  background-color: #198754; 
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 0 4px 6px rgba(25, 135, 84, 0.15);
+} */
+
+/* .actionArea button:hover {
+  background-color: #157347;
+} */
+
+/* '목록', '수정' 버튼 영역 */
+.actionArea:last-child {
+  flex-direction: row; /* 버튼을 가로로 배치 */
+  justify-content: center;
+  gap: 10px;
+}
+
+/* =========================================
+   [6] 로딩 상태
+   ========================================= */
+/* 로딩 텍스트 스타일 */
+.surveyDetailContainer > div:not(.surveyCard) {
+  text-align: center;
+  padding: 80px 0;
+  color: #6c757d;
+  font-size: 15px;
+}

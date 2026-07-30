@@ -75,7 +75,8 @@ const AppRouter: React.FC = () => {
     ,{path:'/shoppingList', element:<ShoppingList/>}
     ,{path:'/shopping/:id', element:<ShoppingDetail/>}
     //설문조사
-    , { path: '/community/surveyClient', element: <SurveyClient/> }
+    , { path: '/community/survey', element: <SurveyClient/> }
+    , { path: '/community/survey/:num', element: <SurveyClientDetail/> }
     , { path: '/community/surveyclientResult/:num', element: <SurveyClientResult/> }
     //게시판
     ,{path:'/community/notice', element:<Notice/>}

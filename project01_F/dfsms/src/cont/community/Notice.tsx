@@ -38,6 +38,7 @@ const Notice: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   //http://192.168.0.7/dfsms
   const backendUrl = process.env.REACT_APP_BACK_END_URL;
+  console.log(backendUrl);
 
   //서버측에 데이터 요청시(by axios : 비동기) 조건(params)도 같이 넘김
   const fetchMyNotice = async (page: number) => {

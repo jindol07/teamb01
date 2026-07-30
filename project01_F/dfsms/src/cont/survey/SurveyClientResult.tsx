@@ -3,17 +3,19 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Style from "./surveyclientresult.module.css";
 
-interface SurveyContent {
-    surveytype: string;
-    surveytitle: string;
-    surveycnt: number;
-}
-
 interface Survey {
-    num: number;
-    sub: string;
-    code: number;
-    contents: SurveyContent[];
+    surveyid: number,
+    sub: string,
+    usrno: string,
+    code: number,
+    contList: SurveyContent[],
+    rdate: string,
+}
+interface SurveyContent {
+    surveyid: number,
+    surveytype: string,
+    surveytitle: string,
+    surveycnt: number,
 }
 
 const SurveyClientResult: React.FC = () => {
@@ -71,7 +73,7 @@ const SurveyClientResult: React.FC = () => {
     // const { Pie } = ChartComponents;
 
     // 5. 총 투표 수 계산
-    const totalVotes = survey.contents.reduce((sum, content) => sum + content.surveycnt, 0);
+    const totalVotes = survey.contList.reduce((sum, content) => sum + content.surveycnt, 0);
 
     // 6. Pie 차트 데이터 설정
     // const chartData = {
@@ -129,7 +131,7 @@ const SurveyClientResult: React.FC = () => {
 
 
             <div className={Style.results}>
-                {survey.contents.map((content, index) => {
+                {survey.contList.map((content, index) => {
                     const percentage = totalVotes > 0 ? Math.round((content.surveycnt / totalVotes) * 100) : 0;
 
                     return (
