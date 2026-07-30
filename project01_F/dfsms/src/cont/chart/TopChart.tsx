@@ -120,7 +120,7 @@ const TopChart: React.FC = () => {
         const fetchTopChartData = async () => {
             try {
                 const url = `${backendUrl}/api/chart/list`;
-                const response = await axios.get(url, { signal: controller.signal });
+                const response = await axios.get(url, { signal: controller.signal, withCredentials: true });
 
                 const resultList: TopChartData[] = response.data.bestdata || [];
                 setTopProducts(resultList);

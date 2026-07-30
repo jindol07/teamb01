@@ -1,5 +1,6 @@
 package kr.co.teamb.dfsms.service;
 
+import java.time.Year;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +20,9 @@ public class ChartService {
 	}
 
 	public List<ChartVO> ctgyGroupList(Map<String, String> map) {
-		int birth = Integer.parseInt(map.get("birth"));
-		int currentYear = java.time.Year.now().getValue();
+		String birthStr = map.get("birth");
+		int birth = Integer.parseInt(birthStr.substring(0, 4));
+		int currentYear = Year.now().getValue();
 		int age = currentYear - birth;
 
 		int birthStart;

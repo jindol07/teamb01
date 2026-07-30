@@ -285,7 +285,7 @@ const Signup: React.FC = () => {
                     type="text"
                     name="birth"
                     id="birth"
-                    placeholder='YYYY'
+                    placeholder='YYYYMMDD'
                     className={style.input}
                     value={birth}
                     onChange={e => setBirth(e.target.value)}
