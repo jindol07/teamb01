@@ -4,6 +4,7 @@ import style from "./shoppingDetail.module.css";
 import axios from "axios";
 import Confirm from "../components/Confirm";
 
+
 // 이미지 로딩 실패 시 기본 이미지 (SVG)
 const NO_IMAGE_PLACEHOLDER =
   "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22400%22%20height%3D%22400%22%20viewBox%3D%220%200%20400%20400%22%3E%3Crect%20fill%3D%22%23f0f0f0%22%20width%3D%22400%22%20height%3D%22400%22%2F%3E%3Ctext%20fill%3D%22%23888888%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20x%3D%2250%25%22%20y%3D%2250%25%22%20text-anchor%3D%22middle%22%20dy%3D%22.3em%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E";
@@ -69,6 +70,7 @@ const ShoppingDetail: React.FC = () => {
   const [success, setSuccess] = useState(false);
   const [already, setAlready] = useState(false);
   const [logins, setLogins] = useState(false);
+  const [loginn, setLoginn] = useState(false);
   const [message, setMessage] = useState(''); // 메시지 내용 저장용
 
   if (!rawProduct) {
@@ -198,8 +200,13 @@ const ShoppingDetail: React.FC = () => {
 
     // loginNm(이름)이나 role(권한)이 존재하면 로그인된 상태로 인정
     if (!user || !user.loginNm) {
-      alert("로그인이 필요합니다.");
-      navigate("/login");
+      // alert("로그인이 필요합니다."); 
+      setMessage("잠시 후 로그인 페이지로 이동");
+      setLoginn(true);
+      setTimeout(() => {
+        setLoginn(false);
+        navigate("/login");
+      }, 2000);
       return;
     }
     navigate("/cart");
@@ -298,13 +305,18 @@ const ShoppingDetail: React.FC = () => {
       }
       {/* 토스트 메시지 적용 */}
       <div>
+       {/* 장바구니로 가기 클릭 시 (로그인 필요) 토스트 */}
+        {loginn && (
+          <div className={style.logoutMsg}>
+            {message}
+          </div>
+        )}
         {/* 이미 장바구니에 있는 경우 토스트 */}
         {already && (
           <div className={style.logoutMsg}>
             {message}
           </div>
         )}
-
         {/* 성공 또는 기타 메시지 토스트 */}
         {success && (
           <div className={style.logoutMsg}>
