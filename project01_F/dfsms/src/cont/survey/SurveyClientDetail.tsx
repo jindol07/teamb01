@@ -1,9 +1,11 @@
 import React, { useState, useEffect, ChangeEvent, useRef } from "react";
 import axios from "axios";
-import style from "./surveyclient.module.css";
+import style from "./surveyclientdetail.module.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import btnStyle from '../components/btn.module.css';
+import Confirm from '../components/Confirm'
 import ToastMsg from "../components/ToastMsg";
+
 
 interface Survey {
     surveyid: number,
@@ -49,6 +51,8 @@ const SurveyClientDetail: React.FC = () => {
     // const [answerData, setAnswerData] = useState<SurveyAnswer[]>([]);
     // const [answerMapList, setAnswerMapList] = useState<SurveyAnswerData[]>([]);
     const [answerData, setAnswerData] = useState<Record<number, SurveyAnswer>>({});
+    const [toastMsg, setToastMsg] = useState("");
+    const [showConfirm, setShowConfirm] = useState(false);
     const navigate = useNavigate();
     const inputTypeMap = {
         RADIO: "radio",
@@ -72,7 +76,7 @@ const SurveyClientDetail: React.FC = () => {
     const handleAnswerChange = (q:SurveyQuestion, e:SurveyQuestionList) => {
         if (!answerData[q.questionid]) {
             if (!loginInfo) {
-                <ToastMsg message="로그인 정보가 없습니다." />
+                showToast("로그인 정보가 없습니다.");
                 return;
             }
             answerData[q.questionid] = {
@@ -105,21 +109,23 @@ const SurveyClientDetail: React.FC = () => {
             Object.values(answerData)
             const answerDataToArray = Object.values(answerData);
             if (answerDataToArray.length !== survey?.questionList.length) {
-                <ToastMsg message="항목을 선택하지 않은 질문이 있습니다." />
+                showToast("항목을 선택하지 않은 질문이 있습니다.");
                 return;
             }
             console.log(answerDataToArray);
             const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/answers`, answerDataToArray);
             console.log(response);
             if (response.status === 200) {
-                <ToastMsg message="설문이 성공적으로 제출되었습니다." />
-                navigate(`/community/survey`);  // 설문조사 이후 결과로 이동
+                // showToast("설문이 성공적으로 제출되었습니다."); 
+                setShowConfirm(true);
+                
+                ;  // 설문조사 이후 결과로 이동
             } else {
-                <ToastMsg message="설문 제출에 실패했습니다." />
+                showToast("설문 제출에 실패했습니다.");
             }
         } catch (error) {
             console.error("Failed to submit survey:", error);
-                <ToastMsg message="설문 제출 중 오류가 발생했습니다." />
+            showToast("설문 제출 중 오류가 발생했습니다.");
         }
     };
     useEffect(() => {
@@ -133,6 +139,14 @@ const SurveyClientDetail: React.FC = () => {
         //여기까지
         fetchLatestSurvey();
     }, []);
+    // 토스트메세지 공통 함수
+    const showToast = (message: string) => {
+        setToastMsg(message);
+        setTimeout(() => {
+            setToastMsg("");
+        }, 2000);
+    };
+
     if (!survey) {
         return <div>설문 데이터를 불러오는 중...</div>;
     }
@@ -178,6 +192,18 @@ const SurveyClientDetail: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {toastMsg && <ToastMsg message={toastMsg} />}
+            {
+                showConfirm && (
+                    <Confirm
+                        message="설문이 성공적으로 제출되었습니다."
+                        onConfirm={() => {
+                            setShowConfirm(false);
+                            navigate(`/community/survey`);
+                        }}
+                    />
+                )
+            }
         </div>
     );
 };

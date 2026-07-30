@@ -28,6 +28,10 @@
 		select surveyid, usrno, surveytitle, status, startdate, enddate, rdate from p_survey where surveyid = #{num}
 	</select>
 	
+<!--	<select id="getSurveyAnswer" resultType="kr.co.teamb.dfsms.vo.SurveyVO">
+		select surveyid, usrno, surveytitle, status, startdate, enddate, rdate from p_survey where surveyid = #{num}
+	</select>-->
+	
 	<!--property: vo member, column: query alias -->
 	<resultMap id="surveyWithContentMap" type="kr.co.teamb.dfsms.vo.SurveyVO">   
 		<id property="surveyid" column="sid" />
