@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -63,9 +63,9 @@ export const options = {
             grid: { display: false },
             border: { display: false },
             ticks: {
-                font: { size: 14, weight: '600' as const }, // 글자 겹침을 방지하기 위해 크기만 14로 살짝 조절
+                font: { size: 14, weight: '600' as const },
                 color: '#475569',
-                maxRotation: 0, // 🔹 대각선 기울어짐 방지 (무조건 수평 고정)
+                maxRotation: 0,
                 minRotation: 0,
             },
         },
@@ -94,7 +94,6 @@ const getImageUrl = (rawImg?: string) => {
     return `${SPRING_SERVER_URL}/dfsms/imgfile/gallery/${fileName}`;
 };
 
-// 백엔드 ChartVO에 맞춰 정의된 타입
 interface TopChartData {
     productid: number;
     pnm: string;
@@ -106,7 +105,6 @@ interface TopChartData {
     categoryid: number;
     title: string;
     categorynm: string;
-
 }
 
 const TopChart: React.FC = () => {
@@ -116,43 +114,43 @@ const TopChart: React.FC = () => {
 
     const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
-    const fetchTopChartData = useCallback(async (controller?: AbortController) => {
-        try {
-            const url = `${backendUrl}/api/chart/list`;
-            const response = await axios.get(url, { signal: controller?.signal });
-
-            const resultList: TopChartData[] = response.data.bestdata || [];
-            setTopProducts(resultList);
-        } catch (error) {
-            if (axios.isCancel(error)) {
-                console.log("요청 취소됨");
-            } else {
-                console.error("데이터 가져오기 실패:", error);
-            }
-        }
-    }, [backendUrl]);
-
     useEffect(() => {
         const controller = new AbortController();
-        fetchTopChartData(controller);
+
+        const fetchTopChartData = async () => {
+            try {
+                const url = `${backendUrl}/api/chart/list`;
+                const response = await axios.get(url, { signal: controller.signal });
+
+                const resultList: TopChartData[] = response.data.bestdata || [];
+                setTopProducts(resultList);
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    console.log("요청 취소됨");
+                } else {
+                    console.error("데이터 가져오기 실패:", error);
+                }
+            }
+        };
+
+        fetchTopChartData();
 
         return () => {
             controller.abort();
         };
-    }, [fetchTopChartData]);
+    }, [backendUrl]);
 
     const chartData = {
-        // 원래 풀 네임 그대로 전달
         labels: topProducts.map((item) => item.pnm || `상품 ${item.productid}`),
         datasets: [
             {
                 data: topProducts.map((item) => Number(item.totqty || 0)),
                 backgroundColor: [
-                    '#FFD700', // 1등 Gold
-                    '#C0C0C0', // 2등 Silver
-                    '#CD7F32', // 3등 Bronze
-                    '#cbd5e1', // 4등
-                    '#e2e8f0', // 5등
+                    '#FFD700',
+                    '#C0C0C0',
+                    '#CD7F32',
+                    '#cbd5e1',
+                    '#e2e8f0',
                 ],
                 borderRadius: 8,
                 barPercentage: 0.45,
@@ -174,7 +172,6 @@ const TopChart: React.FC = () => {
 
     return (
         <div className={style.container}>
-            {/* 차트 섹션 */}
             <section className={style.chartSection}>
                 <h3 className={style.sectionTitle}>🔥 인기 판매량 Top 5</h3>
                 <div className={style.chartWrapper}>
@@ -182,23 +179,21 @@ const TopChart: React.FC = () => {
                 </div>
             </section>
 
-            {/* 상품 리스트 섹션 */}
             <section className={style.productSection}>
                 <h3 className={style.sectionTitle}>🛒 Top 5 상품</h3>
                 <div className={style["img-container"]}>
                     {topProducts && topProducts.length > 0 ? (
                         topProducts.map((item, index) => {
                             const imageUrl = getImageUrl(item.imgnm);
-                            const price = item.price
-                            const id = item.productid
-                            const name = item.pnm
-                            const qty = item.qty
-                            const cont = item.cont
-                            const title = item.title
-                            const categoryid = item.categoryid
+                            const price = item.price;
+                            const id = item.productid;
+                            const name = item.pnm;
+                            const qty = item.qty;
+                            const cont = item.cont;
+                            const title = item.title;
+                            const categoryid = item.categoryid;
                             const rawCategory = item.categoryid ?? item.categoryid;
                             const categoryName = getCategoryName(rawCategory);
-
 
                             return (
                                 <div
@@ -207,13 +202,13 @@ const TopChart: React.FC = () => {
                                     onClick={() =>
                                         navigate(`/shopping/${item.productid}`, {
                                             state: {
-                                                ...item, // 원본 객체 전체 포함
+                                                ...item,
                                                 productid: id,
                                                 pnm: name,
                                                 price: price,
                                                 image: imageUrl,
-                                                qty: qty,       // 💡 재고 수량 명시
-                                                cont: cont,     // 💡 상세 설명 명시
+                                                qty: qty,
+                                                cont: cont,
                                                 title: title,
                                                 categoryid: categoryid,
                                                 categoryName: categoryName
@@ -222,7 +217,6 @@ const TopChart: React.FC = () => {
                                     }
                                 >
                                     <div className={style.imgWrapper}>
-                                        {/* 1, 2, 3등 메달 배지 */}
                                         {index < 3 && (
                                             <span className={style.badge}>
                                                 {medals[index]}

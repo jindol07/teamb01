@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -10,13 +10,10 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-// 🔹 분리한 공통 CustomSlider 컴포넌트 Import
 import CustomSlider from './CustomSlider';
 
-// Chart.js 등록
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
-// 파이 차트 옵션
 export const pieOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -80,7 +77,7 @@ interface RecommendProduct {
     cont?: string;
     CONT?: string;
     categorynm?: string;
-    [key: string]: any; // 기타 백엔드 필드 대응
+    [key: string]: any;
 }
 
 interface CategoryChartData {
@@ -99,45 +96,46 @@ export const PersonalChart: React.FC = () => {
 
     const { loginNm } = JSON.parse(sessionStorage.getItem("loginInfo") || "{}");
 
-    const fetchPersonalChartData = useCallback(async (controller?: AbortController) => {
-        try {
-            const url = `${backendUrl}/api/chart/list`;
-
-            const response = await axios.get(url, {
-                signal: controller?.signal,
-                withCredentials: true,
-            });
-
-            console.log("차트 Response Data:", response.data);
-
-            const chartData = response.data?.ctrydata || response.data?.categoryData || response.data?.chartList || [];
-            const productSource = response.data?.recommendProducts || response.data?.bestdata || [];
-
-            if (Array.isArray(chartData) && chartData.length > 0) {
-                setChartDataList(chartData);
-                setTopCategoryName(chartData[0]?.categorynm || '');
-            } else {
-                setChartDataList([]);
-            }
-
-            setRecommendList(productSource);
-        } catch (error) {
-            if (axios.isCancel(error)) {
-                console.log("요청 취소됨");
-            } else {
-                console.error("개인화 차트 데이터 가져오기 실패:", error);
-            }
-        }
-    }, [backendUrl]);
-
     useEffect(() => {
         const controller = new AbortController();
-        fetchPersonalChartData(controller);
+
+        const fetchPersonalChartData = async () => {
+            try {
+                const url = `${backendUrl}/api/chart/list`;
+
+                const response = await axios.get(url, {
+                    signal: controller.signal,
+                    withCredentials: true,
+                });
+
+                console.log("차트 Response Data:", response.data);
+
+                const chartData = response.data?.ctrydata || response.data?.categoryData || response.data?.chartList || [];
+                const productSource = response.data?.recommendProducts || response.data?.bestdata || [];
+
+                if (Array.isArray(chartData) && chartData.length > 0) {
+                    setChartDataList(chartData);
+                    setTopCategoryName(chartData[0]?.categorynm || '');
+                } else {
+                    setChartDataList([]);
+                }
+
+                setRecommendList(productSource);
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    console.log("요청 취소됨");
+                } else {
+                    console.error("개인화 차트 데이터 가져오기 실패:", error);
+                }
+            }
+        };
+
+        fetchPersonalChartData();
 
         return () => {
             controller.abort();
         };
-    }, [fetchPersonalChartData]);
+    }, [backendUrl]);
 
     const pieChartData = {
         labels: chartDataList.map((item) => item.categorynm || '기타'),
@@ -174,7 +172,6 @@ export const PersonalChart: React.FC = () => {
             padding: '0 20px',
             boxSizing: 'border-box'
         }}>
-            {/* 1. 좌측 : 차트 영역 (55%) */}
             <div style={{ flex: '1 1 55%', backgroundColor: '#ffffff', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#1e293b' }}>
                     🎯 연령/성별 맞춤 선호 카테고리
@@ -190,7 +187,6 @@ export const PersonalChart: React.FC = () => {
                 </div>
             </div>
 
-            {/* 2. 우측 : 추천 상품 슬라이드 영역 (45%) */}
             <div style={{ flex: '1 1 45%', backgroundColor: '#ffffff', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.03)', minWidth: 0 }}>
                 <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '20px', color: '#1e293b' }}>
                     🎁 {loginNm}님이 가장 좋아할만한
@@ -209,7 +205,6 @@ export const PersonalChart: React.FC = () => {
                                 autoplaySpeed: 3500,
                             }}
                             renderItem={(product, idx) => {
-                                // 소문자/대문자 필드 모두 고려하여 추출
                                 const name = product.pnm || product.PNM || product.title || product.TITLE || '상품명 없음';
                                 const price = product.price ?? product.PRICE ?? 0;
                                 const id = product.productid ?? product.PRODUCTID ?? idx;
@@ -217,32 +212,28 @@ export const PersonalChart: React.FC = () => {
                                 const imageUrl = getImageUrl(rawImg);
                                 const rawCategory = product.CATEGORYID ?? product.categoryid;
                                 const categoryName = getCategoryName(rawCategory);
-                                // 💡 재고량(qty) 및 상세설명(cont) 추출
                                 const qty = product.qty ?? product.QTY ?? 0;
                                 const cont = product.cont || product.CONT || '';
                                 const categoryid = product.categoryid ?? product.CATEGORYID;
-                               
-
 
                                 return (
                                     <div
                                         style={{ padding: '0 14px', boxSizing: 'border-box' }}
                                         onClick={() => navigate(`/shopping/${id}`, {
                                             state: {
-                                                ...product, // 원본 객체 전체 포함
+                                                ...product,
                                                 productid: id,
                                                 pnm: name,
                                                 price: price,
                                                 image: imageUrl,
-                                                qty: qty,       // 💡 재고 수량 명시
-                                                cont: cont,     // 💡 상세 설명 명시
+                                                qty: qty,
+                                                cont: cont,
                                                 categoryid: categoryid,
                                                 categoryName: categoryName
                                             },
                                         })}
                                     >
                                         <div style={{ textAlign: 'center', cursor: 'pointer' }}>
-                                            {/* 이미지 박스 */}
                                             <div style={{
                                                 width: '100%',
                                                 aspectRatio: '1 / 1',
@@ -265,7 +256,6 @@ export const PersonalChart: React.FC = () => {
                                                 />
                                             </div>
 
-                                            {/* 상품 정보 */}
                                             <div style={{ marginTop: '12px' }}>
                                                 <div style={{
                                                     fontSize: '13px',
