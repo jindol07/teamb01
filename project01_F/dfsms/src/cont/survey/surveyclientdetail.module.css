@@ -75,10 +75,11 @@
    ========================================= */
 /* 보기 한 줄 */
 .questionItem > div {
-  display: flex;
+  /* display: flex; */
   align-items: center;
   padding: 10px 0;
   margin-bottom: 4px;
+  padding-left: 4px;
 }
 
 /* 커스텀 라디오/체크박스 스타일 포인트 (색상 통일) */
@@ -98,6 +99,8 @@
   margin-left: 10px;
   flex: 1; /* 글자가 길어져도 영역 차지 */
   user-select: none; /* 드래그 방지 */
+  position: relative;
+  top: -3px;
 }
 
 /* =========================================
