@@ -6,7 +6,6 @@ import btnStyle from '../components/btn.module.css';
 import Confirm from '../components/Confirm'
 import ToastMsg from "../components/ToastMsg";
 
-
 interface Survey {
     surveyid: number,
     surveytitle: string,
@@ -100,21 +99,18 @@ const SurveyClientDetail: React.FC = () => {
                 }
             }
         }
-    }
+    };
     const submitSurvey = async (e: React.FormEvent) => {
         e.preventDefault(); // 폼 기본 동작 방지
         try {
             // 선택된 설문 항목을 서버로 전송
-            console.log(answerData);
             Object.values(answerData)
             const answerDataToArray = Object.values(answerData);
             if (answerDataToArray.length !== survey?.questionList.length) {
                 showToast("항목을 선택하지 않은 질문이 있습니다.");
                 return;
             }
-            console.log(answerDataToArray);
             const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/answers`, answerDataToArray);
-            console.log(response);
             if (response.status === 200) {
                 // showToast("설문이 성공적으로 제출되었습니다."); 
                 setShowConfirm(true);
