@@ -41,7 +41,7 @@ const TwoFactor: React.FC = () => {
         const targetImage =
             imageList[Math.floor(Math.random() * imageList.length)];
 
-        const targetCount = Math.floor(Math.random() * 7);
+        const targetCount = Math.floor(Math.random() * 5);
 
         const randomImages: string[] = [];
         const targetIndex: number[] = [];
@@ -184,6 +184,5 @@ const TwoFactor: React.FC = () => {
         </div>
     );
 };
-
 
 export default TwoFactor;

@@ -189,10 +189,10 @@ const StockDetail: React.FC = () => {
                             </td>
                         </tr>
 
-                        <tr>
+                        {/* <tr>
                             <th>변경 구분</th>
                             <td colSpan={2}>{stock.gbn}</td>
-                        </tr>
+                        </tr> */}
                     </tbody>
 
                     <tfoot>

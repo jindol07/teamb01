@@ -93,8 +93,8 @@ const StockList: React.FC = () => {
             <hr />
             <div style={{ marginBottom: '15px' }}>
                 <select onChange={(e) => { setSearchType(e.target.value) }} style={{ marginRight: '15px' }}>
-                    <option value="1">구분</option>
-                    <option value="2">처리자</option>
+                    {/* <option value="1">구분</option> */}
+                    <option value="1">처리자</option>
                 </select>
                 <input type="text" onChange={(e) => { setSearchValue(e.target.value) }} style={{ width: '75%' }} />
                 <button className={btnStyle.button} onClick={searchFunction}>조회</button>
@@ -106,7 +106,7 @@ const StockList: React.FC = () => {
                         <th>남은수량</th>
                         <th>상태</th>
                         <th>갱신일자</th>
-                        <th>재고구분</th>
+                        {/* <th>재고구분</th> */}
                         <th>처리자</th>
                         <th>관리</th>
                     </tr>
@@ -118,15 +118,15 @@ const StockList: React.FC = () => {
                                 <td>{e.pnm}</td>
                                 <td>{e.qty}</td>
                                 <td>
-                                    {e.QTY === 0
+                                    {e.qty === 0
                                         ? "없음"
-                                        : e.QTY <= 100
+                                        : e.qty <= 100
                                             ? "부족"
                                             : "충분"}
                                 </td>
                                 <td>{e.rdate?.substring(0, 10)}</td>
+                                {/* <td>{e.GBN === "o" ? "주문" : "상품"}</td> */}
                                 <td>{e.usrnm}</td>
-                                <td>{e.GBN === "o" ? "주문" : "상품"}</td>
                                 <td>
                                     <Link
                                         to={`/admin/stockdetail/${e.historyid}`}

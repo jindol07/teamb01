@@ -3,7 +3,6 @@ import Slider, { Settings, CustomArrowProps } from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-// 1. 문장 스타일링 인터페이스
 export interface Sentence {
     content: string;
     fontSize: string;
@@ -12,14 +11,12 @@ export interface Sentence {
     marginBottom?: string;
 }
 
-// 2. 이미지 + 문장 배열 슬라이드용 데이터 타입
 export interface ImageTextSlideItem {
     id: number | string;
     image: string;
     sentences: Sentence[];
 }
 
-// 3. CustomSlider Props 정의
 interface CustomSliderProps<T> {
     data: T[];
     settings?: Settings;
@@ -27,9 +24,7 @@ interface CustomSliderProps<T> {
     containerStyle?: React.CSSProperties;
 }
 
-// 🔹 커스텀 이전 버튼 (<)
 const PrevArrow: React.FC<CustomArrowProps> = ({ onClick, currentSlide }) => {
-    // 첫 슬라이드에서 버튼 숨김 처리 (infinite 옵션이 false일 때)
     if (currentSlide === 0) return null;
 
     return (
@@ -72,9 +67,7 @@ const PrevArrow: React.FC<CustomArrowProps> = ({ onClick, currentSlide }) => {
     );
 };
 
-// 🔹 커스텀 다음 버튼 (>)
 const NextArrow: React.FC<CustomArrowProps> = ({ onClick, currentSlide, slideCount }) => {
-    // 마지막 슬라이드에서 버튼 숨김 처리 (infinite 옵션이 false일 때)
     if (slideCount && currentSlide === slideCount - 1) return null;
 
     return (
@@ -132,8 +125,8 @@ export function CustomSlider<T>({
         autoplay: true,
         autoplaySpeed: 3500,
         arrows: true,
-        prevArrow: <PrevArrow />, // 커스텀 버튼 연결
-        nextArrow: <NextArrow />, // 커스텀 버튼 연결
+        prevArrow: <PrevArrow />,
+        nextArrow: <NextArrow />,
         dots: false,
         ...settings,
     };
@@ -146,12 +139,10 @@ export function CustomSlider<T>({
         <div style={{ position: 'relative', textAlign: 'center', marginBottom: '30px', ...containerStyle }}>
             <Slider {...defaultSettings}>
                 {data.map((item, index) => {
-                    // CASE A: 커스텀 renderItem 함수 사용 (PersonalChart 등)
                     if (renderItem) {
                         return <div key={(item as any).id || (item as any).productid || index}>{renderItem(item, index)}</div>;
                     }
 
-                    // CASE B: 기본 이미지 + 텍스트 배열 슬라이더
                     const slide = item as unknown as ImageTextSlideItem;
                     return (
                         <div key={slide.id || index}>

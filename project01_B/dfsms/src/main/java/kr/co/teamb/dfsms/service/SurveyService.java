@@ -102,7 +102,6 @@ public class SurveyService {
 	}
 	@Transactional
 	public void insertSurveyAnswers(List<SurveyAnswerVO> list) {
-		System.out.println("사용자 설문 제출 시도");
 		try {
 			for (SurveyAnswerVO item : list) {
 				String answerdataJson = objectMapper.writeValueAsString(item.getAnswerdata());

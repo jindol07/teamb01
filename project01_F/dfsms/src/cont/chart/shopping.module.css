@@ -22,7 +22,6 @@
   height: 300px;
 }
 
-/* 🛒 상품 컨테이너: 5개 항목 무조건 한 줄 배치 */
 .img-container {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -37,7 +36,6 @@
   cursor: pointer;
 }
 
-/* 🖼️ 상품 이미지 영역 및 기준점 설정 */
 .imgWrapper {
   position: relative;
   width: 100%;
@@ -54,7 +52,6 @@
   object-fit: cover;
 }
 
-/* 🏆 1,2,3등 메달 배지 */
 .badge {
   position: absolute;
   top: 8px;
@@ -97,7 +94,6 @@
   grid-column: 1 / -1;
 }
 
-/* 📱 모바일 등 아주 작은 화면에서 유동적 대응 */
 @media (max-width: 768px) {
   .img-container {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));

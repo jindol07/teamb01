@@ -8,9 +8,9 @@
     <insert id="insertUser" parameterType="UserVO">
         INSERT INTO users
         (usrno, usrid, pwd, usrnm, role, delyn,
-        birth, gender, addr, rdate, email, tel)
+        birth, gender, addr, rdate, email, tel, subsrbat)
         VALUES (USERS_SEQ.NEXTVAL, #{usrid}, #{pwd}, #{usrnm},
-        'U', 'N', #{birth}, #{gender}, #{addr, jdbcType=VARCHAR}, SYSDATE, #{email}, #{tel, jdbcType=VARCHAR})
+        'U', 'N', #{birth}, #{gender}, #{addr, jdbcType=VARCHAR}, SYSDATE, #{email}, #{tel, jdbcType=VARCHAR}, 'N')
     </insert>
 
     <!-- 아이디 중복 확인 -->

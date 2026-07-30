@@ -8,7 +8,7 @@ import kr.co.teamb.dfsms.service.SignupService;
 import kr.co.teamb.dfsms.vo.UserVO;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/member")
 public class SignupController {
 
     @Autowired

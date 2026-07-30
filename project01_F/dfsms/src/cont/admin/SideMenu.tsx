@@ -27,14 +27,14 @@ const SideMenu: React.FC = () => {
                         }
                     >🛍 상품</NavLink>
                 </li>
-                <li>
+                {/* <li>
                     <NavLink to="/admin/surveyList"
                         className={({ isActive }) =>
                             `nav-link link-dark ${isActive ? btnStyle.activeStyle : btnStyle.inactiveStyle
                             }`
                         }
                     >📋 설문조사</NavLink>
-                </li>
+                </li> */}
             </ul>
         </div>
     )

@@ -44,6 +44,7 @@ import OrderList from '../cont/mypage/OrderList'
 import TopChart from '../cont/chart/TopChart'
 import PersonalChart from '../cont/chart/PersonalChart'
 import Usrinfo from '../cont/mypage/Usrinfo'
+import PoetryPlayer from '../cont/community/PoetryPlayer'
 import SurveyClientDetail from '../cont/survey/SurveyClientDetail'
 
 
@@ -82,6 +83,7 @@ const AppRouter: React.FC = () => {
     ,{path:'/community/notice', element:<Notice/>}
     ,{path:'/community/notice/write', element:<NoticeForm/>}
     ,{path:'/community/notice/:num', element:<NoticeDetail/>}
+    ,{path:'/community/poem', element:<PoetryPlayer/>}
     ,{path:'/chart/topchart', element:<TopChart/>}
     ,{path:'/chart/personalchart', element:<PersonalChart/>}
   ]
