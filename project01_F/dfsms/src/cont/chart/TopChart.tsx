@@ -105,6 +105,8 @@ interface TopChartData {
     cont: string;
     categoryid: number;
     title: string;
+    categorynm: string;
+
 }
 
 const TopChart: React.FC = () => {
@@ -118,7 +120,7 @@ const TopChart: React.FC = () => {
         try {
             const url = `${backendUrl}/api/chart/list`;
             const response = await axios.get(url, { signal: controller?.signal });
-            
+
             const resultList: TopChartData[] = response.data.bestdata || [];
             setTopProducts(resultList);
         } catch (error) {
@@ -158,6 +160,18 @@ const TopChart: React.FC = () => {
         ],
     };
 
+    const getCategoryName = (categoryId?: number | string) => {
+        const id = String(categoryId);
+        switch (id) {
+            case "1": return "과일류";
+            case "2": return "채소류";
+            case "3": return "육류";
+            case "4": return "어류";
+            case "5": return "밀키트";
+            default: return "Fresh Food";
+        }
+    };
+
     return (
         <div className={style.container}>
             {/* 차트 섹션 */}
@@ -182,6 +196,8 @@ const TopChart: React.FC = () => {
                             const cont = item.cont
                             const title = item.title
                             const categoryid = item.categoryid
+                            const rawCategory = item.categoryid ?? item.categoryid;
+                            const categoryName = getCategoryName(rawCategory);
 
 
                             return (
@@ -199,7 +215,8 @@ const TopChart: React.FC = () => {
                                                 qty: qty,       // 💡 재고 수량 명시
                                                 cont: cont,     // 💡 상세 설명 명시
                                                 title: title,
-                                                categoryid: categoryid
+                                                categoryid: categoryid,
+                                                categoryName: categoryName
                                             },
                                         })
                                     }

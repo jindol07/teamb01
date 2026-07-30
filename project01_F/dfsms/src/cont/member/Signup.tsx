@@ -3,6 +3,7 @@ import style from './signup.module.css'
 import {useNavigate} from "react-router-dom";
 import btnStyle from '../components/btn.module.css'
 import axios from "axios";
+import ToastMsg from "../components/ToastMsg";
 
 // 주소 검색 interface
 interface DaumPostcodeData {
@@ -43,6 +44,10 @@ const Signup: React.FC = () => {
     const [telLast, setTelLast] = useState<string>("");
     const [telOpen, setTelOpen] = useState<boolean>(false); // 첫 번째 선택 목록 열림 여부
     // 날짜 선택 사항 제거 => 가입 시 해당 정보 기반으로 저장될 예정
+
+    const backendUrl = process.env.REACT_APP_BACK_END_URL;
+
+    const [toast, setToast] = useState("");
 
     const telList = [
         "010", "011", "016", "017", "018", "019"
@@ -116,9 +121,8 @@ const Signup: React.FC = () => {
         }
 
         try {
-
             const response = await axios.get(
-                "http://localhost/dfsms/member/checkId",
+                `${backendUrl}/api/member/checkId`,
                 {
                     params: {
                         usrid: id
@@ -138,7 +142,6 @@ const Signup: React.FC = () => {
             }
 
         } catch (error) {
-
             console.log("아이디 중복 확인 오류:", error);
 
             if (axios.isAxiosError(error)) {
@@ -158,7 +161,7 @@ const Signup: React.FC = () => {
 
         // 아이디 중복 확인을 하지 않았을 경우
         if (!idCheck) {
-            alert("아이디 중복 확인을 해주세요.");
+            setToast("아이디 중복 확인을 해주세요.");
             return;
         }
 
@@ -183,17 +186,18 @@ const Signup: React.FC = () => {
                 console.log("회원가입 전송 데이터:", newmember);
 
                 await axios.post(
-                    "http://localhost/dfsms/member/signup",
+                    //"http://localhost/dfsms/member/signup",
+                    `${backendUrl}/api/member/signup`,
                     newmember
                 );
 
-                alert("이메일 인증번호를 전송했습니다.");
+                setToast("이메일 인증번호를 전송했습니다.");
 
-                // 이메일 인증 페이지 이동
-                // 이메일 인증 페이지로 이동하면서 이메일 전달
-                navi("/emailVerify", {
-                    state: {email: email}
-                });
+                setTimeout(() => {
+                    navi("/emailVerify", {
+                        state: {email: email}
+                    });
+                }, 1500);
 
                 // 가입이 끝난 후 모든 입력창 상태를 빈 값으로 초기화
                 setId("");
@@ -212,17 +216,18 @@ const Signup: React.FC = () => {
             } catch (error) {
                 if (axios.isAxiosError(error)) {
                     console.log(error.response);
-                    alert(
+
+                    setToast(
                         error.response?.data?.message ??
                         "회원가입 실패"
                     );
                 } else {
-                    alert("알 수 없는 오류")
+                    setToast("알 수 없는 오류");
                 }
+
             }
         }
     }
-
     // 화면에 보여질 HTML 구조
     return (
         <div className={style.signupContainer}>
@@ -428,8 +433,13 @@ const Signup: React.FC = () => {
                 </button>
 
             </form>
+            {toast && (
+                <ToastMsg
+                    message={toast}
+                />
+            )}
         </div>
     )
 }
 
-export default Signup
+export default Signup;

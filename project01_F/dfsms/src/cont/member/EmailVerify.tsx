@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
+import React, {useState} from 'react';
+import {useLocation, useNavigate} from "react-router-dom";
 import axios from "axios";
 import style from './emailVerify.module.css';
+import ToastMsg from "../components/ToastMsg";
 
 const EmailVerify: React.FC = () => {
     const [code, setCode] = useState<string>("");
@@ -12,12 +13,25 @@ const EmailVerify: React.FC = () => {
 
     // 페이지 이동 함수
     const navi = useNavigate();
+    const backendUrl = process.env.REACT_APP_BACK_END_URL;
+
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+
+    const showToastMessage = (message: string) => {
+        setToastMessage(message);
+        setShowToast(true);
+
+        setTimeout(() => {
+            setShowToast(false);
+        }, 3000);
+    };
 
     // 인증번호 확인 버튼 클릭
     const verifyCode = async () => {
 
         if (!code) {
-            alert("인증번호를 입력해주세요.");
+            showToastMessage("인증번호를 입력해주세요.");
             return;
         }
 
@@ -26,30 +40,30 @@ const EmailVerify: React.FC = () => {
             console.log("code:", code);
 
             await axios.post(
-                "http://localhost/dfsms/member/emailVerify",
+                `${backendUrl}/api/member/emailVerify`,
                 {
                     email: email,
                     code: code
                 }
             );
 
-            alert("회원가입 완료");
+            showToastMessage("회원가입 완료");
+
+            setTimeout(() => {
+                navi("/login");
+            }, 1000);
 
             // 로그인 페이지 이동
             navi("/login");
-
-        }
-        catch (error) {
+        } catch (error) {
             if (axios.isAxiosError(error)) {
                 console.log(error.response);
-                alert(
+                showToastMessage(
                     error.response?.data?.message ??
                     "인증번호가 틀렸습니다."
                 );
             } else {
-                alert(
-                    "알 수 없는 오류"
-                );
+                showToastMessage("알 수 없는 오류");
             }
         }
     }
@@ -77,13 +91,13 @@ const EmailVerify: React.FC = () => {
                     }
                 />
 
-                <button
-                    className={style.verifyBtn}
-                    onClick={verifyCode}
-                >
+                <button className={style.verifyBtn} onClick={verifyCode}>
                     인증하기
                 </button>
             </div>
+            {showToast && (
+                <ToastMsg message={toastMessage}/>
+            )}
         </div>
     );
 }
