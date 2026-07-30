@@ -125,8 +125,8 @@ const StockList: React.FC = () => {
                                             : "충분"}
                                 </td>
                                 <td>{e.rdate?.substring(0, 10)}</td>
-                                <td>{e.usrnm}</td>
                                 <td>{e.GBN === "o" ? "주문" : "상품"}</td>
+                                <td>{e.usrnm}</td>
                                 <td>
                                     <Link
                                         to={`/admin/stockdetail/${e.historyid}`}
