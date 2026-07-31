@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { text } from "stream/consumers";
 
 const PoetryPlayer: React.FC = () => {
   const [currentLine, setCurrentLine] = useState(0);
