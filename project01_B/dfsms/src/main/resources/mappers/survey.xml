@@ -63,6 +63,14 @@
 	<insert id="insertSurveyAnswers" parameterType="surveyanswervo">
 		INSERT INTO p_survey_answer values (p_survey_answer_seq.NEXTVAL, #{userid}, #{surveyid}, #{questionid}, #{answerdataJson}, sysdate)
 	</insert>
+	
+	<select id="getUserSurveyAnswers" parameterType="map">
+		SELECT usrid, surveyid, questionid, answerdata AS answerdataJson, rdate FROM P_SURVEY_ANSWER WHERE usrid = #{userid} and surveyid = #{surveyid}
+	</select>
+	
+	<update id="updateSurveyAnswers" parameterType="surveyanswervo">
+		UPDATE p_survey_answer SET answerdata = #{answerdataJson} WHERE questionid = #{questionid} AND usrid = #{userid}
+	</update>
 <!--	<insert id="insertSurveyAnswers" parameterType="java.util.List">
 		INSERT ALL
 		<foreach collection="list" item="item"> 

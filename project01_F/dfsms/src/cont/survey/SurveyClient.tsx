@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import style from "./surveyclient.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import Confirm from "../components/Confirm";
 
 interface Survey {
   surveyid: number;
@@ -12,11 +13,17 @@ interface Survey {
 }
 
 const SurveyClient: React.FC = () => {
-  const [loginInfo, setLoginInfo] = useState<string | null>(null);
+  const [loginInfo, setLoginInfo] = useState<{ role: string, usrno: number } | null>(null);
+  const [showConfirm, setShowConfirm] = useState("");
   const [surveys, setSurveys] = useState<Survey[] | null>(null);
   const navigate = useNavigate();
 
   const fetchLatestSurvey = async () => {
+    const userData = await sessionStorage.getItem("loginInfo");
+    if (userData != null) {
+        setLoginInfo(JSON.parse(userData))
+        // setShowConfirm("로그인 정보가 없습니다.");
+    }
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_BACK_END_URL}/api/survey/allList`
@@ -66,7 +73,13 @@ const SurveyClient: React.FC = () => {
             <div
               key={survey.surveyid}
               className={style.surveyCard}
-              onClick={() => navigate(`/community/survey/${survey.surveyid}`)}
+              onClick={() => {
+                if (loginInfo == null) {
+                  setShowConfirm("로그인 정보가 없습니다.");
+                } else {
+                  navigate(`/community/survey/${survey.surveyid}`)
+                }
+              }}
             >
               <div className={style.badgeGroup}>
                 <span className={style.statusBadge}>진행중</span>
@@ -86,6 +99,16 @@ const SurveyClient: React.FC = () => {
           <p>🔍 현재 진행 중인 설문조사가 없습니다.</p>
         </div>
       )}
+        {showConfirm && (
+              <Confirm
+                  message={showConfirm}
+                  onConfirm={() => {
+                      setShowConfirm("");
+                      navigate(`/community/survey`);
+                  }}
+              />
+            )
+        }
     </div>
   );
 };
