@@ -41,17 +41,16 @@ interface SurveyAnswerData {
     value: string,
     text: string,
 }
+type ConfirmState = "save" | "tempsave" | "";
 
 const SurveyClientDetail: React.FC = () => {
     const { num } = useParams<{ num : string}>();
     const [loginInfo, setLoginInfo] = useState<{ role: string, usrno: number } | null>(null);
     const [survey, setSurvey] = useState<Survey | null>(null);
-    // const [selectedsurveyType, setSelectedsurveyType] = useState<string | null>(null);
-    // const [answerData, setAnswerData] = useState<SurveyAnswer[]>([]);
-    // const [answerMapList, setAnswerMapList] = useState<SurveyAnswerData[]>([]);
     const [answerData, setAnswerData] = useState<Record<number, SurveyAnswer>>({});
+    // const [surveyAnswer, setSurveyAnswer] = useState<SurveyAnswer[] | null>(null);
     const [toastMsg, setToastMsg] = useState("");
-    const [showConfirm, setShowConfirm] = useState(false);
+    const [showConfirm, setShowConfirm] = useState("");
     const navigate = useNavigate();
     const inputTypeMap = {
         RADIO: "radio",
@@ -60,44 +59,96 @@ const SurveyClientDetail: React.FC = () => {
     };
     let surveyId : number = Number(num);
     const fetchLatestSurvey = async () => {
-        try {
-            const response = await axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/survey/detail/${num}`);
-            if (response.status === 200) {
-                setSurvey(response.data);
-            } else {
-                console.log("No survey data available.");
-                return <div>현재 진행중인 설문조사가 없습니다.</div>;
+        const userData = await sessionStorage.getItem("loginInfo");
+        if (userData != null) {
+            const userDataJson = JSON.parse(userData);
+            setLoginInfo(userDataJson);
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/survey/detail/${num}`);
+                if (response.status === 200) {
+                    setSurvey(response.data);
+                } else {
+                    console.log("No survey data available.");
+                    return <div>현재 진행중인 설문조사가 없습니다.</div>;
+                }
+            } catch (error) {
+                console.error("Failed to fetch survey:", error);
             }
-        } catch (error) {
-            console.error("Failed to fetch survey:", error);
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_BACK_END_URL}/api/survey/userAnswer?userid=${userDataJson.usrno}&surveyid=${num}`);        
+                if (res.status === 200) {
+                    console.log(res.data);
+                    const answerMap:SurveyAnswer[] = [];
+                    res.data.map((e : SurveyAnswer) => {
+                        answerMap[e.questionid] = e;
+                    });
+                    console.log(answerMap);
+                    setAnswerData(answerMap);
+                    // console.log(answerMap);
+                } else {
+                    console.log(res);   
+                }
+            } catch (error) {
+                console.error("Failed to fetch survey2:", error);
+            }
+        } else {
+            setShowConfirm("3"); // 3
+            console.log(showConfirm);
+            setLoginInfo(null);
         }
     };
+    // const handleAnswerChange = (q:SurveyQuestion, e:SurveyQuestionList) => {
+    //     if (!answerData[q.questionid]) {
+    //         if (!loginInfo) {
+                
+    //             showToast("로그인 정보가 없습니다.");
+    //             return;
+    //         }
+    //         console.log(4444);
+    //         setAnswerData({...answerData,
+    //             [q.questionid]: {
+    //                 userid: loginInfo.usrno,
+    //                 surveyid: surveyId,
+    //                 questionid: q.questionid,
+    //                 answerdata: [{ 
+    //                     id: e.id,
+    //                     value: e.value,
+    //                     text: "",
+    //                 }],
+    //             }
+    //         });
+    //     } else {
+    //         console.log(23124124);
+
+    //         for (let f of answerData[q.questionid].answerdata) {
+    //             if (f.id == e.id) {
+    //                 f.value = e.value;
+    //             } else {
+    //                 if (q.questiontype == "CHECKBOX") {
+    //                     // 작업 예정
+    //                 }
+    //             }
+    //         }
+    //     }
+    // };
     const handleAnswerChange = (q:SurveyQuestion, e:SurveyQuestionList) => {
-        if (!answerData[q.questionid]) {
-            if (!loginInfo) {
-                showToast("로그인 정보가 없습니다.");
-                return;
-            }
-            answerData[q.questionid] = {
-                userid: loginInfo.usrno,
-                surveyid: surveyId,
-                questionid: q.questionid,
-                answerdata: [{
-                    id: e.id,
-                    value: e.value,
-                    text: "",
-                }],
-            };
+        if (!loginInfo) {
+            showToast("로그인 정보가 없습니다.");
+            return;
         } else {
-            for (let f of answerData[q.questionid].answerdata) {
-                if (f.id == e.id) {
-                    f.value = e.value;
-                } else {
-                    if (q.questiontype == "CHECKBOX") {
-                        // 작업 예정
-                    }
+            console.log(4444);
+            setAnswerData({...answerData,
+                [q.questionid]: {
+                    userid: loginInfo.usrno,
+                    surveyid: surveyId,
+                    questionid: q.questionid,
+                    answerdata: [{ 
+                        id: e.id,
+                        value: e.value,
+                        text: "",
+                    }],
                 }
-            }
+            });
         }
     };
     const submitSurvey = async (e: React.FormEvent) => {
@@ -107,15 +158,17 @@ const SurveyClientDetail: React.FC = () => {
             Object.values(answerData)
             const answerDataToArray = Object.values(answerData);
             if (answerDataToArray.length !== survey?.questionList.length) {
-                showToast("항목을 선택하지 않은 질문이 있습니다.");
-                return;
+                // showToast("항목을 선택하지 않은 질문이 있습니다.");
+                setShowConfirm("2"); // 2
+                return
             }
+
             const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/answers`, answerDataToArray);
             if (response.status === 200) {
+                console.log(234234);
                 // showToast("설문이 성공적으로 제출되었습니다."); 
-                setShowConfirm(true);
-                
-                ;  // 설문조사 이후 결과로 이동
+                setShowConfirm("1"); // 1
+                  // 설문조사 이후 결과로 이동
             } else {
                 showToast("설문 제출에 실패했습니다.");
             }
@@ -125,13 +178,6 @@ const SurveyClientDetail: React.FC = () => {
         }
     };
     useEffect(() => {
-        const userData = sessionStorage.getItem("loginInfo");
-        if (userData != null) {
-            const userDataJson = JSON.parse(userData);
-            setLoginInfo(userDataJson)
-        } else {
-            setLoginInfo(null);
-        }   
         //여기까지
         fetchLatestSurvey();
     }, []);
@@ -141,10 +187,22 @@ const SurveyClientDetail: React.FC = () => {
         setTimeout(() => {
             setToastMsg("");
         }, 2000);
-    };
-
+    };  
     if (!survey) {
-        return <div>설문 데이터를 불러오는 중...</div>;
+        return (
+            <>
+                {showConfirm == "3" && (
+                    <Confirm
+                        message={"로그인 정보가 없습니다."}
+                        onConfirm={() => {
+                            setShowConfirm("");
+                            navigate(`/community/survey`);
+                        }}
+                    />)
+                }
+                <div>설문 데이터를 불러오는 중...</div>
+            </>
+        );
     }
     return (
         <div className={`container ${style.surveyContainer}`}>
@@ -152,20 +210,24 @@ const SurveyClientDetail: React.FC = () => {
                 <div className="card-body">
                     <h2 className={style.title}>{survey.surveytitle}</h2>
                     {/* <h4 className={style.contt}>{survey.cont}</h4> */}
-                    <p className={style.info}>총 {survey.questionList.length}문항</p>
+                    <p className={style.info}>총 {survey.questionList.length} 문항</p>
                     <form onSubmit={submitSurvey}>
                         {survey.questionList.map((q, i) => (
                             <div key={i} className={style.questionItem} id={"question_" + q.questionid}>
                                 <h4>{q.questiontitle}</h4>
                                 {
-                                    q.questionlist ? q.questionlist.map((e, j) => (
-                                        <div key={j}>
+                                    q.questionlist ? q.questionlist.map((e, j) => {
+                                        let checked = answerData[q.questionid]?.answerdata[0]?.id == e.id;
+                                        console.log(checked, answerData);
+                                        return (<div key={j}>
                                             <input className={style.radio} type={inputTypeMap[q.questiontype]} 
                                                 name={"surveyType_" + q.questionid} id={`question_${q.questiontype}`} 
-                                                onChange={() => handleAnswerChange(q, e)}/>
+                                                onChange={() => handleAnswerChange(q, e)}
+                                                checked={checked}
+                                            />
                                             <label className={style.questionLabel} htmlFor={`survey-${i}`}>{(j + 1) + ". "} {e.value}</label>
-                                        </div>
-                                    )) : <div>보기가 존재하지 않습니다.</div>
+                                        </div>)
+                                    }) : <div>보기가 존재하지 않습니다.</div>
                                 }
                             </div>
                         ))}
@@ -189,17 +251,50 @@ const SurveyClientDetail: React.FC = () => {
                 </div>
             </div>
             {toastMsg && <ToastMsg message={toastMsg} />}
-            {
-                showConfirm && (
+            {showConfirm == "1" && (
                     <Confirm
-                        message="설문이 성공적으로 제출되었습니다."
+                        message={"설문이 성공적으로 제출되었습니다."}
                         onConfirm={() => {
-                            setShowConfirm(false);
+                            setShowConfirm("");
                             navigate(`/community/survey`);
                         }}
                     />
                 )
             }
+            {showConfirm == "2" && (
+                    <Confirm
+                        message={"항목을 선택하지 않은 질문이 있습니다. 임시저장 하시겠습니까?"}
+                        onConfirm={async () => {
+                            try {
+                                Object.values(answerData)
+                                const answerDataToArray = Object.values(answerData);
+                                const response = await axios.post(`${process.env.REACT_APP_BACK_END_URL}/api/survey/answers`, answerDataToArray);
+                                if (response.status === 200) {
+                                    setShowConfirm("tempsave");
+                                } else {
+                                    showToast("설문 제출에 실패했습니다.");
+                                }
+                            } catch (error) {
+                                console.error("Failed to submit survey:", error);
+                                showToast("설문 제출 중 오류가 발생했습니다.");
+                            }
+                        }}
+                        onCancel={() => {
+                            setShowConfirm("");
+                            navigate(`/community/survey`);
+                        }}
+                    />
+                )
+            }
+            {showConfirm == "tempsave" && (
+                <Confirm
+                    message={"임시 저장되었습니다."}
+                    onConfirm={() => {
+                        navigate(`/community/survey`);
+                        setShowConfirm("");
+                    }}
+                />
+            )}
         </div>
     );
 };

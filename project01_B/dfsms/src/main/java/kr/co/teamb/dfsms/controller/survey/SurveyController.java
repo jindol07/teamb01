@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.teamb.dfsms.service.SurveyService;
@@ -79,13 +80,22 @@ public class SurveyController {
 	@PostMapping("/answers")
 	public ResponseEntity<String> insertSurveyAnswers(@RequestBody List<SurveyAnswerVO> list) {
 		System.out.println("사용자 제출 시도 contoller");
-		try {
+//		try {
 			surveyService.insertSurveyAnswers(list);
 			return ResponseEntity.ok("update complete!");
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			e.printStackTrace();
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+//		}
+	}
+	@GetMapping("/userAnswer")
+	public ResponseEntity<List<SurveyAnswerVO>> getUserSurveyAnswers(@RequestParam Map<String, String> map) {
+		List<SurveyAnswerVO> result = surveyService.getUserSurveyAnswers(map);
+		if (result != null) {
+			return ResponseEntity.ok(result);
+		} else {
+			return ResponseEntity.noContent().build();
 		}
 	}
 //	@PostMapping("/tempsave")

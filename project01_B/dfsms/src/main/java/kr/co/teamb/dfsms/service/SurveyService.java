@@ -1,7 +1,11 @@
 package kr.co.teamb.dfsms.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.co.teamb.dfsms.dao.SurveyDao;
 import kr.co.teamb.dfsms.vo.SurveyAnswerVO;
+import kr.co.teamb.dfsms.vo.SurveyAnswerVO.AnswerItem;
 import kr.co.teamb.dfsms.vo.SurveyQuestionVO;
 import kr.co.teamb.dfsms.vo.SurveyQuestionVO.QuestionListItem;
 import kr.co.teamb.dfsms.vo.SurveyVO;
@@ -103,26 +108,46 @@ public class SurveyService {
 	@Transactional
 	public void insertSurveyAnswers(List<SurveyAnswerVO> list) {
 		try {
+			Set<Integer> set = new HashSet<Integer>();
+			Map<String, Object> hashMap = new HashMap<String, Object>();
+			hashMap.put("userid", list.getFirst().getUserid());
+			hashMap.put("surveyid", list.getFirst().getSurveyid());
+			List<SurveyAnswerVO> answervoList = surveyDao.getUserSurveyAnswers(hashMap);
+			for (SurveyAnswerVO item : answervoList) {
+				set.add(item.getQuestionid());
+			}
 			for (SurveyAnswerVO item : list) {
 				String answerdataJson = objectMapper.writeValueAsString(item.getAnswerdata());
 				item.setAnswerdataJson(answerdataJson);
-				System.out.println(answerdataJson);
-				surveyDao.insertSurveyAnswers(item);
+				if (set.contains(item.getQuestionid())) {
+					surveyDao.updateSurveyAnswers(item);
+				} else {
+					System.out.println(answerdataJson);
+					surveyDao.insertSurveyAnswers(item);
+				}
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {	
 			e.printStackTrace();
 		}
 	}
-//	public void insertSurveyAnswers(List<SurveyAnswerVO> list) {
-//		System.out.println("사용자 설문 제출 시도");
-//		try {
-//			for (SurveyAnswerVO item : list) {
-//				String answerdataJson = objectMapper.writeValueAsString(item.getAnswerdata());
-//				item.setAnswerdataJson(answerdataJson);
-//			}
-//			surveyDao.insertSurveyAnswers(list);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+//	@Transactional
+//	public void updateSurveyAnswers(SurveyAnswerVO vo) {
+//		surveyDao.updateSurveyAnswers(vo);
 //	}
+	public List<SurveyAnswerVO> getUserSurveyAnswers(Map<String, String> map) {
+		Map<String, Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("userid", map.get("userid"));
+		hashMap.put("surveyid", map.get("surveyid"));
+		try {
+			List<SurveyAnswerVO> voList = surveyDao.getUserSurveyAnswers(hashMap);
+			for (SurveyAnswerVO vo : voList) {
+				List<SurveyAnswerVO.AnswerItem> data = objectMapper.readValue(vo.getAnswerdataJson(), new TypeReference<List<SurveyAnswerVO.AnswerItem>>() {});
+				vo.setAnswerdata(data);
+			}
+			return voList;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

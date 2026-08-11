@@ -20,7 +20,7 @@ public class SurveyAnswerVO {
 	private int surveyid;
 	private int questionid;
 	private List<AnswerItem> answerdata;
-//	@JsonIgnore
+	@JsonIgnore
 	private String answerdataJson;
 	private String rdate;
 	
